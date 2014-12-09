@@ -35,10 +35,10 @@ import org.magicwerk.brownies.collections.primitive.ShortObjGapList;
  */
 public class GapLists {
     /**
-     * Create a GapList wrapping a primitive GapList, e.g. IntObjGapList.
+     * Create a GapList wrapping a primitive GapList, e.g. an IntObjGapList wrapping an IntGapList.
      *
      * @param type	primitive type for GapList
-     * @return		create wrapping GapList
+     * @return		created wrapping GapList
      * @throws 		IllegalArgumentException if no primitive type is specified
      */
     public static IList<?> createWrapperList(Class<?> type) {
