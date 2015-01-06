@@ -24,8 +24,8 @@ package org.magicwerk.brownies.collections.function;
  * @author Thomas Mauch
  * @version $Id$
  *
- * @param <E> type of elements stored in the list
- * @param <K> type of key
+ * @param <T> type of input argument
+ * @param <R> type of return value
  */
 public interface IFunction<T,R> {
     /**
