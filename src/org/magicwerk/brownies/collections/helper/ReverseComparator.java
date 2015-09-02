@@ -27,7 +27,7 @@ import java.util.Comparator;
  * @author Thomas Mauch
  * @version $Id$
  */
-public class ReverseComparator<T> implements Comparator<T> {
+public class ReverseComparator<T> extends SingletonComparator<T> {
 	/** Comparator to reverse */
 	private Comparator<T> comparator;
 
