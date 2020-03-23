@@ -29,13 +29,13 @@ import java.util.function.Predicate;
  * Key2Collection implements a collection with 2 keys.
  * These keys can be accessed fast.
  * It can provide fast access to its elements like a Set.
- * The elements allowed in the list can be constraint (null/duplicate values).
+ * The elements allowed in the collection can be constraint (null/duplicate values).
  *
  * @author Thomas Mauch
  * @version $Id$
  *
  * @see Key1List
- * @param <E> type of elements stored in the list
+ * @param <E> type of elements stored in the collection
  * @param <K1> type of first key
  * @param <K2> type of second key
  */
@@ -61,6 +61,19 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 		Builder(Key2Collection<E, K1, K2> keyColl) {
 			this.keyColl = keyColl;
 			initKeyMapBuilder(2);
+		}
+
+		/**
+		 * @return created collection
+		 */
+		@SuppressWarnings("unchecked")
+		public Key2Collection<E, K1, K2> build() {
+			if (keyColl == null) {
+				keyColl = new Key2Collection<>();
+			}
+			build(keyColl, false);
+			init(keyColl);
+			return (Key2Collection<E, K1, K2>) keyColl;
 		}
 
 		// -- Constraint
@@ -120,6 +133,11 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 		}
 
 		//-- Element key
+
+		@Override
+		public Builder<E, K1, K2> withSetBehavior(boolean setBehavior) {
+			return (Builder<E, K1, K2>) super.withSetBehavior(setBehavior);
+		}
 
 		@Override
 		public Builder<E, K1, K2> withElemSet() {
@@ -339,18 +357,6 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 			return (Builder<E, K1, K2>) super.withKeySort(2, comparator, sortNullsFirst);
 		}
 
-		/**
-		 * @return created collection
-		 */
-		@SuppressWarnings("unchecked")
-		public Key2Collection<E, K1, K2> build() {
-			if (keyColl == null) {
-				keyColl = new Key2Collection<E, K1, K2>();
-			}
-			build(keyColl, false);
-			init(keyColl);
-			return (Key2Collection<E, K1, K2>) keyColl;
-		}
 	}
 
 	/**
@@ -363,7 +369,7 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @return builder to use in extending classes
 	 */
 	protected Builder<E, K1, K2> getBuilder() {
-		return new Builder<E, K1, K2>(this);
+		return new Builder<>(this);
 	}
 
 	@Override
@@ -379,8 +385,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	//-- Element methods
 
 	@Override
-	public GapList<E> getAll(E elem) {
-		return super.getAll(elem);
+	public Key2Collection<E, K1, K2> getAll(E elem) {
+		return (Key2Collection<E, K1, K2>) super.getAll(elem);
 	}
 
 	@Override
@@ -389,8 +395,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	}
 
 	@Override
-	public GapList<E> removeAll(E elem) {
-		return super.removeAll(elem);
+	public Key2Collection<E, K1, K2> removeAll(E elem) {
+		return (Key2Collection<E, K1, K2>) super.removeAll(elem);
 	}
 
 	@Override
@@ -458,8 +464,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	public GapList<E> getAllByKey1(K1 key) {
-		return super.getAllByKey(1, key);
+	public Key2Collection<E, K1, K2> getAllByKey1(K1 key) {
+		return (Key2Collection<E, K1, K2>) super.getAllByKey(1, key);
 	}
 
 	/**
@@ -489,8 +495,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	public GapList<E> removeAllByKey1(K1 key) {
-		return super.removeAllByKey(1, key);
+	public Key2Collection<E, K1, K2> removeAllByKey1(K1 key) {
+		return (Key2Collection<E, K1, K2>) super.removeAllByKey(1, key);
 	}
 
 	/**
@@ -499,8 +505,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @return 			list containing all keys
 	 */
 	@SuppressWarnings("unchecked")
-	public GapList<K1> getAllKeys1() {
-		return (GapList<K1>) super.getAllKeys(1);
+	public IList<K1> getAllKeys1() {
+		return (IList<K1>) super.getAllKeys(1);
 	}
 
 	/**
@@ -597,8 +603,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	public GapList<E> getAllByKey2(K2 key) {
-		return super.getAllByKey(2, key);
+	public Key2Collection<E, K1, K2> getAllByKey2(K2 key) {
+		return (Key2Collection<E, K1, K2>) super.getAllByKey(2, key);
 	}
 
 	/**
@@ -628,8 +634,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	public GapList<E> removeAllByKey2(K2 key) {
-		return super.removeAllByKey(2, key);
+	public Key2Collection<E, K1, K2> removeAllByKey2(K2 key) {
+		return (Key2Collection<E, K1, K2>) super.removeAllByKey(2, key);
 	}
 
 	/**
@@ -638,8 +644,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @return 			list containing all keys
 	 */
 	@SuppressWarnings("unchecked")
-	public GapList<K2> getAllKeys2() {
-		return (GapList<K2>) super.getAllKeys(2);
+	public IList<K2> getAllKeys2() {
+		return (IList<K2>) super.getAllKeys(2);
 	}
 
 	/**

@@ -26,194 +26,205 @@ import java.util.function.Predicate;
 /**
  * KeyCollection implements a collection.
  * It can provide fast access to its elements like a Set.
- * The elements allowed in the list can be constraint (null/duplicate values).
+ * The elements allowed in the collection can be constraint (null/duplicate values).
  *
  * @author Thomas Mauch
  * @version $Id$
  *
  * @see Key1List
- * @param <E> type of elements stored in the list
+ * @param <E> type of elements stored in the collection
  */
 @SuppressWarnings("serial")
 public class KeyCollection<E> extends KeyCollectionImpl<E> {
 
-    /**
-     * Builder to construct TableCollection instances.
-     */
-    public static class Builder<E> extends BuilderImpl<E> {
-        /**
-         * Default constructor.
-         */
-        public Builder() {
-        	this(null);
-        }
+	/**
+	 * Builder to construct KeyCollection instances.
+	 */
+	public static class Builder<E> extends BuilderImpl<E> {
+		/**
+		 * Default constructor.
+		 */
+		public Builder() {
+			this(null);
+		}
 
-        /**
-         * Private constructor used if extending KeyCollection.
-         *
-         * @param keyColl	key collection
-         */
-        Builder(KeyCollection<E> keyColl) {
-        	this.keyColl = keyColl;
-        	initKeyMapBuilder(0);
-        }
+		/**
+		 * Private constructor used if extending KeyCollection.
+		 *
+		 * @param keyColl	key collection
+		 */
+		Builder(KeyCollection<E> keyColl) {
+			this.keyColl = keyColl;
+			initKeyMapBuilder(0);
+		}
 
-        // -- Constraint
-
-        @Override
-        public Builder<E> withNull(boolean allowNull) {
-        	return (Builder<E>) super.withNull(allowNull);
-        }
-
-        @Override
-        public Builder<E> withConstraint(Predicate<E> constraint) {
-        	return (Builder<E>) super.withConstraint(constraint);
-        }
-
-        // -- Triggers
-
-        @Override
-        public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-        	return (Builder<E>) super.withBeforeInsertTrigger(trigger);
-        }
-
-        @Override
-        public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-        	return (Builder<E>) super.withAfterInsertTrigger(trigger);
-        }
-
-        @Override
-        public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-        	return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
-        }
-
-        @Override
-        public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-        	return (Builder<E>) super.withAfterDeleteTrigger(trigger);
-        }
-
-        //-- Content
-
-        @Override
-        public Builder<E> withCapacity(int capacity) {
-        	return (Builder<E>) super.withCapacity(capacity);
-        }
-
-        @Override
-        public Builder<E> withContent(Collection<? extends E> elements) {
-        	return (Builder<E>) super.withContent(elements);
-        }
-
-        @Override
-        public Builder<E> withContent(E... elements) {
-        	return (Builder<E>) super.withContent(elements);
-        }
-
-        @Override
-        public Builder<E> withMaxSize(int maxSize) {
-        	return (Builder<E>) super.withMaxSize(maxSize);
-        }
-
-        //-- Element key
-
-        @Override
-        public Builder<E> withElemCount(boolean count) {
-        	return (Builder<E>) super.withElemCount(count);
-        }
-
-        @Override
-        public Builder<E> withElemSet() {
-        	return (Builder<E>) super.withElemSet();
-        }
-
-        @Override
-        public Builder<E> withOrderByElem(boolean orderBy) {
-        	return (Builder<E>) super.withOrderByElem(orderBy);
-        }
-
-        @Override
-        public Builder<E> withElemNull(boolean allowNull) {
-        	return (Builder<E>) super.withElemNull(allowNull);
-        }
-
-        @Override
-        public Builder<E> withElemDuplicates(boolean allowDuplicates) {
-        	return (Builder<E>) super.withElemDuplicates(allowDuplicates);
-        }
-
-        @Override
-        public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-        	return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-        }
-
-        @Override
-        public Builder<E> withElemSort(boolean sort) {
-        	return (Builder<E>) super.withElemSort(sort);
-        }
-
-        @Override
-        public Builder<E> withElemSort(Comparator<? super E> comparator) {
-        	return (Builder<E>) super.withElemSort(comparator);
-        }
-
-        @Override
-        public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-        	return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
-        }
-
-        @Override
-        public Builder<E> withPrimaryElem() {
-        	return (Builder<E>) super.withPrimaryElem();
-        }
-
-        @Override
-        public Builder<E> withUniqueElem() {
-        	return (Builder<E>) super.withUniqueElem();
-        }
-
-        /**
-         * @return created collection
-         */
+		/**
+		 * @return created collection
+		 */
 		public KeyCollection<E> build() {
-        	if (keyColl == null) {
-               	keyColl = new KeyCollection<E>();
-        	}
-        	build(keyColl, false);
-        	init(keyColl);
-        	return (KeyCollection<E>) keyColl;
-        }
-    }
+			if (keyColl == null) {
+				keyColl = new KeyCollection<>();
+			}
+			build(keyColl, false);
+			init(keyColl);
+			return (KeyCollection<E>) keyColl;
+		}
 
-    /**
-     * Protected constructor used by builder or derived collections.
-     */
-    protected KeyCollection() {
-    }
+		// -- Constraint
 
-    /**
-     * @return builder to use in extending classes
-     */
-    protected Builder<E> getBuilder() {
-    	return new Builder<E>(this);
-    }
+		@Override
+		public Builder<E> withNull(boolean allowNull) {
+			return (Builder<E>) super.withNull(allowNull);
+		}
+
+		@Override
+		public Builder<E> withConstraint(Predicate<E> constraint) {
+			return (Builder<E>) super.withConstraint(constraint);
+		}
+
+		// -- Triggers
+
+		@Override
+		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withAfterInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
+		}
+
+		//-- Content
+
+		@Override
+		public Builder<E> withCapacity(int capacity) {
+			return (Builder<E>) super.withCapacity(capacity);
+		}
+
+		@Override
+		public Builder<E> withContent(Collection<? extends E> elements) {
+			return (Builder<E>) super.withContent(elements);
+		}
+
+		@Override
+		public Builder<E> withContent(E... elements) {
+			return (Builder<E>) super.withContent(elements);
+		}
+
+		@Override
+		public Builder<E> withMaxSize(int maxSize) {
+			return (Builder<E>) super.withMaxSize(maxSize);
+		}
+
+		//-- Element key
+
+		@Override
+		public Builder<E> withSetBehavior(boolean setBehavior) {
+			return (Builder<E>) super.withSetBehavior(setBehavior);
+		}
+
+		@Override
+		public Builder<E> withElemCount(boolean count) {
+			return (Builder<E>) super.withElemCount(count);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link KeyCollection} always has an element set, so this call is not necessary.
+		 */
+		@Override
+		public Builder<E> withElemSet() {
+			return (Builder<E>) super.withElemSet();
+		}
+
+		@Override
+		public Builder<E> withOrderByElem(boolean orderBy) {
+			return (Builder<E>) super.withOrderByElem(orderBy);
+		}
+
+		@Override
+		public Builder<E> withElemNull(boolean allowNull) {
+			return (Builder<E>) super.withElemNull(allowNull);
+		}
+
+		@Override
+		public Builder<E> withElemDuplicates(boolean allowDuplicates) {
+			return (Builder<E>) super.withElemDuplicates(allowDuplicates);
+		}
+
+		@Override
+		public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+			return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
+		}
+
+		@Override
+		public Builder<E> withElemSort(boolean sort) {
+			return (Builder<E>) super.withElemSort(sort);
+		}
+
+		@Override
+		public Builder<E> withElemSort(Comparator<? super E> comparator) {
+			return (Builder<E>) super.withElemSort(comparator);
+		}
+
+		@Override
+		public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
+			return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
+		}
+
+		@Override
+		public Builder<E> withPrimaryElem() {
+			return (Builder<E>) super.withPrimaryElem();
+		}
+
+		@Override
+		public Builder<E> withUniqueElem() {
+			return (Builder<E>) super.withUniqueElem();
+		}
+
+	}
+
+	/**
+	 * Protected constructor used by builder or derived collections.
+	 */
+	protected KeyCollection() {
+	}
+
+	/**
+	 * @return builder to use in extending classes
+	 */
+	protected Builder<E> getBuilder() {
+		return new Builder<>(this);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-    public KeyCollection<E> copy() {
-        return (KeyCollection<E>) super.copy();
-    }
+	public KeyCollection<E> copy() {
+		return (KeyCollection<E>) super.copy();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-    public KeyCollection<E> crop() {
-        return (KeyCollection<E>) super.crop();
-    }
+	public KeyCollection<E> crop() {
+		return (KeyCollection<E>) super.crop();
+	}
 
-    //-- Element methods
+	//-- Element methods
 
 	@Override
-	public GapList<E> getAll(E elem) {
-		return super.getAll(elem);
+	public KeyCollection<E> getAll(E elem) {
+		return (KeyCollection<E>) super.getAll(elem);
 	}
 
 	@Override
@@ -222,8 +233,8 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	}
 
 	@Override
-	public GapList<E> removeAll(E elem) {
-		return super.removeAll(elem);
+	public KeyCollection<E> removeAll(E elem) {
+		return (KeyCollection<E>) super.removeAll(elem);
 	}
 
 	@Override
