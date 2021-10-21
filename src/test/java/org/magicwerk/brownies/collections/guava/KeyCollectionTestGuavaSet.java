@@ -1,14 +1,7 @@
 package org.magicwerk.brownies.collections.guava;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.magicwerk.brownies.collections.KeyCollection;
 
@@ -16,6 +9,10 @@ import com.google.common.collect.testing.SetTestSuiteBuilder;
 import com.google.common.collect.testing.TestStringSetGenerator;
 import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Test KeyCollection as set with the test suite provided by Guava.
@@ -26,27 +23,6 @@ import com.google.common.collect.testing.features.CollectionSize;
  * @version $Id$
  */
 public class KeyCollectionTestGuavaSet extends TestCase {
-
-	public static void main(String[] args) {
-		test();
-	}
-
-	static void test() {
-		Set<String> set = new HashSet<String>();
-		set.add("a");
-		set.add("b");
-		List<String> list = new ArrayList<String>();
-		list.addAll(set);
-		assert (set.equals(list));
-
-		//		String[] elements = new String[] {};
-		//		KeyCollection<String> coll = new KeyCollection.Builder<String>().withNull(true).withElemDuplicates(false).withElements(elements).build();
-		//		assert(coll.size() == elements.length);
-		//		Set<String> set = coll.asSet();
-		//		elements = new String[] { "d", "e", "d", "e" };
-		//		boolean b = set.addAll(Arrays.asList(elements));
-		//		System.out.println(set + " " + b);
-	}
 
 	// this method must be named suite()
 	public static Test suite() {
