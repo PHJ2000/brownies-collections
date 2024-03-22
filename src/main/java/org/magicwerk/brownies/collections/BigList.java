@@ -87,7 +87,6 @@ public class BigList<E> extends IList<E> {
 	private int blockSize;
 	/** Number of elements stored in this BigList */
 	private int size;
-
 	/** The root node in the tree */
 	private BlockNode<E> rootNode;
 	/** Current node */
@@ -109,12 +108,7 @@ public class BigList<E> extends IList<E> {
 	 */
 	protected BigList(boolean copy, BigList<E> that) {
 		if (copy) {
-			this.blockSize = that.blockSize;
-			this.currBlockStart = that.currBlockStart;
-			this.currBlockEnd = that.currBlockEnd;
-			this.currNode = that.currNode;
-			this.rootNode = that.rootNode;
-			this.size = that.size;
+			doAssign(that);
 		}
 	}
 
@@ -188,7 +182,6 @@ public class BigList<E> extends IList<E> {
 	@SuppressWarnings("unchecked")
 	public BigList(Collection<? extends E> coll) {
 		if (coll instanceof BigList) {
-			doAssign((BigList<E>) coll);
 			doClone((BigList<E>) coll);
 
 		} else {
@@ -284,21 +277,28 @@ public class BigList<E> extends IList<E> {
 	@Override
 	protected void doAssign(IList<E> that) {
 		BigList<E> list = (BigList<E>) that;
+		this.size = list.size;
 		this.blockSize = list.blockSize;
+		this.rootNode = list.rootNode;
+		this.currNode = list.currNode;
 		this.currBlockEnd = list.currBlockEnd;
 		this.currBlockStart = list.currBlockStart;
-		this.currNode = list.currNode;
-		this.rootNode = list.rootNode;
-		this.size = list.size;
+		this.currModify = list.currModify;
 	}
 
 	@Override
 	protected void doClone(IList<E> that) {
 		BigList<E> bigList = (BigList<E>) that;
 		bigList.releaseBlock();
+
+		size = bigList.size;
+		blockSize = bigList.blockSize;
 		rootNode = copy(bigList.rootNode);
 		currNode = null;
+		currBlockStart = 0;
+		currBlockEnd = 0;
 		currModify = 0;
+
 		if (CHECK)
 			check();
 	}
