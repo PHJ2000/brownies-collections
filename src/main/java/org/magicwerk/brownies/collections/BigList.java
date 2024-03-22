@@ -234,43 +234,43 @@ public class BigList<E> extends IList<E> {
 		addBlock(0, block);
 	}
 
-	/**
-	 * Returns a shallow copy of this list.
-	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
-	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be copied.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * This method is identical to clone() except that it returns an object with the exact type.
-	 *
-	 * @return a modifiable copy of this list
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public BigList<E> copy() {
-		return (BigList<E>) clone();
-	}
-
 	@Override
 	public BigList<E> crop() {
 		return (BigList<E>) super.crop();
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return this instanceof ReadOnlyBigList;
+	}
+
 	/**
-	 * Returns a shallow copy of this list.
-	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
-	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be copied.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * It is advised to use copy() which is identical except that it returns an object with the exact type.
-	 *
-	 * @return a modifiable copy of this list
+	 * {@inheritDoc}
+	 * <p>
+	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be handled.
 	 */
 	@Override
-	public Object clone() {
-		if (this instanceof ImmutableBigList) {
+	public BigList<E> copy() {
+		if (this instanceof ReadOnlyBigList) {
 			BigList<E> list = new BigList<>(false, null);
 			list.doClone(this);
 			return list;
 		} else {
-			return super.clone();
+			return (BigList<E>) super.clone();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be handled.
+	 */
+	@Override
+	public BigList<E> clone() {
+		if (this instanceof ReadOnlyBigList) {
+			return this;
+		} else {
+			return (BigList<E>) super.clone();
 		}
 	}
 
@@ -1163,19 +1163,19 @@ public class BigList<E> extends IList<E> {
 
 	@Override
 	public BigList<E> unmodifiableList() {
-		if (this instanceof ImmutableBigList) {
+		if (this instanceof ReadOnlyBigList) {
 			return this;
 		} else {
-			return new ImmutableBigList<E>(this);
+			return new ReadOnlyBigList<E>(this);
 		}
 	}
 
 	@Override
 	public BigList<E> immutableList() {
-		if (this instanceof ImmutableBigList) {
+		if (this instanceof ReadOnlyBigList) {
 			return this;
 		} else {
-			return new ImmutableBigList<E>(copy());
+			return new ReadOnlyBigList<E>(copy());
 		}
 	}
 
@@ -1900,11 +1900,11 @@ public class BigList<E> extends IList<E> {
 	// --- ImmutableBigList ---
 
 	/**
-	 * An immutable version of a BigList.
-	 * Note that the client cannot change the list,
-	 * but the content may change if the underlying list is changed.
+	 * A read-only version of {@link Key1List}.
+	 * It is used to implement both unmodifiable and immutable lists.
+	 * Note that the client cannot change the list, but the content may change if the underlying list is changed.
 	 */
-	protected static class ImmutableBigList<E> extends BigList<E> {
+	protected static class ReadOnlyBigList<E> extends BigList<E> {
 
 		/** UID for serialization */
 		private static final long serialVersionUID = -1352274047348922584L;
@@ -1914,7 +1914,7 @@ public class BigList<E> extends IList<E> {
 		 *
 		 * @param that  list to create an immutable view of
 		 */
-		protected ImmutableBigList(BigList<E> that) {
+		protected ReadOnlyBigList(BigList<E> that) {
 			super(true, that);
 		}
 
