@@ -1,9 +1,9 @@
 package org.magicwerk.brownies.collections.dev;
 
-import org.apache.commons.lang3.StringUtils;
 import org.magicwerk.brownies.collections.dev.BuildSource.Builder;
 import org.magicwerk.brownies.collections.dev.BuildSource.FileBuilder;
 import org.magicwerk.brownies.collections.dev.RefactorVisitor.RefactorMethod;
+import org.magicwerk.brownies.core.StringTools;
 import org.magicwerk.brownies.core.files.FileTools;
 import org.magicwerk.brownies.core.files.PathTools;
 import org.magicwerk.brownies.core.reflect.ClassTools;
@@ -100,8 +100,8 @@ public class BuildSourceBigList extends FileBuilder {
 	String insertTemplate(String src) {
 		String tplPath = PathTools.getPath(testDir, "org/magicwerk/brownies/collections/dev/PrimitiveList.java.tpl");
 		String tplFile = FileTools.readFile().setFile(tplPath).readText();
-		tplFile = StringUtils.replace(tplFile, "{", "'{'");
-		tplFile = StringUtils.replace(tplFile, "}", "'}'");
+		tplFile = StringTools.replace(tplFile, "{", "'{'");
+		tplFile = StringTools.replace(tplFile, "}", "'}'");
 
 		src = substitute("(?s)(extends I{NAME}List \\{\n)", src, "{1}" + tplFile);
 		return src;
