@@ -131,7 +131,7 @@ public class RunAllTest {
 	}
 
 	boolean runJUnitTests() {
-		Class<?> guavaTests[] = new Class<?>[] {
+		IList<Class<?>> guavaTests = GapList.create(
 				BigListTestGuava.class,
 				CollectionAsSetTestGuava.class,
 				GapListTestGuava.class,
@@ -141,19 +141,23 @@ public class RunAllTest {
 				KeyCollectionTestGuava.class,
 				KeyCollectionTestGuavaSet.class,
 				KeyListTestGuava.class,
-				KeySetTestGuava.class
-		};
+				KeySetTestGuava.class);
 
+		return runJUnitTests(guavaTests);
+	}
+
+	boolean runJUnitTests(IList<Class<?>> testClasses) {
 		boolean success = true;
 		Computer computer = new Computer();
 		JUnitCore jUnitCore = new JUnitCore();
-		for (Class<?> test : guavaTests) {
-			Result result = jUnitCore.run(computer, test);
-			LOG.info("Tests {}: run {}, failures {}\n", test.getSimpleName(), result.getRunCount(), result.getFailureCount());
+		for (Class<?> testClass : testClasses) {
+			Result result = jUnitCore.run(computer, testClass);
+			LOG.info("Tests {}: run {}, failures {}\n", testClass.getSimpleName(), result.getRunCount(), result.getFailureCount());
 			if (result.getFailureCount() > 0) {
 				success = false;
 			}
 		}
 		return success;
 	}
+
 }

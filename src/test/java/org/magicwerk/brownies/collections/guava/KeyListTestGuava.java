@@ -73,6 +73,7 @@ public class KeyListTestGuava extends TestCase {
 					@Override
 					protected List<String> create(String[] elements) {
 						// Fill here your collection with the given elements
+						@SuppressWarnings("unchecked")
 						Key1List<String, Integer> list = new Key1List.Builder<String, Integer>()
 								.withKey1Map((Function<String, Integer> & Serializable) (s) -> s.length())
 								.withContent(elements).build();
@@ -101,6 +102,7 @@ public class KeyListTestGuava extends TestCase {
 					@Override
 					protected List<String> create(String[] elements) {
 						// Fill here your collection with the given elements
+						@SuppressWarnings("unchecked")
 						Key2List<String, Integer, Integer> list = new Key2List.Builder<String, Integer, Integer>()
 								.withKey1Map((Function<String, Integer> & Serializable) (s) -> s.length())
 								.withKey2Map((Function<String, Integer> & Serializable) (s) -> s.length())
