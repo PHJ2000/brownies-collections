@@ -2,7 +2,6 @@ package org.magicwerk.brownies.collections.dev;
 
 import java.util.EnumSet;
 
-import org.apache.commons.lang3.StringUtils;
 import org.magicwerk.brownies.collections.dev.RefactorVisitor.RefactorMethod;
 import org.magicwerk.brownies.core.diff.DiffState;
 import org.magicwerk.brownies.core.diff.StringDiffTools;
@@ -19,6 +18,8 @@ import org.magicwerk.brownies.core.strings.StringFormatParsers;
 import org.magicwerk.brownies.core.strings.StringFormatter;
 import org.magicwerk.brownies.core.strings.matcher.NestedStringMatcher;
 import org.magicwerk.brownies.core.strings.matcher.RegexStringMatcher;
+import org.magicwerk.brownies.core.strings.text.TextCaseTools;
+import org.magicwerk.brownies.core.strings.text.TextTools;
 import org.magicwerk.brownies.javassist.sources.JavaParserReader;
 import org.slf4j.Logger;
 
@@ -166,8 +167,8 @@ public class BuildSource {
 		}
 
 		String replaceChecked(String refStr, String str, String newStr) {
-			String refStr2 = StringUtils.normalizeSpace(refStr);
-			String str2 = StringUtils.normalizeSpace(str);
+			String refStr2 = TextTools.normalizeSpaces(refStr);
+			String str2 = TextTools.normalizeSpaces(str);
 			if (!str2.equals(refStr2)) {
 				String msg = StringFormatter.format("String replace failed because of unexpected input:\n" + "Expected: {}\n" + "Found: {}", refStr, str);
 				throw new IllegalArgumentException(msg);
@@ -225,7 +226,7 @@ public class BuildSource {
 		 * @return name, i.e. capitalized primitive type, e.g. "Int"
 		 */
 		String getTypeName() {
-			return StringUtils.capitalize(primitiveType);
+			return TextCaseTools.toFirstUpper(primitiveType);
 		}
 
 		String getDefaultValue() {
