@@ -1,6 +1,6 @@
 package org.magicwerk.brownies.collections;
 
-import static org.magicwerk.brownies.collections.TestHelper.*;
+import static org.magicwerk.brownies.collections.TestHelper.checkEquals;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;

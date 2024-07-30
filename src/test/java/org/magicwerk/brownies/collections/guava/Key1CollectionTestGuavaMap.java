@@ -1,6 +1,6 @@
 package org.magicwerk.brownies.collections.guava;
 
-import static com.google.common.collect.testing.Helpers.*;
+import static com.google.common.collect.testing.Helpers.orderEntriesByKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
