@@ -98,6 +98,11 @@ dependencies {
 	testImplementation 'it.unimi.dsi:fastutil:7.0.9'
 }
 
+javafx {
+	version = "11"
+    modules = [ 'javafx.web' ]
+}
+
 javadoc {
 	// Exclude generated files
 	exclude "org/magicwerk/brownies/collections/primitive"
