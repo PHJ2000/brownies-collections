@@ -101,6 +101,17 @@ dependencies {
 javafx {
 	version = "11"
     modules = [ 'javafx.web' ]
+	configurations = [ 'testImplementation' ]
+}
+
+configurations.libs  {
+	if (runOsLinux) {
+		attributes {
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, "linux"))
+			attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, "x86-64"))
+		}
+	}
 }
 
 javadoc {
