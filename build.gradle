@@ -100,8 +100,6 @@ dependencies {
 
 if (buildJavaVersion > 8) {
 
-println "XXX with Java $buildJavaVersion ($buildJavaHome)"	
-
 	javafx {
 		version = buildJavaVersion
 	    modules = [ 'javafx.web' ]
