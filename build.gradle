@@ -98,17 +98,20 @@ dependencies {
 	testImplementation 'it.unimi.dsi:fastutil:7.0.9'
 }
 
-javafx {
-	version = "11"
-    modules = [ 'javafx.web' ]
-	configurations = [ 'testImplementation' ]
-}
+if (buildJavaVersion > 8) {
 
-configurations.libs  {
-	if (runOsLinux) {
+println "XXX with Java $buildJavaVersion ($buildJavaHome)"	
+
+	javafx {
+		version = buildJavaVersion
+	    modules = [ 'javafx.web' ]
+		configurations = [ 'testImplementation' ]
+	}
+	
+	configurations.libs  {
 		attributes {
 			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-			attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, "linux"))
+			attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, platform))
 			attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, "x86-64"))
 		}
 	}
