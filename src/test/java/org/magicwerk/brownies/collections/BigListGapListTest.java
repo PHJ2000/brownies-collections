@@ -31,6 +31,7 @@ import org.magicwerk.brownies.core.function.Predicates;
 import org.magicwerk.brownies.core.function.Predicates.NamedPredicate;
 import org.magicwerk.brownies.core.print.PrintTools;
 import org.magicwerk.brownies.core.serialize.SerializeTools;
+import org.magicwerk.brownies.core.strings.StringFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

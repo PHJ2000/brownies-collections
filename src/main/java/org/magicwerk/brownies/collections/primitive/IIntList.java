@@ -70,10 +70,11 @@ static int[] toArray(Collection<Integer> coll) {
 }
 
     /**
- * Returns a shallow copy of this list.
+ * Returns a modifiable shallow copy of this list.
  * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
  * The capacity of the list will be set to the number of elements, i.e. size and capacity are equal.
  * This returned list will be modifiable, i.e. a read-only list will be copied and be modifiable again.
+ * Use {@link #clone} if a read-only list should not be copied.
  *
  * @return a modifiable copy of this list
  */
@@ -81,13 +82,13 @@ static int[] toArray(Collection<Integer> coll) {
 public abstract IIntList copy() ;
 
     /**
- * Returns a shallow copy of this list.
+ * Returns a shallow clone of this list.
  * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
  * The capacity of the list will be set to the number of elements, i.e. size and capacity are equal.
  * If the list is read-only, the same list is returned without change.
- * Use {@link #copy} to .
+ * Use {@link #copy} to get a modifiable list in any case.
  *
- * @return a modifiable copy of this list
+ * @return a clone of this list
  */
 
 public IIntList clone() {
