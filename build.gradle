@@ -76,44 +76,21 @@ The key collection classes offer support for keys and constraints for lists and 
 */
 
 
+setJavaVersion(ext, 8)
+
 dependencies {
     testImplementation project(':Brownies-Core')
     testImplementation project(':Brownies-Javassist')
     testImplementation project(':Brownies-Html')
     testImplementation project(':Brownies-Swt')
-   	testImplementation project(':Brownies-Test')
     testImplementation project(':Brownies-Tools')
     testImplementation project(':MagicTest-NG')
 
-	// for BrowniesJitWatchTool etc
-    testImplementation project(':Brownies-Dev')
-    
+    testImplementation libraries.junit
     testImplementation libraries.junit
     testImplementation libraries.guava_testlib
-
-	testImplementation 'com.melloware:jintellitype:1.3.9:dll-x64' 
-
-	testImplementation 'org.apache.commons:commons-collections4:4.0'
-	testImplementation 'org.javolution:javolution-core-java:6.0.0'
-	testImplementation 'it.unimi.dsi:fastutil:7.0.9'
 }
 
-if (buildJavaVersion > 8) {
-
-	javafx {
-		version = buildJavaVersion
-	    modules = [ 'javafx.web' ]
-		configurations = [ 'testImplementation' ]
-	}
-	
-	configurations.libs  {
-		attributes {
-			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-			attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, platform))
-			attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, "x86-64"))
-		}
-	}
-}
 
 javadoc {
 	// Exclude generated files
