@@ -79,12 +79,8 @@ The key collection classes offer support for keys and constraints for lists and 
 setJavaVersion(ext, 8)
 
 dependencies {
-    testImplementation project(':Brownies-Core')
-    testImplementation project(':Brownies-Javassist')
-    testImplementation project(':Brownies-Html')
-    testImplementation project(':Brownies-Swt')
-    testImplementation project(':Brownies-Tools')
-    testImplementation project(':MagicTest-NG')
+    testImplementation "org.magicwerk.brownies:brownies-tools:0.9.17"
+    testImplementation "org.magicwerk.magictest:magictest-ng:0.9.11"
 
     testImplementation libraries.junit
     testImplementation libraries.junit
