@@ -20,41 +20,39 @@ package org.magicwerk.brownies.collections.helper;
 import java.util.Comparator;
 
 /**
- * A NullComparator extends an existing comparator so it can handle null values.
+ * Class {@link NullComparator} extends an existing comparator so it can handle null values.
  *
  * @param <T>	element type
- *
- * @author Thomas Mauch
  */
 public class NullComparator<T> extends SingletonComparator<T> {
-    private Comparator<T> comparator;
-    private boolean nullsFirst;
+	private Comparator<T> comparator;
+	private boolean nullsFirst;
 
-    /**
-     * Constructor.
-     *
-     * @param comparator	comparator to extend
-     * @param nullsFirst	true to sort nulls first, false to sort null last
-     */
-    public NullComparator(Comparator<T> comparator, boolean nullsFirst) {
-        this.comparator = comparator;
-        this.nullsFirst = nullsFirst;
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param comparator	comparator to extend
+	 * @param nullsFirst	true to sort nulls first, false to sort null last
+	 */
+	public NullComparator(Comparator<T> comparator, boolean nullsFirst) {
+		this.comparator = comparator;
+		this.nullsFirst = nullsFirst;
+	}
 
-    @Override
-    public int compare(T key1, T key2) {
-        if (key1 != null && key2 != null) {
-            return comparator.compare(key1, key2);
-        }
-        if (key1 == null) {
-            if (key2 == null) {
-                return 0;
-            } else {
-                return nullsFirst ? -1 : 1;
-            }
-        } else {
-            assert(key2 == null);
-            return nullsFirst ? 1 : -1;
-        }
-    }
+	@Override
+	public int compare(T key1, T key2) {
+		if (key1 != null && key2 != null) {
+			return comparator.compare(key1, key2);
+		}
+		if (key1 == null) {
+			if (key2 == null) {
+				return 0;
+			} else {
+				return nullsFirst ? -1 : 1;
+			}
+		} else {
+			assert (key2 == null);
+			return nullsFirst ? 1 : -1;
+		}
+	}
 }
