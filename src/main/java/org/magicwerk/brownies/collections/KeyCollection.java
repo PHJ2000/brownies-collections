@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 
 /**
  * KeyCollection implements a collection.
- * It can provide fast access to its elements like a Set.
+ * It can provide fast access to its elements like a Set, but allows duplicates.
  * The elements allowed in the collection can be constraint (null/duplicate values).
  *
  * @author Thomas Mauch

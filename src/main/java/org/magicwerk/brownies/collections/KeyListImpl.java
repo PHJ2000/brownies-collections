@@ -64,12 +64,6 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	KeyListImpl() {
 	}
 
-	protected KeyListImpl(boolean copy, KeyListImpl<E> that) {
-		if (copy) {
-			doAssign(that);
-		}
-	}
-
 	@Override
 	protected void doAssign(IList<E> that) {
 		KeyListImpl<E> list = (KeyListImpl<E>) that;
