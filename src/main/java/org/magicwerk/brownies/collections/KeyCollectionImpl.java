@@ -1612,7 +1612,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 */
 	boolean allowNullElem;
 	/**
-	 * true if collections implements {@link Set}, false for @{link Collection} (behavior of {@link #add} changes)
+	 * true if collections implements {@link Set}, false for {@link Collection} (behavior of {@link #add} changes)
 	 */
 	boolean setBehavior;
 	/**
