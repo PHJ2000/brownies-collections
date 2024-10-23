@@ -314,6 +314,13 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 			init(keyColl, keyList);
 			return (Key1List<E, K>) keyList;
 		}
+
+		/**
+		 * @return created immutable list
+		 */
+		public Key1List<E, K> immutable() {
+			return build().unmodifiableList();
+		}
 	}
 
 	/**
@@ -333,7 +340,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	@SuppressWarnings("unchecked")
 	public Key1List<E, K> copy() {
 		if (this instanceof ReadOnlyKey1List) {
-			Key1List<E, K> list = new Key1List<>(false, null);
+			Key1List<E, K> list = new Key1List<>(null);
 			list.initCopy(this);
 			return list;
 		} else {
@@ -355,7 +362,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	@SuppressWarnings("unchecked")
 	public Key1List<E, K> crop() {
 		if (this instanceof ReadOnlyKey1List) {
-			Key1List<E, K> list = new Key1List<>(false, null);
+			Key1List<E, K> list = new Key1List<>(null);
 			list.initCrop(this);
 			return list;
 		} else {
@@ -585,8 +592,8 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 		}
 	}
 
-	protected Key1List(boolean copy, Key1List<E, K> that) {
-		if (copy) {
+	protected Key1List(Key1List<E, K> that) {
+		if (that != null) {
 			doAssign(that);
 		}
 	}
@@ -607,7 +614,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 		 * @param that  list to create an immutable view of
 		 */
 		protected ReadOnlyKey1List(Key1List<E, K> that) {
-			super(true, that);
+			super(that);
 		}
 
 		@Override

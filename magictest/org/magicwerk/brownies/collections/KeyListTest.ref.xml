@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.KeyListTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
   <traceTest name="testAdd">
-    <runDate>2015-02-26T23:43:27.471+01:00</runDate>
-    <runDuration>0.026704551</runDuration>
+    <runDate>2024-10-23T19:07:31.39+02:00</runDate>
+    <runDuration>0.004411</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
     <traceMethod>add</traceMethod>
@@ -56,7 +56,7 @@
       </parameters>
       <result></result>
       <error>
-        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: b (4)"</paramText>
       </error>
     </traceStep>
     <traceStep>
@@ -686,8 +686,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testAsSortedSet">
-    <runDate>2015-02-26T23:43:30.159+01:00</runDate>
-    <runDuration>0.001225021</runDuration>
+    <runDate>2024-10-23T19:07:31.395+02:00</runDate>
+    <runDuration>9.479E-4</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
     <traceMethod>/add|set/</traceMethod>
@@ -736,7 +736,7 @@
       </parameters>
       <result></result>
       <error>
-        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: b (3)"</paramText>
       </error>
     </traceStep>
     <traceStep>
@@ -820,8 +820,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testAsSortedSetWithNulls">
-    <runDate>2015-02-26T23:43:31.111+01:00</runDate>
-    <runDuration>0.001175757</runDuration>
+    <runDate>2024-10-23T19:07:31.399+02:00</runDate>
+    <runDuration>7.025E-4</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
     <traceMethod>add</traceMethod>
@@ -894,13 +894,13 @@
       </parameters>
       <result></result>
       <error>
-        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: null"</paramText>
       </error>
     </traceStep>
   </traceTest>
   <traceTest name="testAsSortedSetWithNullsFirst">
-    <runDate>2015-02-26T23:43:31.328+01:00</runDate>
-    <runDuration>0.001140041</runDuration>
+    <runDate>2024-10-23T19:07:31.4+02:00</runDate>
+    <runDuration>0.0016597</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
     <traceMethod>add</traceMethod>
@@ -973,7 +973,7 @@
       </parameters>
       <result></result>
       <error>
-        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: null"</paramText>
       </error>
     </traceStep>
   </traceTest>
@@ -2017,6 +2017,83 @@
       <error></error>
     </traceStep>
   </traceTest>
+  <traceTest name="testOrderBy">
+    <runDate>2024-10-23T19:07:31.305+02:00</runDate>
+    <runDuration>0.0460421</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
+    <traceMethod>add</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"a\""</paramText>
+      </parameters>
+      <result></result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"1"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"b\""</paramText>
+      </parameters>
+      <result></result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"a\""</paramText>
+      </parameters>
+      <result></result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"b\""</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"a\""</paramText>
+      </parameters>
+      <result></result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"2"</paramText>
+        <paramText outputType="VALUE" param="#2">"\"b\""</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IndexOutOfBoundsException: Invalid index: 2 (size: 1)"</paramText>
+      </error>
+    </traceStep>
+  </traceTest>
   <traceTest name="testPut">
     <runDate>2014-12-10T01:15:07.254+01:00</runDate>
     <runDuration>0.003060506</runDuration>
@@ -2205,8 +2282,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testSet">
-    <runDate>2015-10-22T01:47:07.598+02:00</runDate>
-    <runDuration>0.073252347</runDuration>
+    <runDate>2024-10-23T19:07:31.385+02:00</runDate>
+    <runDuration>0.0047422</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyList</traceClass>
     <traceMethod>set</traceMethod>
@@ -2249,7 +2326,7 @@
       </parameters>
       <result></result>
       <error>
-        <paramText outputType="VALUE" param="Error">"java.lang.IllegalStateException: Invalid index for sorted list"</paramText>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: b (4)"</paramText>
       </error>
     </traceStep>
     <traceStep>

@@ -1067,6 +1067,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return mapper.apply(elem);
 		}
 
+		/**
+		 * containsKey() is always fast (either hash lookup or binary search)
+		 */
 		@SuppressWarnings("unchecked")
 		boolean containsKey(Object key) {
 			if (key == null) {
@@ -1081,12 +1084,16 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 		}
 
+		/**
+		 * containsValue() is typically fast (a hash lookup followed by a linear search in the list of duplicate values)
+		 */
 		boolean containsValue(Object key, Object value) {
 			if (keysMap == null) {
 				return keysList.contains(key);
 			}
 
 			assert (count == false);
+
 			Object obj = keysMap.get(key);
 			if (obj == null && value == null) {
 				return keysMap.containsKey(key);
@@ -1101,28 +1108,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			} else {
 				if (Objects.equals(obj, value)) {
 					return true;
-				}
-			}
-			return false;
-		}
-
-		boolean containsValue(Object value) {
-			if (keysMap == null) {
-				return keysList.contains(value);
-			}
-
-			assert (count == false);
-			for (Object obj : keysMap.values()) {
-				if (obj instanceof KeyMapList) {
-					@SuppressWarnings("unchecked")
-					GapList<E> list = (GapList<E>) obj;
-					if (list.contains(value)) {
-						return true;
-					}
-				} else {
-					if (Objects.equals(obj, value)) {
-						return true;
-					}
 				}
 			}
 			return false;
@@ -1818,11 +1803,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (cmp == 0) {
 				if (elem != null) {
 					if (!keyMap.allowDuplicates) {
-						cmp = 1;
+						errorDuplicateKey(elem);
 					}
 				} else {
 					if (!keyMap.allowDuplicatesNull) {
-						cmp = 1;
+						errorDuplicateKey(elem);
 					}
 				}
 			}
@@ -1920,10 +1905,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		afterInsert(elem);
 	}
 
-	int binarySearchSorted(E elem) {
+	int binarySearchAdd(E elem) {
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
 		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
+
 		if (index >= 0) {
 			index++;
 			while (index < keyMap.keysList.size()) {
@@ -1940,6 +1926,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
 		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
+
 		return (index < 0) ? -1 : index;
 	}
 
@@ -2171,11 +2158,13 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					}
 				} catch (Exception e) {
 					// This can happen if an object of a wrong type is passed where applying the mapper function to extract the key fails 
+					return false;
 				}
 			}
-			// Otherwise use containsValue (slow)
-			return keyMaps[1].containsValue(o);
 		}
+
+		assert false;
+		return false;
 	}
 
 	/**

@@ -131,6 +131,25 @@ public class KeyListTest {
 		}
 	}
 
+	@Trace(traceMethod = "add")
+	public static void testOrderBy() {
+		{
+			KeyList<String> list = new KeyList.Builder<String>().withPrimaryElem().withOrderByElem(true).build();
+			list.add(0, "a");
+			list.add(1, "b");
+		}
+		{
+			KeyList<String> list = new KeyList.Builder<String>().withPrimaryElem().withOrderByElem(true).build();
+			list.add(0, "a");
+			list.add(0, "b");
+		}
+		{
+			KeyList<String> list = new KeyList.Builder<String>().withPrimaryElem().withOrderByElem(true).build();
+			list.add(0, "a");
+			list.add(2, "b");
+		}
+	}
+
 	//@Capture
 	public static void testReorder() {
 		KeyList<String> list = new KeyList.Builder<String>().withPrimaryElem().build();

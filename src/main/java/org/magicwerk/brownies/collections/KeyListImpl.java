@@ -331,7 +331,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		if (keyColl.isListSorted()) {
 			// Sorted list
 			if (index == -1) {
-				index = keyColl.binarySearchSorted(elem);
+				index = keyColl.binarySearchAdd(elem);
 				if (index < 0) {
 					index = -index - 1;
 				}

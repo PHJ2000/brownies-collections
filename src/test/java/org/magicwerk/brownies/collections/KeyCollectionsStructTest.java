@@ -43,30 +43,9 @@ public class KeyCollectionsStructTest {
 	}
 
 	static void test() {
-
 		testKeyCollection();
-		testKeyListImpl();
+		testKeyList();
 		testKeySet();
-
-		//		{
-		//			Key1List<Ticket, Integer> l = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
-		//			l.contains(null);
-		//		}
-		//
-		//		{
-		//			// Test
-		//			KeyList<Ticket> list = new KeyList.Builder<Ticket>().withPrimaryElem().withOrderByElem(true).build();
-		//			list.add(t1);
-		//			// TODO Trying to add duplicate throws:
-		//			//Exception in thread "main" java.lang.IllegalStateException: Invalid index for sorted list
-		//			//at org.magicwerk.brownies.collections.KeyCollectionImpl.errorInvalidIndex(KeyCollectionImpl.java:1894)
-		//			// It should throw a DuplicateKeyException
-		//			// TODO it should be configurable in Builder to have Set behavior, i.e. silently ignoring duplicates
-		//			list.add(t1);
-		//			printKeyList(list);
-		//			LOG.info("{}", list);
-		//		}
-
 	}
 
 	// Show that automatic deduction of static parameters does not work with builders
@@ -296,7 +275,7 @@ public class KeyCollectionsStructTest {
 					withKey2Sort(true).build());
 
 	@Capture
-	public static void testKeyListImpl() {
+	public static void testKeyList() {
 
 		System.out.println("-- KeyList: list only");
 		{
@@ -427,6 +406,7 @@ public class KeyCollectionsStructTest {
 			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
 			list.addAll(ts);
 			printKeyList(list);
+			list.contains(t2);
 		}
 		// List with key
 		{
@@ -456,6 +436,7 @@ public class KeyCollectionsStructTest {
 			//useItAll.add(t5);
 
 			printKeyList(useItAll);
+			useItAll.contains(t2);
 		}
 
 	}

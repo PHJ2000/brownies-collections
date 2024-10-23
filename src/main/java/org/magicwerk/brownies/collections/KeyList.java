@@ -203,6 +203,13 @@ public class KeyList<E> extends KeyListImpl<E> {
 			init(keyColl, keyList);
 			return (KeyList<E>) keyList;
 		}
+
+		/**
+		 * @return created immutable list
+		 */
+		public KeyList<E> immutable() {
+			return build().unmodifiableList();
+		}
 	}
 
 	/**
@@ -221,7 +228,7 @@ public class KeyList<E> extends KeyListImpl<E> {
 	@Override
 	public KeyList<E> copy() {
 		if (this instanceof ImmutableKeyList) {
-			KeyList<E> list = new KeyList<>(false, null);
+			KeyList<E> list = new KeyList<>(null);
 			list.initCopy(this);
 			return list;
 		} else {
@@ -241,7 +248,7 @@ public class KeyList<E> extends KeyListImpl<E> {
 	@Override
 	public KeyList<E> crop() {
 		if (this instanceof ImmutableKeyList) {
-			KeyList<E> list = new KeyList<>(false, null);
+			KeyList<E> list = new KeyList<>(null);
 			list.initCrop(this);
 			return list;
 		} else {
@@ -301,8 +308,8 @@ public class KeyList<E> extends KeyListImpl<E> {
 		}
 	}
 
-	protected KeyList(boolean copy, KeyList<E> that) {
-		if (copy) {
+	protected KeyList(KeyList<E> that) {
+		if (that != null) {
 			doAssign(that);
 		}
 	}
@@ -323,7 +330,7 @@ public class KeyList<E> extends KeyListImpl<E> {
 		 * @param that  list to create an immutable view of
 		 */
 		protected ImmutableKeyList(KeyList<E> that) {
-			super(true, that);
+			super(that);
 		}
 
 		@Override
