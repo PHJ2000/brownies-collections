@@ -177,7 +177,14 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 * @return true if this a sorted list, false if not
 	 */
 	public boolean isSorted() {
-		return keyColl.isSorted();
+		return keyColl.isListSorted();
+	}
+
+	/**
+	 * Returns index of the key controlling the sorting of the collection (with 0 for the element).
+	 */
+	public int getSortedByKey() {
+		return keyColl.getListSortedByKey();
 	}
 
 	@Override
@@ -321,7 +328,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		}
 
 		// Add element
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			// Sorted list
 			if (index == -1) {
 				index = keyColl.binarySearchSorted(elem);
@@ -329,14 +336,14 @@ public abstract class KeyListImpl<E> extends IList<E> {
 					index = -index - 1;
 				}
 			}
-			keyColl.addSorted(index, elem);
+			keyColl.addListSorted(index, elem);
 			// If list is sorted by element, keyColl points to list so no explicit call to its add method is needed
-			if (!keyColl.isSortedByElem()) {
+			if (!keyColl.isListSortedByElem()) {
 				list.doAdd(index, elem);
 			}
 		} else {
 			// Unsorted list
-			keyColl.addUnsorted(elem);
+			keyColl.addListUnsorted(elem);
 			if (index == -1) {
 				// Element is already added to keyColl
 				index = list.size();
@@ -354,7 +361,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		keyColl.checkElemAllowed(elem);
 
 		E remove = doGet(index);
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			keyColl.setSorted(index, elem, remove);
 
 		} else {
@@ -376,7 +383,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	protected E doRemove(int index) {
 		E removed = list.get(index);
 		keyColl.remove(removed);
-		if (!keyColl.isSortedByElem()) {
+		if (!keyColl.isListSortedByElem()) {
 			list.remove(index);
 		}
 		if (DEBUG_CHECK)
@@ -386,7 +393,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 
 	@Override
 	protected void doRemoveAll(int index, int len) {
-		if (keyColl.isSortedByElem()) {
+		if (keyColl.isListSortedByElem()) {
 			for (int i = 0; i < len; i++) {
 				E removed = list.get(index);
 				keyColl.remove(removed);
@@ -416,7 +423,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public int indexOf(Object elem) {
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			return keyColl.indexOfSorted((E) elem);
 		} else {
 			return super.indexOf(elem);
@@ -429,7 +436,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 * @return	true if calling indexOf() will be fast, otherwise false
 	 */
 	boolean isIndexOfFast() {
-		return keyColl.isSorted();
+		return keyColl.isListSorted();
 	}
 
 	/**
@@ -586,7 +593,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		IList<E> removeds = doCreate(-1);
 		keyColl.removeAllByKey(keyIndex, key, removeds);
 		if (!removeds.isEmpty()) {
-			if (!keyColl.isSortedByElem()) {
+			if (!keyColl.isListSortedByElem()) {
 				if (!list.removeAll(removeds)) {
 					KeyCollectionImpl.errorInvalidData();
 				}
@@ -632,9 +639,9 @@ public abstract class KeyListImpl<E> extends IList<E> {
 
 	@Override
 	public void sort(int index, int len, Comparator<? super E> comparator) {
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			// If this is sorted list, the comparator must be equal to the specified one
-			if (keyColl.isSortedByElem()) {
+			if (keyColl.isListSortedByElem()) {
 				if (GapList.equalsElem(comparator, keyColl.getElemSortComparator())) {
 					return;
 				}
@@ -730,7 +737,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 */
 	protected void invalidate(E elem) {
 		keyColl.invalidate(elem);
-		if (keyColl.isSorted() && !keyColl.isSortedByElem()) {
+		if (keyColl.isListSorted() && !keyColl.isListSortedByElem()) {
 			int oldIndex = super.indexOf(elem);
 			int newIndex = keyColl.indexOfSorted(elem);
 			if (oldIndex != newIndex) {

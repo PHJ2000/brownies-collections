@@ -999,6 +999,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		KeyMap() {
 		}
 
+		boolean isSorted() {
+			return comparator != null;
+		}
+
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		KeyMap<E, K> copy() {
 			KeyMap<E, K> copy = new KeyMap<E, K>();
@@ -1747,15 +1751,44 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	}
 
 	/**
-	 * Determines whether this list is sorted or not.
+	 * Determines whether this collection is sorted or not.
 	 *
-	 * @return true if this a sorted list, false if not
+	 * @return true if this a collection list, false if not
 	 */
 	public boolean isSorted() {
+		// This assertion will catch calls from KeyListImpl which has a KeyCollectionImpl as field.
+		// KeyListImpl must use the methods isListOrdered() / isListOrderedByElem()
+		assert keyList == null;
+
+		return keyMaps[orderByKey].isSorted();
+	}
+
+	/**
+	 * Returns index of the key controlling the sorting of the collection (with 0 for the element).
+	 */
+	public int getSortedByKey() {
+		// This assertion will catch calls from KeyListImpl which has a KeyCollectionImpl as field.
+		// KeyListImpl must use the methods isListOrdered() / isListOrderedByElem()
+		assert keyList == null;
+
+		return (isSorted()) ? orderByKey : -1;
+	}
+
+	boolean isListSorted() {
+		assert keyList != null;
+
 		return orderByKey != -1;
 	}
 
-	boolean isSortedByElem() {
+	int getListSortedByKey() {
+		assert keyList != null;
+
+		return orderByKey;
+	}
+
+	boolean isListSortedByElem() {
+		assert keyList != null;
+
 		return orderByKey == 0;
 	}
 
@@ -1824,7 +1857,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @param elem	element to add
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	void addSorted(int index, E elem) {
+	void addListSorted(int index, E elem) {
+		assert keyList != null;
+
 		// Check whether index is correct for adding element in a sorted list
 		checkIndex(index - 1, index, elem);
 
@@ -1849,7 +1884,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 *
 	 * @param elem	element to add
 	 */
-	void addUnsorted(E elem) {
+	void addListUnsorted(E elem) {
+		assert keyList != null;
+
 		beforeInsert(elem);
 		if (doAddThrow(elem, null)) {
 			size++;
