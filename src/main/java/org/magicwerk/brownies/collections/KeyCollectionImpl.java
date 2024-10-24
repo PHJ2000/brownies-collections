@@ -1908,26 +1908,35 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	int binarySearchAdd(E elem) {
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
-		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
-
-		if (index >= 0) {
-			index++;
-			while (index < keyMap.keysList.size()) {
-				if (keyMap.comparator.compare(keyMap.keysList.get(index), key) != 0) {
-					break;
-				}
-				index++;
-			}
-		}
-		return index;
+		return SortedLists.binarySearchAdd(keyMap.keysList, key, keyMap.comparator);
+		//		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
+		//
+		//		if (index >= 0) {
+		//			index++;
+		//			while (index < keyMap.keysList.size()) {
+		//				if (keyMap.comparator.compare(keyMap.keysList.get(index), key) != 0) {
+		//					break;
+		//				}
+		//				index++;
+		//			}
+		//		}
+		//		return index;
 	}
 
 	int indexOfSorted(E elem) {
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
-		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
-
-		return (index < 0) ? -1 : index;
+		int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
+		if (index >= 0) {
+			while (index < keyList.size()) {
+				if (Objects.equals(keyList.get(index), elem)) {
+					return index;
+				}
+				index++;
+			}
+			assert false;
+		}
+		return -1;
 	}
 
 	//

@@ -56,7 +56,8 @@ public class Key1ListTest {
 
 	static void test() {
 		//testPutPerformance();
-		testContains();
+		//testContains();
+		testIndexOf();
 		//testImmutableList();
 		//testInitAll();
 		//testRemoveAllByKey1();
