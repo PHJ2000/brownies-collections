@@ -162,6 +162,22 @@ public class Key1ListTest {
 		list.indexOf(t2);
 	}
 
+	@Trace(parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
+	public static void testRemoveByKey1() {
+		int key = 0;
+		Ticket t1 = new Ticket(key, "extId1", "text1");
+		Ticket t2 = new Ticket(key, "extId2", "text2");
+		Ticket t3 = new Ticket(key, "extId3", "text3");
+		Ticket t4 = new Ticket(key, "extId4", "text4");
+		Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withKey1Sort(true).withOrderByKey1(true)
+				.withKey1Duplicates(true).build();
+		list.add(t1);
+		list.add(t2);
+		list.add(t3);
+		list.add(t4);
+		list.removeByKey1(key);
+	}
+
 	public static void testPutPerformance() {
 		Key1List<Name, String> listTpl = new Key1List.Builder<Name, String>().withPrimaryKey1Map(Name.Mapper).build();
 		int num = 100 * 1000;

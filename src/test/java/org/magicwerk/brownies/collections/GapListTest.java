@@ -59,7 +59,8 @@ public class GapListTest {
 		//testInitMult();
 		//testPutAll();
 		//testReplaceAll();
-		testClone();
+		//testClone();
+		testBinarySearch();
 	}
 
 	static void testSplit() {
@@ -263,7 +264,7 @@ public class GapListTest {
 
 	@Capture
 	public static void testBinarySearch() {
-		GapList<Name> nameList = getNameList();
+		IList<Name> nameList = getNameList();
 		add(nameList, new Name("b"));
 		add(nameList, new Name("a"));
 		add(nameList, new Name("c"));
@@ -272,10 +273,20 @@ public class GapListTest {
 
 		System.out.println(get(nameList, "b"));
 		System.out.println(get(nameList, "x"));
+
+		nameList.add(1, new Name("b"));
+		nameList.add(1, new Name("b"));
+		nameList.add(1, new Name("b"));
+		System.out.println(nameList);
+
+		// JDK: If there are duplicates, Arrays.binarySearch returns the index of any element, not necessarily the first or last
+		String name = "b";
+		int index = nameList.binarySearch(name, COMPARE_NAME_BY_STRING);
+		System.out.println(name + " -> " + index);
 	}
 
-	static boolean add(GapList<Name> nameList, Name nameObj) {
-		int index = nameList.binarySearch(nameObj, nameComparator);
+	static boolean add(IList<Name> nameList, Name nameObj) {
+		int index = nameList.binarySearch(nameObj, COMPARE_NAME);
 		if (index >= 0) {
 			return false;
 		}
@@ -284,8 +295,8 @@ public class GapListTest {
 		return true;
 	}
 
-	static Name get(GapList<Name> nameList, String nameStr) {
-		int index = nameList.binarySearch(nameStr, nameComparator2);
+	static Name get(IList<Name> nameList, String nameStr) {
+		int index = nameList.binarySearch(nameStr, COMPARE_NAME_BY_STRING);
 		if (index >= 0) {
 			return nameList.get(index);
 		}
@@ -309,7 +320,7 @@ public class GapListTest {
 		}
 	}
 
-	static NameComparator nameComparator = new NameComparator();
+	static NameComparator COMPARE_NAME = new NameComparator();
 
 	static class NameComparator implements Comparator<Name> {
 		@Override
@@ -318,7 +329,7 @@ public class GapListTest {
 		}
 	}
 
-	static NameComparator2 nameComparator2 = new NameComparator2();
+	static NameComparator2 COMPARE_NAME_BY_STRING = new NameComparator2();
 
 	static class NameComparator2 implements Comparator<Object> {
 		@Override

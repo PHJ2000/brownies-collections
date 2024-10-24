@@ -1058,4 +1058,25 @@
       <error></error>
     </traceStep>
   </traceTest>
+  <traceTest name="testRemoveByKey1">
+    <runDate>2024-10-24T22:47:26.4419434+02:00</runDate>
+    <runDuration>6.648E-4</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
+    <traceMethod>removeByKey1</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeByKey1"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=0, extId=extId1, text=text1], \r\n   Ticket [id=0, extId=extId2, text=text2], \r\n   Ticket [id=0, extId=extId3, text=text3], \r\n   Ticket [id=0, extId=extId4, text=text4] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=0, extId=extId2, text=text2], \r\n   Ticket [id=0, extId=extId3, text=text3], \r\n   Ticket [id=0, extId=extId4, text=text4] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="Result">"Ticket [id=0, extId=extId1, text=text1]"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
 </testClass>

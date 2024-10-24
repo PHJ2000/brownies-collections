@@ -274,11 +274,11 @@
     </traceStep>
   </traceTest>
   <captureTest name="testBinarySearch">
-    <runDate>2014-02-17T22:36:20.978+01:00</runDate>
-    <runDuration>0.003492381</runDuration>
+    <runDate>2024-10-24T22:19:10.4163982+02:00</runDate>
+    <runDuration>0.0030247</runDuration>
     <exception></exception>
     <captureStep>
-      <text outputType="TEXT">"[a, b, c]\r\nb\r\nnull\r\n"</text>
+      <text outputType="TEXT">"[a, b, c]\r\nb\r\nnull\r\n[a, b, b, b, b, c]\r\nb -&gt; 2\r\n"</text>
     </captureStep>
   </captureTest>
   <captureTest name="testBuffer">

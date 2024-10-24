@@ -123,25 +123,25 @@ public class TestHelper {
 	}
 
 	public static class Ticket implements Comparable<Ticket> {
-		static Function<Ticket, Integer> IdMapper = new Function<Ticket, Integer>() {
+		public static Function<Ticket, Integer> IdMapper = new Function<Ticket, Integer>() {
 			@Override
 			public Integer apply(Ticket ticket) {
 				return ticket.id;
 			}
 		};
-		static Function<Ticket, String> ExtIdMapper = new Function<Ticket, String>() {
+		public static Function<Ticket, String> ExtIdMapper = new Function<Ticket, String>() {
 			@Override
 			public String apply(Ticket ticket) {
 				return ticket.extId;
 			}
 		};
-		static Predicate<Ticket> Constraint = new Predicate<Ticket>() {
+		public static Predicate<Ticket> Constraint = new Predicate<Ticket>() {
 			@Override
 			public boolean test(Ticket ticket) {
 				return ticket.extId == null || ticket.extId.startsWith("Ext");
 			}
 		};
-		static Comparator<Ticket> Comparator = new Comparator<Ticket>() {
+		public static Comparator<Ticket> Comparator = new Comparator<Ticket>() {
 			@Override
 			public int compare(Ticket t1, Ticket t2) {
 				return ObjectTools.compareFields(t1.id, t2.id, t1.extId, t2.extId);

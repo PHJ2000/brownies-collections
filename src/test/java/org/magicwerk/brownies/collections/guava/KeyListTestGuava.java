@@ -1,15 +1,11 @@
 package org.magicwerk.brownies.collections.guava;
 
 import static com.google.common.collect.testing.features.CollectionFeature.KNOWN_ORDER;
-import static com.google.common.collect.testing.features.CollectionFeature.SERIALIZABLE;
-import static com.google.common.collect.testing.features.CollectionFeature.SERIALIZABLE_INCLUDING_VIEWS;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -26,10 +22,8 @@ import org.magicwerk.brownies.core.reflect.ReflectTools;
 
 import com.google.common.collect.testing.AbstractCollectionTestSuiteBuilder;
 import com.google.common.collect.testing.AbstractTester;
-import com.google.common.collect.testing.FeatureSpecificTestSuiteBuilder;
 import com.google.common.collect.testing.Helpers;
 import com.google.common.collect.testing.ListTestSuiteBuilder;
-import com.google.common.collect.testing.OneSizeTestContainerGenerator;
 import com.google.common.collect.testing.SampleElements;
 import com.google.common.collect.testing.TestListGenerator;
 import com.google.common.collect.testing.TestStringListGenerator;
@@ -55,7 +49,6 @@ import com.google.common.collect.testing.testers.ListRetainAllTester;
 import com.google.common.collect.testing.testers.ListSetTester;
 import com.google.common.collect.testing.testers.ListSubListTester;
 import com.google.common.collect.testing.testers.ListToArrayTester;
-import com.google.common.testing.SerializableTester;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -70,46 +63,126 @@ import junit.framework.TestSuite;
  */
 public class KeyListTestGuava extends TestCase {
 
-	public static class MyListAddAllTester extends ListAddAllTester<Ticket> {
-		@Override
-		protected void expectContents(Collection<Ticket> expected) {
-			IList<Ticket> ts = GapList.create(expected);
-			ts.sort(new NullComparator<>(Comparator.comparing(Ticket::getId), false));
-			super.expectContents(ts);
-		}
+	// this method must be named suite()
+	public static Test suite() {
+		TestSuite test = new TestSuite("KeyList");
+		test.addTest(testKeyList());
+		test.addTest(testKey1List());
+		test.addTest(testKey2List());
+
+		test.addTest(testSortByElem());
+		test.addTest(testSortByKey());
+		test.addTest(testSortByKeyPrimitive());
+		return test;
 	}
 
-	public static class MyListAddTester extends ListAddTester<Ticket> {
-		@Override
-		protected void expectContents(Collection<Ticket> expected) {
-			IList<Ticket> ts = GapList.create(expected);
-			ts.sort(new NullComparator<>(Comparator.comparing(Ticket::getId), false));
-			super.expectContents(ts);
-		}
+	//
+
+	static Test testSortByElem() {
+		return createSortedListSuite("Key list sorted by elem", false, true,
+				ts -> new KeyList.Builder<Ticket>().withElemSort(Ticket.Comparator, false).withElemNull(true).withElemDuplicates(true).withOrderByElem(true)
+						.withContent(ts).build());
 	}
 
-	public static class MyListIndexOfTester extends ListIndexOfTester<Ticket> {
-		@Override
-		protected int getNullLocation() {
-			return getNumElements() - 1;
-		}
+	static Test testSortByKey() {
+		return createSortedListSuite("Key list sorted by key", true, true,
+				ts -> new Key1List.Builder<Ticket, String>().withKey1Map(Ticket::getExtId).withKey1Sort(true).withOrderByKey1(true)
+						.withKey1Duplicates(true).withContent(ts).build());
 	}
 
-	public static class MyListLastIndexOfTester extends ListLastIndexOfTester<Ticket> {
-		@Override
-		protected int getNullLocation() {
-			return getNumElements() - 1;
-		}
+	static Test testSortByKeyPrimitive() {
+		return createSortedListSuite("Key list sorted by primitive key", true, false,
+				ts -> new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket::getId).withOrderByKey1(int.class)
+						.withKey1Duplicates(true).withContent(ts).build());
 	}
 
-	//	public static class MyAbstractListIndexOfTester extends AbstractListIndexOfTester<Ticket> {
-	//		@Override
-	//		protected int getNullLocation() {
-	//			return getNumElements() - 1;
-	//		}
-	//	}
+	@SuppressWarnings({ "rawtypes" })
+	static Feature[] FEATURES_SORT_WITH_NULL = new Feature[] {
+			CollectionFeature.SUPPORTS_ADD,
+			CollectionFeature.SUPPORTS_REMOVE,
+			CollectionFeature.SUPPORTS_ITERATOR_REMOVE,
+			CollectionFeature.ALLOWS_NULL_VALUES,
+			ListFeature.SUPPORTS_SET,
+			ListFeature.SUPPORTS_REMOVE_WITH_INDEX,
+			CollectionSize.ANY };
 
-	public static class MyListTestSuiteBuilder<E> extends AbstractCollectionTestSuiteBuilder<MyListTestSuiteBuilder<E>, E> {
+	@SuppressWarnings({ "rawtypes" })
+	static Feature[] FEATURES_SORT_WITHOUT_NULL = new Feature[] {
+			CollectionFeature.SUPPORTS_ADD,
+			CollectionFeature.SUPPORTS_REMOVE,
+			CollectionFeature.SUPPORTS_ITERATOR_REMOVE,
+			ListFeature.SUPPORTS_SET,
+			ListFeature.SUPPORTS_REMOVE_WITH_INDEX,
+			CollectionSize.ANY };
+
+	static Test createSortedListSuite(String name, boolean sortById, boolean allowNull, Function<Ticket[], List<Ticket>> creator) {
+		@SuppressWarnings({ "rawtypes" })
+		Feature[] features = (allowNull) ? FEATURES_SORT_WITH_NULL : FEATURES_SORT_WITHOUT_NULL;
+		return SortedListTestSuiteBuilder.using(
+				new TestTicketListGenerator() {
+					@Override
+					public List<Ticket> create(Ticket[] ts) {
+						return creator.apply(ts);
+
+					}
+				}, sortById)
+				.named(name)
+				.withFeatures(features)
+				.createTestSuite();
+	}
+
+	public static class SortedListTestSuiteBuilder<E> extends AbstractCollectionTestSuiteBuilder<SortedListTestSuiteBuilder<E>, E> {
+
+		boolean sortById;
+
+		public static <E> SortedListTestSuiteBuilder<E> using(TestListGenerator<E> generator, boolean sortById) {
+			return new SortedListTestSuiteBuilder<E>(sortById).usingGenerator(generator);
+		}
+
+		SortedListTestSuiteBuilder(boolean sortById) {
+			this.sortById = sortById;
+		}
+
+		public static class MyListAddAllTester extends ListAddAllTester<Ticket> {
+			@Override
+			protected void expectContents(Collection<Ticket> expected) {
+				IList<Ticket> ts = GapList.create(expected);
+				ts.sort(new NullComparator<>(Comparator.comparing(Ticket::getId), false));
+				super.expectContents(ts);
+			}
+		}
+
+		public static class SortedTicketListAddTester extends ListAddTester<Ticket> {
+			@Override
+			protected void expectContents(Collection<Ticket> expected) {
+				IList<Ticket> ts = GapList.create(expected);
+				ts.sort(new NullComparator<>(Ticket.Comparator, false));
+				super.expectContents(ts);
+			}
+		}
+
+		public static class SortedTicketIdListAddTester extends ListAddTester<Ticket> {
+			@Override
+			protected void expectContents(Collection<Ticket> expected) {
+				IList<Ticket> ts = GapList.create(expected);
+				ts.sort(new NullComparator<>(Comparator.comparing(Ticket::getId), false));
+				super.expectContents(ts);
+			}
+		}
+
+		public static class SortedListIndexOfTester extends ListIndexOfTester<Ticket> {
+			@Override
+			protected int getNullLocation() {
+				return getNumElements() - 1;
+			}
+		}
+
+		public static class SortedListLastIndexOfTester extends ListLastIndexOfTester<Ticket> {
+			@Override
+			protected int getNullLocation() {
+				return getNumElements() - 1;
+			}
+		}
 
 		@Override
 		public Set<Method> getSuppressedTests() {
@@ -127,10 +200,6 @@ public class KeyListTestGuava extends TestCase {
 			return ms;
 		}
 
-		public static <E> MyListTestSuiteBuilder<E> using(TestListGenerator<E> generator) {
-			return new MyListTestSuiteBuilder<E>().usingGenerator(generator);
-		}
-
 		@SuppressWarnings("rawtypes") // class literals
 		@Override
 		protected List<Class<? extends AbstractTester>> getTesters() {
@@ -140,13 +209,17 @@ public class KeyListTestGuava extends TestCase {
 			testers.add(ListAddAllAtIndexTester.class);
 			testers.add(MyListAddAllTester.class);
 			testers.add(ListAddAtIndexTester.class);
-			testers.add(MyListAddTester.class);
+			if (sortById) {
+				testers.add(SortedTicketIdListAddTester.class);
+			} else {
+				testers.add(SortedTicketListAddTester.class);
+			}
 			testers.add(ListCreationTester.class);
 			testers.add(ListEqualsTester.class);
 			testers.add(ListGetTester.class);
 			testers.add(ListHashCodeTester.class);
-			testers.add(MyListIndexOfTester.class);
-			testers.add(MyListLastIndexOfTester.class);
+			testers.add(SortedListIndexOfTester.class);
+			testers.add(SortedListLastIndexOfTester.class);
 			testers.add(ListListIteratorTester.class);
 			testers.add(ListRemoveAllTester.class);
 			testers.add(ListRemoveAtIndexTester.class);
@@ -168,70 +241,6 @@ public class KeyListTestGuava extends TestCase {
 			withFeatures(KNOWN_ORDER);
 			return super.createTestSuite();
 		}
-
-		@Override
-		protected List<TestSuite> createDerivedSuites(
-				FeatureSpecificTestSuiteBuilder<?, ? extends OneSizeTestContainerGenerator<Collection<E>, E>> parentBuilder) {
-			List<TestSuite> derivedSuites = new ArrayList<>(super.createDerivedSuites(parentBuilder));
-
-			if (parentBuilder.getFeatures().contains(SERIALIZABLE)) {
-				derivedSuites.add(
-						MyListTestSuiteBuilder.using(
-								new ReserializedListGenerator<E>(parentBuilder.getSubjectGenerator()))
-								.named(getName() + " reserialized")
-								.withFeatures(computeReserializedCollectionFeatures(parentBuilder.getFeatures()))
-								.suppressing(parentBuilder.getSuppressedTests())
-								.withSetUp(parentBuilder.getSetUp())
-								.withTearDown(parentBuilder.getTearDown())
-								.createTestSuite());
-			}
-			return derivedSuites;
-		}
-
-		static class ReserializedListGenerator<E> implements TestListGenerator<E> {
-			final OneSizeTestContainerGenerator<Collection<E>, E> gen;
-
-			private ReserializedListGenerator(OneSizeTestContainerGenerator<Collection<E>, E> gen) {
-				this.gen = gen;
-			}
-
-			@Override
-			public SampleElements<E> samples() {
-				return gen.samples();
-			}
-
-			@Override
-			public List<E> create(Object... elements) {
-				return (List<E>) SerializableTester.reserialize(gen.create(elements));
-			}
-
-			@Override
-			public E[] createArray(int length) {
-				return gen.createArray(length);
-			}
-
-			@Override
-			public Iterable<E> order(List<E> insertionOrder) {
-				return gen.order(insertionOrder);
-			}
-		}
-
-		private static Set<Feature<?>> computeReserializedCollectionFeatures(Set<Feature<?>> features) {
-			Set<Feature<?>> derivedFeatures = new HashSet<>(features);
-			derivedFeatures.remove(SERIALIZABLE);
-			derivedFeatures.remove(SERIALIZABLE_INCLUDING_VIEWS);
-			return derivedFeatures;
-		}
-	}
-
-	// this method must be named suite()
-	public static Test suite() {
-		TestSuite test = new TestSuite("KeyList");
-		test.addTest(suiteKeyList2());
-		//test.addTest(suiteKeyList());
-		//test.addTest(suiteKey1List());
-		//test.addTest(suiteKey2List());
-		return test;
 	}
 
 	static abstract class TestTicketListGenerator implements TestListGenerator<Ticket> {
@@ -266,43 +275,8 @@ public class KeyListTestGuava extends TestCase {
 		}
 	}
 
-	public static Test suiteKeyList2() {
-		//return new ListTestSuiteBuilder<Ticket>().usingGenerator(
-		return MyListTestSuiteBuilder.using(
-				// This class is responsible for creating the collection
-				// And providing data, which can be put into the collection
-				// Here we use a abstract generator which will create strings
-				// which will be put into the collection
-				new TestTicketListGenerator() {
-					@Override
-					public List<Ticket> create(Ticket[] ts) {
-						//return new KeyList.Builder<Ticket>().withContent(ts).build();
-						return new Key1List.Builder<Ticket, String>().withKey1Map(Ticket::getExtId).withKey1Sort(true).withOrderByKey1(true)
-								.withKey1Duplicates(true).withContent(ts).build();
-
-					}
-				})
-				// The name of the test suite
-				.named("KeyList Test")
-				// Here we give a hit what features our collection supports
-				// ListFeature.GENERAL_PURPOSE = SUPPORTS_SET + SUPPORTS_ADD_WITH_INDEX + SUPPORTS_REMOVE_WITH_INDEX + CollectionFeature.GENERAL_PURPOSE
-				// CollectionFeature.GENERAL_PURPOSE = SUPPORTS_ADD + SUPPORTS_REMOVE + SUPPORTS_ITERATOR_REMOVE
-
-				.withFeatures(
-						CollectionFeature.SUPPORTS_ADD,
-						CollectionFeature.SUPPORTS_REMOVE,
-						CollectionFeature.SUPPORTS_ITERATOR_REMOVE,
-						ListFeature.SUPPORTS_SET,
-						ListFeature.SUPPORTS_REMOVE_WITH_INDEX,
-						CollectionFeature.ALLOWS_NULL_VALUES,
-						//CollectionFeature.SERIALIZABLE,
-						//CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
-						CollectionSize.ANY)
-				.createTestSuite();
-	}
-
 	// this method must be named suite()
-	public static Test suiteKeyList() {
+	public static Test testKeyList() {
 		return ListTestSuiteBuilder.using(
 				// This class is responsible for creating the collection
 				// And providing data, which can be put into the collection
@@ -328,7 +302,7 @@ public class KeyListTestGuava extends TestCase {
 	}
 
 	// this method must be named suite()
-	public static Test suiteKey1List() {
+	public static Test testKey1List() {
 		return ListTestSuiteBuilder.using(
 				// This class is responsible for creating the collection
 				// And providing data, which can be put into the collection
@@ -357,7 +331,7 @@ public class KeyListTestGuava extends TestCase {
 	}
 
 	// this method must be named suite()
-	public static Test suiteKey2List() {
+	public static Test testKey2List() {
 		return ListTestSuiteBuilder.using(
 				// This class is responsible for creating the collection
 				// And providing data, which can be put into the collection

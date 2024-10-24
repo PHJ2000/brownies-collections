@@ -1080,7 +1080,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (keysMap != null) {
 				return keysMap.containsKey(key);
 			} else {
-				return keysList.binarySearch(key, (Comparator<Object>) comparator) >= 0;
+				return SortedLists.binarySearchAny(keysList, key, (Comparator<Object>) comparator) >= 0;
 			}
 		}
 
@@ -1111,40 +1111,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			}
 			return false;
-		}
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Option<E> getContainedKey(Object key) {
-			if (key == null) {
-				if (!allowNull) {
-					return Option.empty();
-				}
-			}
-			if (keysMap != null) {
-				Object val = keysMap.get(key);
-				if (val != null) {
-					return new Option(val);
-				} else if (keysMap.containsKey(key)) {
-					return new Option(val);
-				}
-			} else {
-				int index = keysList.binarySearch(key, (Comparator<Object>) comparator);
-				if (index >= 0) {
-					return new Option(keysList.get(index));
-				}
-			}
-			return Option.empty();
-		}
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Option<E> getContainedValue(Object value) {
-			assert (count == false);
-			for (Map.Entry<?, ?> entry : keysMap.entrySet()) {
-				if ((entry.getValue() == null && value == null) || (entry.getValue() != null && entry.getValue().equals(value))) {
-					return new Option(entry.getValue());
-				}
-			}
-			return Option.empty();
 		}
 
 		Iterator<E> iteratorValues(KeyCollectionImpl<E> keyColl) {
@@ -1288,6 +1254,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 		}
 
+		/** Add element with key to key map. If element cannot be added, an exception is thrown. */
 		void addThrow(K key, E elem) {
 			Object symbol = add(key, elem);
 			if (symbol == SYMBOL_ADDED) {
@@ -1300,7 +1267,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		/**
-		 * Add element to key map.
+		 * Add element with key to key map.
 		 *
 		 * @param key	key of element
 		 * @param elem	element
@@ -1446,12 +1413,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			} else {
 				// Sorted list
-				int index = keysList.binarySearch(key, (Comparator<Object>) comparator);
-				E elem = null;
+				int index = SortedLists.binarySearchGet(keysList, key, (Comparator<Object>) comparator);
 				if (index < 0) {
 					return Option.empty();
 				}
-				elem = (E) keyColl.keyList.doGet(index);
+				E elem = (E) keyColl.keyList.doGet(index);
 				keysList.remove(index);
 				return new Option<>(elem);
 			}
@@ -1909,18 +1875,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
 		return SortedLists.binarySearchAdd(keyMap.keysList, key, keyMap.comparator);
-		//		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
-		//
-		//		if (index >= 0) {
-		//			index++;
-		//			while (index < keyMap.keysList.size()) {
-		//				if (keyMap.comparator.compare(keyMap.keysList.get(index), key) != 0) {
-		//					break;
-		//				}
-		//				index++;
-		//			}
-		//		}
-		//		return index;
 	}
 
 	int indexOfSorted(E elem) {
@@ -1934,7 +1888,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 				index++;
 			}
-			assert false;
+			// If element/key data are valid, we will never get here.
+			// As this method is only used to handle the invalidate functionality, we return -1 to be on the safe side.
 		}
 		return -1;
 	}
@@ -2754,8 +2709,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 	/**
 	 * Invalidate element, i.e. all keys of the element are extracted
-	 * again and stored in the key maps. Old key values are removed
-	 * if needed.
+	 * again and stored in the key maps. Old key values are removed if needed.
 	 * You must call an invalidate method if an element's key value has changed after adding it to the collection.
 	 *
 	 * @param elem element to invalidate
