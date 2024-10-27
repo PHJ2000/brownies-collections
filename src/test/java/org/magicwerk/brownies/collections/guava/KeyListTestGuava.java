@@ -123,7 +123,6 @@ public class KeyListTestGuava extends TestCase {
 					@Override
 					public List<Ticket> create(Ticket[] ts) {
 						return creator.apply(ts);
-
 					}
 				}, sortById)
 				.named(name)
