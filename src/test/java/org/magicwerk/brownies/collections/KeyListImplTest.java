@@ -88,7 +88,7 @@ public class KeyListImplTest {
 		KeyList<ComparableName> list4 = new KeyList.Builder<ComparableName>().withOrderByElem(true).withElemNull(false).build();
 		doTestSort(list4, null);
 
-		// If a list is not sorte by element but by a key, sort() will always fail
+		// If a list is not sorted by element but by a key, sort() will always fail
 		Key1List<Name, String> list5 = new Key1List.Builder<Name, String>().withPrimaryKey1Map(Name.Mapper).withKey1Sort(true).withOrderByKey1(true).build();
 		doTestSort(list5, null);
 	}

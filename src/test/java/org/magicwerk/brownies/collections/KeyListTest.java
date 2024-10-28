@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import org.magictest.client.Assert;
 import org.magictest.client.Capture;
@@ -148,6 +149,25 @@ public class KeyListTest {
 			list.add(0, "a");
 			list.add(2, "b");
 		}
+	}
+
+	@Capture
+	public static void testReplaceAll() {
+		UnaryOperator<String> op = s -> "x" + s;
+
+		KeyList<String> list = new KeyList.Builder<String>().withPrimaryElem().withOrderByElem(true).build();
+		list.add(0, "a");
+		list.add(1, "b");
+
+		// List.replaceAll() can easily fail with a sorted list 
+		RunTools.runThrowingLog(() -> {
+			list.replaceAll(op);
+		});
+
+		// As work around, a cropped instance should be created and the elements be readded
+		KeyList<String> list2 = list.crop();
+		list.forEach(s -> list2.add(op.apply(s)));
+		LOG.info("{}", list2);
 	}
 
 	//@Capture
