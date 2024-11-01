@@ -100,20 +100,24 @@ public class DoubleObjGapList extends IList<Double> {
 		init();
 	}
 
+	public DoubleObjGapList(int capacity) {
+		list = new DoubleGapList(capacity);
+	}
+	
+	public DoubleObjGapList(Collection<? extends Double> elems) {
+		init(elems);
+	}
+
+	public DoubleObjGapList(DoubleGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new DoubleGapList();
 	}
 
-	public DoubleObjGapList(int capacity) {
-		list = new DoubleGapList(capacity);
-	}
-
 	public void init(Double... elems) {
 		list = DoubleGapList.create(toPrimitive(elems));
-	}
-
-	public DoubleObjGapList(Collection<? extends Double> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Double> elems) {
@@ -229,7 +233,6 @@ public class DoubleObjGapList extends IList<Double> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

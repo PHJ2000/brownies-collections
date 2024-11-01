@@ -100,20 +100,24 @@ public class LongObjGapList extends IList<Long> {
 		init();
 	}
 
+	public LongObjGapList(int capacity) {
+		list = new LongGapList(capacity);
+	}
+	
+	public LongObjGapList(Collection<? extends Long> elems) {
+		init(elems);
+	}
+
+	public LongObjGapList(LongGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new LongGapList();
 	}
 
-	public LongObjGapList(int capacity) {
-		list = new LongGapList(capacity);
-	}
-
 	public void init(Long... elems) {
 		list = LongGapList.create(toPrimitive(elems));
-	}
-
-	public LongObjGapList(Collection<? extends Long> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Long> elems) {
@@ -229,7 +233,6 @@ public class LongObjGapList extends IList<Long> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

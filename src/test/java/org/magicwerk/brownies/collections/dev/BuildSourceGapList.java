@@ -6,8 +6,11 @@ import org.magicwerk.brownies.collections.dev.RefactorVisitor.RefactorMethod;
 import org.magicwerk.brownies.core.files.PathTools;
 import org.magicwerk.brownies.core.reflect.ClassTools;
 import org.magicwerk.brownies.core.regex.RegexBuilder;
+import org.magicwerk.brownies.javassist.sources.JavaParserTools;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 /**
  * Create source files IntGapList, etc. out of file GapList
@@ -25,7 +28,7 @@ public class BuildSourceGapList extends FileBuilder {
 	public void build() {
 		String srcClass = "org.magicwerk.brownies.collections.GapList";
 		String src = readJavaFile(srcClass);
-		CompilationUnit cu = parseJavaSource(src);
+		CompilationUnit cu = readSource(src);
 
 		visitor = new RefactorVisitor();
 		addRefactor("int binarySearch", ", Comparator\\<\\? super K\\> comparator", "");
@@ -75,20 +78,52 @@ public class BuildSourceGapList extends FileBuilder {
 			}
 		});
 
-		cu.accept(visitor, null);
-		src = visitor.toString();
+		src = writeSource(cu, visitor);
+
 		src = processClass(src);
 		src = applyTemplate(src);
-		String javaFile = applyTemplate("{NAME}GapList.java");
+
+		String typeName = applyTemplate("{NAME}GapList");
+		String javaFile = typeName + ".java";
+
+		cu = readSource(src);
+		TypeDeclaration<?> type = JavaParserTools.getDeclaredType(cu, typeName);
+		handleIListPrimitive(type);
+		src = writeSource(cu);
 
 		String dstFile = PathTools.getPath(
 				srcDir,
 				ClassTools.getPathFromClass(ClassTools.getParentPackage(srcClass)),
 				"primitive",
 				javaFile);
-
 		setFile(dstFile);
 		setFileContent(src);
+	}
+
+	void handleIListPrimitive(TypeDeclaration<?> type) {
+		javaParserRefactor.addImport(type, "org.magicwerk.brownies.collections.IList");
+		javaParserRefactor.addImport(type, "org.magicwerk.brownies.collections.GapList");
+
+		String srcGapList = ""
+				+ "	@Override\r\n"
+				+ "	public IList<{WRAPPER}> toIList() { \r\n"
+				+ "		int size = size(); \r\n"
+				+ "		IList<{WRAPPER}> list = new GapList<>(size); \r\n"
+				+ "		for (int i=0; i<size; i++) {\r\n"
+				+ "			list.add(get(i)); \r\n"
+				+ "		} \r\n"
+				+ "		return list; \r\n"
+				+ "	}\r\n";
+		MethodDeclaration md = createMethod(srcGapList);
+		type.getMembers().add(md);
+
+		String srcObjGapList = ""
+				+ "	@Override\r\n"
+				+ "	public {NAME}ObjGapList asObjIList() { \r\n"
+				+ "		return new {NAME}ObjGapList(this); \r\n"
+				+ "	}\r\n";
+		md = createMethod(srcObjGapList);
+		type.getMembers().add(md);
 	}
 
 	String processClass(String src) {

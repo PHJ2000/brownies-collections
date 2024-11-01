@@ -62,6 +62,7 @@ public class RefactorVisitor extends DefaultPrettyPrinterVisitor {
 		if (removeTypes.contains(n.getName().getId())) {
 			return;
 		}
+
 		super.visit(n, arg);
 	}
 

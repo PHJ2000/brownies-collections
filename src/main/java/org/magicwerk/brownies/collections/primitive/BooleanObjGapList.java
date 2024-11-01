@@ -100,20 +100,24 @@ public class BooleanObjGapList extends IList<Boolean> {
 		init();
 	}
 
+	public BooleanObjGapList(int capacity) {
+		list = new BooleanGapList(capacity);
+	}
+	
+	public BooleanObjGapList(Collection<? extends Boolean> elems) {
+		init(elems);
+	}
+
+	public BooleanObjGapList(BooleanGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new BooleanGapList();
 	}
 
-	public BooleanObjGapList(int capacity) {
-		list = new BooleanGapList(capacity);
-	}
-
 	public void init(Boolean... elems) {
 		list = BooleanGapList.create(toPrimitive(elems));
-	}
-
-	public BooleanObjGapList(Collection<? extends Boolean> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Boolean> elems) {
@@ -229,7 +233,6 @@ public class BooleanObjGapList extends IList<Boolean> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

@@ -21,6 +21,8 @@ import java.util.Iterator;
 
 /**
  * Class {@link IListAsDeque} implements a {@link Deque} based on a {@link IList}.
+ * <p>
+ * The class offers full read and write access to the data of this IList, i.e. the elements are shared.
  *
  * @author Thomas Mauch
  */

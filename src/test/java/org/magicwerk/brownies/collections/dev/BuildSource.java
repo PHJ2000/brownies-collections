@@ -21,9 +21,11 @@ import org.magicwerk.brownies.core.strings.matcher.RegexStringMatcher;
 import org.magicwerk.brownies.core.strings.text.TextCaseTools;
 import org.magicwerk.brownies.core.strings.text.TextTools;
 import org.magicwerk.brownies.javassist.sources.JavaParserReader;
+import org.magicwerk.brownies.javassist.sources.JavaParserRefactor;
 import org.slf4j.Logger;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 /**
  * Create Java source files for brownies-collections.
@@ -45,9 +47,13 @@ import com.github.javaparser.ast.CompilationUnit;
  */
 public class BuildSource {
 
-	static final JavaParserReader javaParserReader = new JavaParserReader();
-
+	/**
+	 * Class {@link FileBuilder} is the abstract base class for building the automatically created sources file of the collections library.
+	 */
 	static abstract class FileBuilder {
+		static final JavaParserReader javaParserReader = new JavaParserReader();
+		static final JavaParserRefactor javaParserRefactor = new JavaParserRefactor();
+
 		String srcDir;
 		String testDir;
 		Builder builder;
@@ -177,15 +183,29 @@ public class BuildSource {
 			return newStr;
 		}
 
+		MethodDeclaration createMethod(String src) {
+			src = applyTemplate(src);
+			return javaParserReader.parseMethodDeclaration(src);
+		}
+
 		String readJavaFile(String srcClass) {
 			String srcFile = PathTools.getPath(srcDir, ClassTools.getPathFromClass(srcClass)) + ".java";
 			String src = readFile(srcFile);
 			return src;
 		}
 
-		CompilationUnit parseJavaSource(String src) {
+		CompilationUnit readSource(String src) {
 			CompilationUnit cu = javaParserReader.parseCompilationUnit(src);
 			return cu;
+		}
+
+		String writeSource(CompilationUnit cu) {
+			return cu.toString();
+		}
+
+		String writeSource(CompilationUnit cu, RefactorVisitor visitor) {
+			cu.accept(visitor, null);
+			return visitor.toString();
 		}
 
 		String readFile(String file) {
@@ -235,32 +255,40 @@ public class BuildSource {
 
 		public void build() {
 			// Interface
+			// - e.g. IIntList.java
 			FileBuilder builderIList = new BuildSourceIList(this);
 			builderIList.build();
 			writeFile(builderIList.getFile(), builderIList.getFileContent());
 
 			// GapList
+			// - e.g. IntGapList.java
 			FileBuilder builderGapList = new BuildSourceGapList(this);
 			builderGapList.build();
 			writeFile(builderGapList.getFile(), builderGapList.getFileContent());
 
+			// - e.g. IntObjGapList.java
 			FileBuilder builderObjGapList = new BuildSourceObjGapList(this);
 			builderObjGapList.build();
 			writeFile(builderObjGapList.getFile(), builderObjGapList.getFileContent());
 
 			// BigList
+			// - e.g. IntBigList.java
 			FileBuilder builderBigList = new BuildSourceBigList(this);
 			builderBigList.build();
 			writeFile(builderBigList.getFile(), builderBigList.getFileContent());
 
+			// - e.g. IntBigList.java
 			FileBuilder builderMergeSort = new BuildSourceMergeSort(this);
 			builderMergeSort.build();
 			writeFile(builderMergeSort.getFile(), builderMergeSort.getFileContent());
 
+			// Sort / Search
+			// - e.g. IntMergeSort.java
 			FileBuilder builderBinarySearch = new BuildSourceBinarySearch(this);
 			builderBinarySearch.build();
 			writeFile(builderBinarySearch.getFile(), builderBinarySearch.getFileContent());
 
+			// - e.g. IntBinarySearch.java
 			FileBuilder builderObjBigList = new BuildSourceObjBigList(this);
 			builderObjBigList.build();
 			writeFile(builderObjBigList.getFile(), builderObjBigList.getFileContent());

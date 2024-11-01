@@ -100,20 +100,24 @@ public class ShortObjGapList extends IList<Short> {
 		init();
 	}
 
+	public ShortObjGapList(int capacity) {
+		list = new ShortGapList(capacity);
+	}
+	
+	public ShortObjGapList(Collection<? extends Short> elems) {
+		init(elems);
+	}
+
+	public ShortObjGapList(ShortGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new ShortGapList();
 	}
 
-	public ShortObjGapList(int capacity) {
-		list = new ShortGapList(capacity);
-	}
-
 	public void init(Short... elems) {
 		list = ShortGapList.create(toPrimitive(elems));
-	}
-
-	public ShortObjGapList(Collection<? extends Short> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Short> elems) {
@@ -229,7 +233,6 @@ public class ShortObjGapList extends IList<Short> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

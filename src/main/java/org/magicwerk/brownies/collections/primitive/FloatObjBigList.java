@@ -100,20 +100,24 @@ public class FloatObjBigList extends IList<Float> {
 		init();
 	}
 
+	public FloatObjBigList(int capacity) {
+		list = new FloatBigList(capacity);
+	}
+	
+	public FloatObjBigList(Collection<? extends Float> elems) {
+		init(elems);
+	}
+
+	public FloatObjBigList(FloatBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new FloatBigList();
 	}
 
-	public FloatObjBigList(int capacity) {
-		list = new FloatBigList(capacity);
-	}
-
 	public void init(Float... elems) {
 		list = FloatBigList.create(toPrimitive(elems));
-	}
-
-	public FloatObjBigList(Collection<? extends Float> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Float> elems) {
@@ -226,7 +230,6 @@ public class FloatObjBigList extends IList<Float> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 
