@@ -2561,16 +2561,26 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		if (keyMap.keysMap != null) {
 			// not sorted
-			Object obj = keyMap.keysMap.get(key);
-			if (obj instanceof KeyMapList) {
-				GapList<E> list = (GapList<E>) obj;
-				return list.getFirst();
+			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
+				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
+				if (val != null && val.intValue() > 0) {
+					return (E) key;
+				} else {
+					return null;
+				}
 			} else {
-				return (E) obj;
+				// normal: keysMap stores single element of list of elements
+				Object obj = keyMap.keysMap.get(key);
+				if (obj instanceof KeyMapList) {
+					GapList<E> list = (GapList<E>) obj;
+					return list.getFirst();
+				} else {
+					return (E) obj;
+				}
 			}
-
 		} else {
-			// sorted
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				return keyList.doGet(index);
@@ -2616,19 +2626,28 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		if (keyMap.keysMap != null) {
 			// not sorted
-			Object obj = keyMap.keysMap.get(key);
-			if (obj == null) {
-				;
-			} else if (obj instanceof KeyMapList) {
-				coll.addAll((GapList<E>) obj);
+			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
+				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
+				if (val != null) {
+					int num = val.intValue();
+					for (int i = 0; i < num; i++) {
+						coll.add((E) key);
+					}
+				}
 			} else {
-				coll.add((E) obj);
+				// normal: keysMap stores single element of list of elements
+				Object obj = keyMap.keysMap.get(key);
+				if (obj == null) {
+					;
+				} else if (obj instanceof KeyMapList) {
+					coll.addAll((GapList<E>) obj);
+				} else {
+					coll.add((E) obj);
+				}
 			}
-
 		} else {
-			// sorted
-			// - keyMap.keysList: contains sorted keys
-			// - keyList: contains elements, sorted by key
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				while (true) {
@@ -2668,6 +2687,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		if (keyMap.keysMap != null) {
 			// not sorted
 			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
 				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
 				if (val == null) {
 					return 0;
@@ -2675,6 +2695,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					return val.intValue();
 				}
 			} else {
+				// normal: keysMap stores single element of list of elements
 				Object obj = keyMap.keysMap.get(key);
 				if (obj == null) {
 					return (keyMap.keysMap.containsKey(key)) ? 1 : 0;
@@ -2686,7 +2707,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			}
 		} else {
-			// sorted
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				int count = 0;

@@ -35,6 +35,7 @@ import org.magictest.client.Report;
 import org.magictest.client.Trace;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
+import org.magicwerk.brownies.core.CheckTools;
 import org.magicwerk.brownies.core.logback.LogbackTools;
 import org.slf4j.Logger;
 
@@ -54,8 +55,8 @@ public class KeyCollectionTest {
 	static void test() {
 		//testIterator();
 		//testPut();
-		//testElemCount();
-		testEquals();
+		testElemCount();
+		//testEquals();
 	}
 
 	@Capture
@@ -69,12 +70,23 @@ public class KeyCollectionTest {
 		coll.add(new ComparableName("aa", 3));
 		LOG.info("withElemCount(false): {}", coll);
 
+		ComparableName cn = new ComparableName("d", -1);
+		ComparableName cn2 = coll.getByKey(0, cn);
+		CheckTools.check(cn.equals(cn2));
+		KeyCollection<ComparableName> es = coll.getAll(cn);
+		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
+
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(true).withElemSort(false).build();
 		coll.add(new ComparableName("d", 0));
 		coll.add(new ComparableName("d", 1));
 		coll.add(new ComparableName("b", 2));
 		coll.add(new ComparableName("aa", 3));
 		LOG.info("withElemCount(true): {}", coll);
+
+		cn2 = coll.getByKey(0, cn);
+		CheckTools.check(cn.equals(cn2));
+		es = coll.getAll(cn);
+		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
 
 		Set<ComparableName> elems = coll.getDistinct();
 		Map<ComparableName, Integer> countedElems = new TreeMap<>();

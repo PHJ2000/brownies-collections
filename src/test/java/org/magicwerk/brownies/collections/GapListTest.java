@@ -485,6 +485,16 @@ public class GapListTest {
 		getSortedGapList(4).removeIf(new NamedPredicate<>("i%2==1", i -> i % 2 == 1));
 		getSortedGapList(4).removeIf(Predicates.allow());
 		getSortedGapList(4).removeIf(Predicates.deny());
+
+		// NPE: if a predicate is passed, it must be able to handle null values if present in the list
+		IList<Integer> list = GapList.create();
+		list.add(null);
+		list.removeIf(i -> i > 0);
+
+		// Same behavior in JDK
+		List<Integer> arrayList = new ArrayList<>();
+		arrayList.add(null);
+		arrayList.removeIf(i -> i > 0);
 	}
 
 	@Trace(parameters = Trace.THIS | Trace.ALL_PARAMS, result = Trace.THIS | Trace.RESULT)

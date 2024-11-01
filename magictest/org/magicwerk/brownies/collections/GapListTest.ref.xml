@@ -2683,8 +2683,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testRemoveIf">
-    <runDate>2022-12-04T23:14:20.139+01:00</runDate>
-    <runDuration>0.0024245</runDuration>
+    <runDate>2024-11-01T20:20:27.5404819+01:00</runDate>
+    <runDuration>0.0297267</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.GapList</traceClass>
     <traceMethod>removeIf</traceMethod>
@@ -2743,6 +2743,32 @@
         <paramText outputType="VALUE" param="Result">"false"</paramText>
       </result>
       <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeIf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ null }"</paramText>
+        <paramText outputType="VALUE" param="#1">"{ \r\n}"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.NullPointerException"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeIf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ null }"</paramText>
+        <paramText outputType="VALUE" param="#1">"{ \r\n}"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.NullPointerException"</paramText>
+      </error>
     </traceStep>
   </traceTest>
   <traceTest name="testRemoveRange">

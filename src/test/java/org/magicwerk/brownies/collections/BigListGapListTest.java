@@ -452,6 +452,16 @@ public class BigListGapListTest {
 		getSortedBigList(4).removeIf(new NamedPredicate<>("i%2==1", i -> i % 2 == 1));
 		getSortedBigList(4).removeIf(Predicates.allow());
 		getSortedBigList(4).removeIf(Predicates.deny());
+
+		// NPE: if a predicate is passed, it must be able to handle null values if present in the list
+		IList<Integer> list = BigList.create();
+		list.add(null);
+		list.removeIf(i -> i > 0);
+
+		// Same behavior in JDK
+		List<Integer> arrayList = new ArrayList<>();
+		arrayList.add(null);
+		arrayList.removeIf(i -> i > 0);
 	}
 
 	@Trace(parameters = Trace.THIS | Trace.ALL_PARAMS, result = Trace.THIS | Trace.RESULT)
