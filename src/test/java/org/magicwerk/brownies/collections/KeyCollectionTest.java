@@ -91,7 +91,7 @@ public class KeyCollectionTest {
 		Set<ComparableName> elems = coll.getDistinct();
 		Map<ComparableName, Integer> countedElems = new TreeMap<>();
 		for (ComparableName elem : elems) {
-			int count = coll.getCount(elem);
+			int count = coll.count(elem);
 			countedElems.put(elem, count);
 		}
 		LOG.info("countedElems: {}", countedElems);
@@ -531,16 +531,16 @@ public class KeyCollectionTest {
 
 		coll = getCollection();
 		coll.getAll(d);
-		coll.getCount(d);
+		coll.count(d);
 		coll.getDistinct();
 
 		coll.getAll(x);
-		coll.getCount(x);
+		coll.count(x);
 		coll.remove(x);
 		coll.removeAll(x);
 
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 		coll.remove(n);
 		coll.removeAll(n);
 
@@ -554,24 +554,24 @@ public class KeyCollectionTest {
 		coll.removeAll(a);
 
 		coll.add(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.add(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		Report.printStep("-- Sort --");
 		coll = getCollectionSort();
 		coll.getAll(d);
-		coll.getCount(d);
+		coll.count(d);
 		coll.getDistinct();
 
 		coll.getAll(x);
-		coll.getCount(x);
+		coll.count(x);
 		coll.remove(x);
 		coll.removeAll(x);
 
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 		coll.remove(n);
 		coll.removeAll(n);
 
@@ -584,7 +584,7 @@ public class KeyCollectionTest {
 		Report.printStep("-- Null --");
 		coll = getCollectionNull();
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.remove(n);
 		coll.removeAll(n);
@@ -592,7 +592,7 @@ public class KeyCollectionTest {
 		Report.printStep("-- NullSort --");
 		coll = getCollectionNullSort();
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.remove(n);
 		coll.removeAll(n);

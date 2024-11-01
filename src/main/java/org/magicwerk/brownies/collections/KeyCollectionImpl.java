@@ -3034,13 +3034,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		return getAllByKey(0, elem);
 	}
 
-	/**
-	 * Returns the number of equal elements.
-	 *
-	 * @param elem	element
-	 * @return		number of equal elements
-	 */
-	public int getCount(E elem) {
+	@Override
+	public int count(E elem) {
 		return getCountByKey(0, elem);
 	}
 

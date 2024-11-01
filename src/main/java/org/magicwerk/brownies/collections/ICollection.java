@@ -86,7 +86,7 @@ public interface ICollection<E> extends Collection<E> {
 	}
 
 	/**
-	 * Determines whether the list contains a matching element.
+	 * Determines whether the collection contains a matching element.
 	 *
 	 * @param predicate		predicate used to search element
 	 * @return				true if the list contains a matching element, false otherwise
@@ -96,10 +96,18 @@ public interface ICollection<E> extends Collection<E> {
 	}
 
 	/**
-	 * Counts how many elements in the list match the predicate.
+	 * Counts how many times the element appears in the collection.
 	 *
 	 * @param predicate a predicate which returns {@code true} for elements to be counted
-	 * @return		count how many elements in the list match the predicate
+	 * @return		count how many times the element appears in the collection
+	 */
+	int count(E elem);
+
+	/**
+	 * Counts how many elements in the collection match the predicate.
+	 *
+	 * @param predicate a predicate which returns {@code true} for elements to be counted
+	 * @return		count how many elements in the collection match the predicate
 	 */
 	default int countIf(Predicate<? super E> predicate) {
 		return ICollectionTools.countIf(this, predicate);
@@ -110,7 +118,7 @@ public interface ICollection<E> extends Collection<E> {
 	 * The returned collection has the same type as the original one.
 	 *
 	 * @param predicate	filter predicate
-	 * @return			created list
+	 * @return			created collection
 	 */
 	ICollection<E> filter(Predicate<? super E> predicate);
 
