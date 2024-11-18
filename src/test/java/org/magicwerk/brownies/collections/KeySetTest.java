@@ -52,7 +52,7 @@ public class KeySetTest {
 
 	static void test() {
 		//testEquals();
-		testAddPerformanceJmh();
+		AddPerformanceJmhTest.test();
 	}
 
 	KeySet<Integer> getKeySet(int num) {
@@ -156,16 +156,16 @@ public class KeySetTest {
 		}
 	}
 
-	static void testAddPerformanceJmh() {
-		//		Options opts = new Options().includeClass(PerformanceJmhTest.class);
-		Options opts = new Options().includeClass(AddPerformanceJmhTest.class);
-		opts.setWarmupIterations(3).setMeasurementIterations(2);
-		opts.setRunTimeMillis(500);
-		JmhRunner runner = new JmhRunner();
-		runner.runJmh(opts);
-	}
-
 	public static class AddPerformanceJmhTest {
+
+		static void test() {
+			//		Options opts = new Options().includeClass(PerformanceJmhTest.class);
+			Options opts = new Options().includeClass(AddPerformanceJmhTest.class);
+			opts.setWarmupIterations(3).setMeasurementIterations(2);
+			opts.setRunTimeMillis(500);
+			JmhRunner runner = new JmhRunner();
+			runner.runJmh(opts);
+		}
 
 		@State(Scope.Benchmark)
 		public static class BenchmarkState {
