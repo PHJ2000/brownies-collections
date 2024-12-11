@@ -765,7 +765,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		/**
 		 * Initialize KeyMap.
 		 *
-		 * @param keyMapBuild 	key map builder to use for initialization
+		 * @param keyMapBuilder	key map builder to use for initialization
 		 * @param list   		true if a KeyListImpl is built up, false for KeyCollectionImpl
 		 */
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -1427,8 +1427,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * Removes element by key.
 		 * If there are duplicates, all elements are removed.
 		 *
-		 * @param keyMap	key map
-		 * @param key   	key of element to remove
+		 * @param key		key
+		 * @param keyColl  	key of element to remove
 		 * @param coll      collection to store all removed elements, null to not store them
 		 */
 		@SuppressWarnings("unchecked")
@@ -2510,7 +2510,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	/**
 	 * Check whether the element set can be viewed as Set.
 	 *
-	 * @param keyIndex 	key map index
 	 * @throws IllegalArgumentException if the element set cannot be viewed as Set
 	 */
 	void checkAsSet() {

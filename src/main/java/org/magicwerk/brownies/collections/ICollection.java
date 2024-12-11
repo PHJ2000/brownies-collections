@@ -98,7 +98,6 @@ public interface ICollection<E> extends Collection<E> {
 	/**
 	 * Counts how many times the element appears in the collection.
 	 *
-	 * @param predicate a predicate which returns {@code true} for elements to be counted
 	 * @return		count how many times the element appears in the collection
 	 */
 	int count(E elem);
