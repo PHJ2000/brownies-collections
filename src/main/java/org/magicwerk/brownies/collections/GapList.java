@@ -28,6 +28,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.Function;
 
+import org.magicwerk.brownies.collections.helper.CapacityHelper;
+
 /**
  * Class {link GapList} combines the strengths of both {@link ArrayList} and {@link LinkedList}.
  * It is implemented to offer both efficient random access to elements
@@ -1223,19 +1225,7 @@ public class GapList<E> extends IList<E> {
 	 * @return	the new capacity to use
 	 */
 	int calculateNewCapacity(int minCapacity) {
-		// Note: Same behavior as in ArrayList.ensureCapacity()
-		int oldCapacity = values.length;
-		if (minCapacity <= oldCapacity) {
-			return values.length; // do not shrink
-		}
-
-		minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-		int newCapacity = oldCapacity + (oldCapacity >> 1);
-		if (newCapacity < minCapacity) {
-			newCapacity = minCapacity;
-		}
-
-		return newCapacity;
+		return CapacityHelper.calculateCapacity(minCapacity, values.length, DEFAULT_CAPACITY);
 	}
 
 	/**
