@@ -1769,11 +1769,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (cmp == 0) {
 				if (elem != null) {
 					if (!keyMap.allowDuplicates) {
-						errorDuplicateKey(elem);
+						errorDuplicateKey(key);
 					}
 				} else {
 					if (!keyMap.allowDuplicatesNull) {
-						errorDuplicateKey(elem);
+						errorDuplicateKey(key);
 					}
 				}
 			}

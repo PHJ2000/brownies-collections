@@ -55,9 +55,9 @@ public class Key1ListTest {
 	}
 
 	static void test() {
-		//testPutPerformance();
+		testAdd();
 		//testContains();
-		testIndexOf();
+		//testIndexOf();
 		//testImmutableList();
 		//testInitAll();
 		//testRemoveAllByKey1();
@@ -65,9 +65,9 @@ public class Key1ListTest {
 		//testPut();
 		//testAsMap();
 		//testKeys();
-		//testKeys();
-		//testKeys();
 		//testMove();
+
+		//testPutPerformance();
 	}
 
 	@Trace(traceMethod = "/.*/", parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
@@ -351,6 +351,22 @@ public class Key1ListTest {
 		//			gapList.forEach(t -> key1ListMap.put(t.getId(), t));
 		//			StringFormatter.println("Key1List = {}", TypeTools.formatGrouped(ReflectTools.getObjectSize(key1ListMap)));
 		//		}
+	}
+
+	@Trace
+	public static void testAdd() {
+		Ticket t1 = new Ticket(1, "extId1", "text1");
+		Ticket t2 = new Ticket(1, "extId2", "text2");
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).build();
+			list.add(t1);
+			list.add(t2);
+		}
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
+			list.add(t1);
+			list.add(t2);
+		}
 	}
 
 	@Capture

@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.Key1ListTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
+  <traceTest name="testAdd">
+    <runDate>2024-12-21T14:02:22.9505205+01:00</runDate>
+    <runDuration>0.0258153</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
+    <traceMethod>add</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: 1"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: 1"</paramText>
+      </error>
+    </traceStep>
+  </traceTest>
   <captureTest name="testAsMap">
     <runDate>2015-09-16T01:00:08.166+02:00</runDate>
     <runDuration>0.018973849</runDuration>
