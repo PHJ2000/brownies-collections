@@ -2272,22 +2272,21 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	Option<E> doRemove(Object elem, KeyMap ignore) {
 		Option<E> removed = Option.empty();
 		boolean first = true;
-		if (keyMaps != null) {
-			for (int i = 0; i < keyMaps.length; i++) {
-				if (keyMaps[i] != null && keyMaps[i] != ignore) {
-					Object key = keyMaps[i].getKey((E) elem);
-					Option<E> obj = keyMaps[i].remove(key, true, elem, this);
-					if (first) {
-						if (!obj.hasValue()) {
-							return Option.empty();
-						} else {
-							removed = obj;
-						}
-						first = false;
+		int numKeyMaps = getNumKeyMaps();
+		for (int i = 0; i < numKeyMaps; i++) {
+			if (keyMaps[i] != null && keyMaps[i] != ignore) {
+				Object key = keyMaps[i].getKey((E) elem);
+				Option<E> obj = keyMaps[i].remove(key, true, elem, this);
+				if (first) {
+					if (!obj.hasValue()) {
+						return Option.empty();
 					} else {
-						if (!obj.hasValue() || !Objects.equals(obj.getValue(), removed.getValue())) {
-							errorInvalidData();
-						}
+						removed = obj;
+					}
+					first = false;
+				} else {
+					if (!obj.hasValue() || !Objects.equals(obj.getValue(), removed.getValue())) {
+						errorInvalidData();
 					}
 				}
 			}
@@ -2480,14 +2479,19 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		return list;
 	}
 
+	/** Return number of key maps */
+	int getNumKeyMaps() {
+		return (keyMaps != null) ? keyMaps.length : 0;
+	}
+
 	/**
-	 * Check whether there is a KeyMap (can also be the elements set) with specified index.
+	 * Check whether there is a key map (can also be the elements set) with specified index.
 	 *
 	 * @param keyIndex 	key map index
 	 * @throws IllegalArgumentException if there is no such key map
 	 */
 	void checkKeyMap(int keyIndex) {
-		if (keyMaps == null || keyIndex >= keyMaps.length || keyIndex < 0 || keyMaps[keyIndex] == null) {
+		if (keyIndex >= getNumKeyMaps() || keyIndex < 0 || keyMaps[keyIndex] == null) {
 			throw new IllegalArgumentException("Invalid key index: " + keyIndex);
 		}
 	}
@@ -2499,7 +2503,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @throws IllegalArgumentException if the key map cannot be viewed as Map
 	 */
 	void checkAsMap(int keyIndex) {
-		if (keyMaps == null || keyIndex >= keyMaps.length || keyIndex <= 0 || keyMaps[keyIndex] == null) {
+		if (keyIndex >= getNumKeyMaps() || keyIndex <= 0 || keyMaps[keyIndex] == null) {
 			throw new IllegalArgumentException("Invalid key index: " + keyIndex);
 		}
 		if (keyMaps[keyIndex].allowDuplicates || keyMaps[keyIndex].allowDuplicatesNull) {
@@ -2735,16 +2739,15 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @param elem element to invalidate
 	 */
 	protected void invalidate(E elem) {
-		if (keyMaps != null) {
-			for (int i = 0; i < keyMaps.length; i++) {
-				if (keyMaps[i] != null) {
-					if (i == 0 && keyMaps[0].count) {
-						errorInvalidateNotSupported();
-					}
-					Option<Object> key = invalidate(keyMaps[i], elem);
-					if (key.hasValue()) {
-						keyMaps[i].addThrow(key.getValue(), elem);
-					}
+		int numKeyMaps = getNumKeyMaps();
+		for (int i = 0; i < numKeyMaps; i++) {
+			if (keyMaps[i] != null) {
+				if (i == 0 && keyMaps[0].count) {
+					errorInvalidateNotSupported();
+				}
+				Option<Object> key = invalidate(keyMaps[i], elem);
+				if (key.hasValue()) {
+					keyMaps[i].addThrow(key.getValue(), elem);
 				}
 			}
 		}

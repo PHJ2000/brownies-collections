@@ -1,4 +1,4 @@
-package org.magicwerk.brownies.collections;
+package org.magicwerk.brownies.collections.helper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.StringReader;
 
 import org.magictest.client.Capture;
-import org.magicwerk.brownies.collections.helper.GapLists;
+import org.magictest.client.Trace;
+import org.magicwerk.brownies.collections.Key1List;
+import org.magicwerk.brownies.collections.Key2List;
+import org.magicwerk.brownies.collections.TestHelper.Ticket;
 import org.magicwerk.brownies.collections.primitive.ByteGapList;
 import org.magicwerk.brownies.collections.primitive.CharGapList;
 import org.magicwerk.brownies.core.exceptions.WrapperException;
@@ -28,8 +31,40 @@ public class GapListsTest {
 	}
 
 	static void test() {
-		testInputStream();
+		testAddExplained();
+		//testInputStream();
 		//testReader();
+	}
+
+	@Trace
+	public static void testAddExplained() {
+		Ticket t1 = new Ticket(1, "extId1", "text1");
+		Ticket t2 = new Ticket(1, "extId2", "text2");
+		Ticket t3 = new Ticket(3, "extId1", "text2");
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).build();
+			GapLists.addExplained(list, t1);
+			GapLists.addExplained(list, t2);
+		}
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
+			GapLists.addExplained(list, t1);
+			GapLists.addExplained(list, t2);
+		}
+		{
+			Key2List<Ticket, Integer, String> list = new Key2List.Builder<Ticket, Integer, String>()
+					.withPrimaryKey1Map(Ticket.IdMapper).withPrimaryKey2Map(Ticket.ExtIdMapper).build();
+			GapLists.addExplained(list, t1);
+			GapLists.addExplained(list, t2);
+			GapLists.addExplained(list, t3);
+		}
+		{
+			Key2List<Ticket, Integer, String> list = new Key2List.Builder<Ticket, Integer, String>()
+					.withPrimaryKey1Map(Ticket.IdMapper).withPrimaryKey2Map(Ticket.ExtIdMapper).withOrderByKey1(true).build();
+			GapLists.addExplained(list, t1);
+			GapLists.addExplained(list, t2);
+			GapLists.addExplained(list, t3);
+		}
 	}
 
 	@Capture
