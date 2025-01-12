@@ -64,6 +64,7 @@ public class KeyCollectionTest {
 		KeyCollection<ComparableName> coll;
 
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(false).withElemSort(true).build();
+		CheckTools.check(coll.hasElemCount() == false);
 		coll.add(new ComparableName("d", 0));
 		coll.add(new ComparableName("d", 1));
 		coll.add(new ComparableName("b", 2));
@@ -77,6 +78,7 @@ public class KeyCollectionTest {
 		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
 
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(true).withElemSort(false).build();
+		CheckTools.check(coll.hasElemCount() == true);
 		coll.add(new ComparableName("d", 0));
 		coll.add(new ComparableName("d", 1));
 		coll.add(new ComparableName("b", 2));
@@ -88,8 +90,8 @@ public class KeyCollectionTest {
 		es = coll.getAll(cn);
 		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
 
-		Set<ComparableName> elems = coll.getDistinct();
 		Map<ComparableName, Integer> countedElems = new TreeMap<>();
+		Set<ComparableName> elems = coll.getDistinct();
 		for (ComparableName elem : elems) {
 			int count = coll.count(elem);
 			countedElems.put(elem, count);

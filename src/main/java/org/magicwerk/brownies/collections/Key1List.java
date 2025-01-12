@@ -19,6 +19,7 @@ package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -495,9 +496,9 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K> getAllKeys1() {
@@ -505,13 +506,32 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K> getDistinctKeys1() {
 		return (Set<K>) getDistinctKeys(1);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K> iteratorDistinctKeys1() {
+		return (Iterator<K>) iteratorDistinctKeys(1);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys1() {
+		return countDistinctKeys(1);
 	}
 
 	/**

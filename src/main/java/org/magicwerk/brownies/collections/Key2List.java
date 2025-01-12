@@ -19,6 +19,7 @@ package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -597,9 +598,9 @@ public class Key2List<E, K1, K2> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K1> getAllKeys1() {
@@ -607,13 +608,32 @@ public class Key2List<E, K1, K2> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K1> getDistinctKeys1() {
 		return (Set<K1>) getDistinctKeys(1);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K1> iteratorDistinctKeys1() {
+		return (Iterator<K1>) iteratorDistinctKeys(1);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys1() {
+		return countDistinctKeys(1);
 	}
 
 	/**
@@ -767,9 +787,9 @@ public class Key2List<E, K1, K2> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K2> getAllKeys2() {
@@ -777,13 +797,32 @@ public class Key2List<E, K1, K2> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K2> getDistinctKeys2() {
 		return (Set<K2>) getDistinctKeys(2);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K2> iteratorDistinctKeys2() {
+		return (Iterator<K2>) iteratorDistinctKeys(2);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys2() {
+		return countDistinctKeys(2);
 	}
 
 	/**

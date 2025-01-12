@@ -813,10 +813,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 						keyMap.keysList = (IList<Object>) GapLists.createWrapperList(keyMapBuilder.primitiveListType);
 					}
 				}
-			} else if (keyMap.comparator != null) {
-				keyMap.keysMap = new TreeMap<>(keyMap.comparator);
 			} else {
-				keyMap.keysMap = new HashMap<>();
+				keyMap.keysMap = keyMap.createKeysMap(keyMap.comparator);
 			}
 
 			return keyMap;
@@ -1013,11 +1011,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			copy.comparator = comparator;
 			copy.count = count;
 			if (keysMap != null) {
-				if (keysMap instanceof HashMap) {
-					copy.keysMap = (Map) ((HashMap) keysMap).clone();
-				} else {
-					copy.keysMap = (Map) ((TreeMap) keysMap).clone();
-				}
+				copy.keysMap = copyKeysMap(keysMap);
 
 				// The map cannot only contain simple value, but also instances of KeyMapList
 				// for duplicates which must be also be cloned
@@ -1044,16 +1038,39 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			copy.comparator = comparator;
 			copy.count = count;
 			if (keysMap != null) {
-				if (keysMap instanceof HashMap) {
-					copy.keysMap = new HashMap<K, Object>();
-				} else {
-					TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
-					copy.keysMap = new TreeMap<K, Object>(treeMap.comparator());
-				}
+				copy.keysMap = createKeysMap(comparator);
 			} else {
 				copy.keysList = new GapList<K>();
 			}
 			return copy;
+		}
+
+		Map<K, Object> createKeysMap(Comparator<? super K> comparator) {
+			if (comparator == null) {
+				return new HashMap<>();
+			} else {
+				return new TreeMap<>(comparator);
+			}
+		}
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Map<K, Object> copyKeysMap(Map<K, Object> keysMap) {
+			if (keysMap instanceof HashMap) {
+				return (Map) ((HashMap) keysMap).clone();
+			} else {
+				return (Map) ((TreeMap) keysMap).clone();
+			}
+		}
+
+		Set<K> copyKeysSet(Map<K, Object> keysMap) {
+			if (keysMap instanceof HashMap) {
+				return new HashSet<>(keysMap.keySet());
+			} else {
+				TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
+				TreeSet<K> treeSet = new TreeSet<>(treeMap.comparator());
+				treeSet.addAll(keysMap.keySet());
+				return treeSet;
+			}
 		}
 
 		boolean isPrimaryMap() {
@@ -1478,14 +1495,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		Set<K> getDistinctKeys() {
 			if (keysMap != null) {
-				Set<K> set = keysMap.keySet();
-				if (comparator != null) {
-					TreeSet<K> treeSet = new TreeSet<>(comparator);
-					treeSet.addAll(set);
-					return treeSet;
-				} else {
-					return new HashSet<>(set);
-				}
+				return copyKeysSet(keysMap);
 			} else {
 				K lastKey = null;
 				TreeSet<K> set = new TreeSet<K>(comparator);
@@ -1508,6 +1518,24 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 				return set;
 			}
+		}
+
+		Iterator<K> iteratorDistinctKeys() {
+			if (keysMap != null) {
+				if (count || (!allowDuplicates && (!allowNull || !allowDuplicatesNull))) {
+					return keysMap.keySet().iterator();
+				}
+			}
+			return getDistinctKeys().iterator();
+		}
+
+		int countDistinctKeys() {
+			if (keysMap != null) {
+				if (count || (!allowDuplicates && (!allowNull || !allowDuplicatesNull))) {
+					return keysMap.size();
+				}
+			}
+			return getDistinctKeys().size();
 		}
 
 		@Override
@@ -2465,6 +2493,26 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	}
 
 	/**
+	 * Returns iterator for all distinct keys.
+	 *
+	 * @param keyIndex	key index
+	 * @return 			iterator for all distinct keys
+	 */
+	protected Iterator<?> iteratorDistinctKeys(int keyIndex) {
+		return getKeyMap(keyIndex).iteratorDistinctKeys();
+	}
+
+	/**
+	 * Returns count of all distinct keys.
+	 *
+	 * @param keyIndex	key index
+	 * @return 			count of all distinct keys
+	 */
+	protected int countDistinctKeys(int keyIndex) {
+		return getKeyMap(keyIndex).countDistinctKeys();
+	}
+
+	/**
 	 * Returns list containing all keys in element order.
 	 *
 	 * @param keyIndex	key index
@@ -3059,6 +3107,25 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	@SuppressWarnings("unchecked")
 	public Set<E> getDistinct() {
 		return (Set<E>) getDistinctKeys(0);
+	}
+
+	/**
+	 * Returns iterator for all distinct elements in the same order as in the collection.
+	 *
+	 * @return		iterator with distinct elements
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<E> iteratorDistinct() {
+		return (Iterator<E>) iteratorDistinctKeys(0);
+	}
+
+	/**
+	 * Returns count for all distinct elements.
+	 *
+	 * @return		count for all distinct elements
+	 */
+	public int countDistinct() {
+		return countDistinctKeys(0);
 	}
 
 	@Override

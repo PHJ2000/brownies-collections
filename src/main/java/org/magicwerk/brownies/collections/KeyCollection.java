@@ -246,4 +246,14 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	public KeyCollection<E> filter(Predicate<? super E> filter) {
 		return (KeyCollection<E>) super.filter(filter);
 	}
+
+	/**
+	 * Determines whether this collection is only counting, but not storing all elements.
+	 *
+	 * @return true if this collection is only counting, but not storing all elements
+	 */
+	public boolean hasElemCount() {
+		return keyMaps[0].count;
+	}
+
 }

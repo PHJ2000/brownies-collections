@@ -18,6 +18,7 @@
 package org.magicwerk.brownies.collections;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -605,10 +606,10 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
 	 * @param keyIndex	key index
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	protected IList<Object> getAllKeys(int keyIndex) {
 		Function<E, Object> mapper = keyColl.getKeyMap(keyIndex).mapper;
@@ -620,13 +621,33 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	/**
-	 * Returns set containing all distinct keys.
+	 * Returns set with all distinct keys.
 	 *
 	 * @param keyIndex 	key index
-	 * @return 			list containing all distinct keys
+	 * @return 			set with all distinct keys
 	 */
 	public Set<?> getDistinctKeys(int keyIndex) {
 		return keyColl.getDistinctKeys(keyIndex);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys.
+	 *
+	 * @param keyIndex 	key index
+	 * @return 			iterator for all distinct keys
+	 */
+	public Iterator<?> iteratorDistinctKeys(int keyIndex) {
+		return keyColl.iteratorDistinctKeys(keyIndex);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @param keyIndex 	key index
+	 * @return 			count for all distinct keys
+	 */
+	public int countDistinctKeys(int keyIndex) {
+		return keyColl.countDistinctKeys(keyIndex);
 	}
 
 	@Override
@@ -688,6 +709,25 @@ public abstract class KeyListImpl<E> extends IList<E> {
 			return (Set<E>) getDistinctKeys(0);
 		} else {
 			return super.getDistinct();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<E> iteratorDistinct() {
+		if (keyColl.hasElemSet()) {
+			return (Iterator<E>) iteratorDistinctKeys(0);
+		} else {
+			return super.iteratorDistinct();
+		}
+	}
+
+	@Override
+	public int countDistinct() {
+		if (keyColl.hasElemSet()) {
+			return countDistinctKeys(0);
+		} else {
+			return super.countDistinct();
 		}
 	}
 

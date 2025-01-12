@@ -19,6 +19,7 @@ package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -276,6 +277,16 @@ public class KeyList<E> extends KeyListImpl<E> {
 	@Override
 	public Set<E> getDistinct() {
 		return super.getDistinct();
+	}
+
+	@Override
+	public Iterator<E> iteratorDistinct() {
+		return super.iteratorDistinct();
+	}
+
+	@Override
+	public int countDistinct() {
+		return super.countDistinct();
 	}
 
 	@Override

@@ -515,9 +515,9 @@ public abstract class IList<E>
 	}
 
 	/**
-	 * Returns distinct elements in the list.
+	 * Returns set with distinct elements in the list.
 	 *
-	 * @return		distinct elements in the list
+	 * @return		set with distinct elements in the list
 	 */
 	public Set<E> getDistinct() {
 		Set<E> set = new HashSet<E>();
@@ -526,6 +526,24 @@ public abstract class IList<E>
 			set.add(doGet(i));
 		}
 		return set;
+	}
+
+	/**
+	 * Returns iterator for distinct elements in the list.
+	 *
+	 * @return		iterator for distinct elements in the list
+	 */
+	public Iterator<E> iteratorDistinct() {
+		return getDistinct().iterator();
+	}
+
+	/**
+	 * Returns count of distinct elements in the list.
+	 *
+	 * @return		count of distinct elements in the list
+	 */
+	public int countDistinct() {
+		return getDistinct().size();
 	}
 
 	@Override
