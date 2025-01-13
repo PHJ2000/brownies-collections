@@ -1521,12 +1521,17 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		Iterator<K> iteratorDistinctKeys() {
+			Iterator<K> iterator = null;
 			if (keysMap != null) {
 				if (count || (!allowDuplicates && (!allowNull || !allowDuplicatesNull))) {
-					return keysMap.keySet().iterator();
+					iterator = keysMap.keySet().iterator();
 				}
 			}
-			return getDistinctKeys().iterator();
+			if (iterator == null) {
+				iterator = getDistinctKeys().iterator();
+
+			}
+			return new ImmutableIterator<>(iterator);
 		}
 
 		int countDistinctKeys() {
