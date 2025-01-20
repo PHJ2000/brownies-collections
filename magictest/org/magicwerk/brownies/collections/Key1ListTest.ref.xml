@@ -55,6 +55,14 @@
       </error>
     </traceStep>
   </traceTest>
+  <captureTest name="testAddDuplicate">
+    <runDate>2025-01-17T14:11:39.3762408+01:00</runDate>
+    <runDuration>0.009149401</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">""</text>
+    </captureStep>
+  </captureTest>
   <captureTest name="testAsMap">
     <runDate>2015-09-16T01:00:08.166+02:00</runDate>
     <runDuration>0.018973849</runDuration>

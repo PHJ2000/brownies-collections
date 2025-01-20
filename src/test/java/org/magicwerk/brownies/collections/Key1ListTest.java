@@ -55,7 +55,8 @@ public class Key1ListTest {
 	}
 
 	static void test() {
-		testAdd();
+		//testAdd();
+		testAddDuplicate();
 		//testContains();
 		//testIndexOf();
 		//testImmutableList();
@@ -367,6 +368,23 @@ public class Key1ListTest {
 			list.add(t1);
 			list.add(t2);
 		}
+	}
+
+	@Capture
+	public static void testAddDuplicate() {
+		int ID = 1;
+		Ticket t1 = new Ticket(ID, "extId1", "text1");
+		Ticket t2 = new Ticket(ID, "extId2", "text2");
+		Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).build();
+		list.add(t1);
+		list.add(t2);
+
+		// After adding the elements, the identical key ID now references [ t1, t2 ] in this order
+		CheckTools.check(list.getAllByKey1(ID).equals(GapList.create(t1, t2)));
+		// Get returns first element
+		CheckTools.check(list.getByKey1(ID) == t1);
+		// Remove returns first element
+		CheckTools.check(list.removeByKey1(ID) == t1);
 	}
 
 	@Capture
