@@ -1442,6 +1442,23 @@ public abstract class IList<E>
 	// --- Static bulk transfer methods working with two ILists ---
 
 	/**
+	 * Copies elements from one list and adds them to another.
+	 * The elements and size of source list do not change, where as size of the destination grows.
+	 * Source and destination list can also be identical.
+	 *
+	 * @param src		source list
+	 * @param srcIndex	index of first element in source list
+	 * @param srcLen	number of elements to copy
+	 * @param dst		destination list
+	 * @param dstIndex	index of first element in destination list
+	 * @param <E> 		type of elements stored in the list
+	 * @throws 			IndexOutOfBoundsException if the ranges are invalid
+	 */
+	public static <E> void transferAdd(IList<E> src, int srcIndex, int srcLen, IList<? super E> dst, int dstIndex) {
+		src.doTransfer(TRANSFER_COPY, srcIndex, srcLen, dst, dstIndex, 0);
+	}
+
+	/**
 	 * Copies elements from one list to another.
 	 * Elements and size of source list do not change.
 	 * The elements in the specified range in the destination list are removed and
