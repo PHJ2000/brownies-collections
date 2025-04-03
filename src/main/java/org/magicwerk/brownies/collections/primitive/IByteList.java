@@ -383,8 +383,8 @@ public abstract class IByteList implements IByteListable, IPrimitiveList {
         return (int) elem;
     }
 
-    // See java.util.Collections.frequency(Collection<?>, Object)
     public int count(byte elem) {
+        // See java.util.Collections.frequency(Collection<Byte>, byte)
         int count = 0;
         int size = size();
         for (int i = 0; i < size; i++) {
@@ -460,9 +460,9 @@ public abstract class IByteList implements IByteListable, IPrimitiveList {
     }
 
     /**
-     * Returns distinct elements in the list.
+     * Returns set with distinct elements in the list.
      *
-     * @return		distinct elements in the list
+     * @return		set with distinct elements in the list
      */
     public Set<Byte> getDistinct() {
         Set<Byte> set = new HashSet();
@@ -471,6 +471,24 @@ public abstract class IByteList implements IByteListable, IPrimitiveList {
             set.add(doGet(i));
         }
         return set;
+    }
+
+    /**
+     * Returns iterator for distinct elements in the list.
+     *
+     * @return		iterator for distinct elements in the list
+     */
+    public Iterator iteratorDistinct() {
+        return getDistinct().iterator();
+    }
+
+    /**
+     * Returns count of distinct elements in the list.
+     *
+     * @return		count of distinct elements in the list
+     */
+    public int countDistinct() {
+        return getDistinct().size();
     }
 
     public <R> IList<R> map(Function<Byte, R> func) {
@@ -1343,6 +1361,23 @@ public abstract class IByteList implements IByteListable, IPrimitiveList {
         }
         doRemove(index);
         return true;
+    }
+
+    /**
+     * Copies elements from one list and adds them to another.
+     * The elements and size of source list do not change, where as size of the destination grows.
+     * Source and destination list can also be identical.
+     *
+     * @param src		source list
+     * @param srcIndex	index of first element in source list
+     * @param srcLen	number of elements to copy
+     * @param dst		destination list
+     * @param dstIndex	index of first element in destination list
+     * @param  		type of elements stored in the list
+     * @throws 			IndexOutOfBoundsException if the ranges are invalid
+     */
+    public static void transferAdd(IByteList src, int srcIndex, int srcLen, IByteList dst, int dstIndex) {
+        src.doTransfer(TRANSFER_COPY, srcIndex, srcLen, dst, dstIndex, 0);
     }
 
     /**

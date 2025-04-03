@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.Function;
+import org.magicwerk.brownies.collections.helper.CapacityHelper;
 import org.magicwerk.brownies.collections.IList;
 
 /**
@@ -458,7 +459,7 @@ public class CharGapList extends ICharList {
      * Checks whether elements are stored normalized, i.e. start is at position 0 and there is no gap.
      */
     boolean isNormalized() {
-        return start == 0 && gapSize == 0 && gapStart == 0 && gapIndex == 0;
+        return start == 0 && gapSize == 0;
     }
 
     /**
@@ -1178,18 +1179,7 @@ public class CharGapList extends ICharList {
      * @return	the new capacity to use
      */
     int calculateNewCapacity(int minCapacity) {
-        // Note: Same behavior as in ArrayList.ensureCapacity()
-        int oldCapacity = values.length;
-        if (minCapacity <= oldCapacity) {
-            // do not shrink
-            return values.length;
-        }
-        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity < minCapacity) {
-            newCapacity = minCapacity;
-        }
-        return newCapacity;
+        return CapacityHelper.calculateCapacity(minCapacity, values.length, DEFAULT_CAPACITY);
     }
 
     /**
@@ -1572,6 +1562,15 @@ public class CharGapList extends ICharList {
     public void init(String str) {
         char[] array = str.toCharArray();
         init(array, array.length);
+    }
+
+    @Override
+    public String toString() {
+        if (start == 0 && values.length == size) {
+            return new String(values);
+        } else {
+            return new String(toArray());
+        }
     }
 
     @Override

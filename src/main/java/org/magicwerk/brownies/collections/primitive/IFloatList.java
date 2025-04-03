@@ -384,8 +384,8 @@ public abstract class IFloatList implements IFloatListable, IPrimitiveList {
         return (int) elem;
     }
 
-    // See java.util.Collections.frequency(Collection<?>, Object)
     public int count(float elem) {
+        // See java.util.Collections.frequency(Collection<Float>, float)
         int count = 0;
         int size = size();
         for (int i = 0; i < size; i++) {
@@ -461,9 +461,9 @@ public abstract class IFloatList implements IFloatListable, IPrimitiveList {
     }
 
     /**
-     * Returns distinct elements in the list.
+     * Returns set with distinct elements in the list.
      *
-     * @return		distinct elements in the list
+     * @return		set with distinct elements in the list
      */
     public Set<Float> getDistinct() {
         Set<Float> set = new HashSet();
@@ -472,6 +472,24 @@ public abstract class IFloatList implements IFloatListable, IPrimitiveList {
             set.add(doGet(i));
         }
         return set;
+    }
+
+    /**
+     * Returns iterator for distinct elements in the list.
+     *
+     * @return		iterator for distinct elements in the list
+     */
+    public Iterator iteratorDistinct() {
+        return getDistinct().iterator();
+    }
+
+    /**
+     * Returns count of distinct elements in the list.
+     *
+     * @return		count of distinct elements in the list
+     */
+    public int countDistinct() {
+        return getDistinct().size();
     }
 
     public <R> IList<R> map(Function<Float, R> func) {
@@ -1344,6 +1362,23 @@ public abstract class IFloatList implements IFloatListable, IPrimitiveList {
         }
         doRemove(index);
         return true;
+    }
+
+    /**
+     * Copies elements from one list and adds them to another.
+     * The elements and size of source list do not change, where as size of the destination grows.
+     * Source and destination list can also be identical.
+     *
+     * @param src		source list
+     * @param srcIndex	index of first element in source list
+     * @param srcLen	number of elements to copy
+     * @param dst		destination list
+     * @param dstIndex	index of first element in destination list
+     * @param  		type of elements stored in the list
+     * @throws 			IndexOutOfBoundsException if the ranges are invalid
+     */
+    public static void transferAdd(IFloatList src, int srcIndex, int srcLen, IFloatList dst, int dstIndex) {
+        src.doTransfer(TRANSFER_COPY, srcIndex, srcLen, dst, dstIndex, 0);
     }
 
     /**

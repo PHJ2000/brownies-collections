@@ -616,6 +616,21 @@ public class BigListGapListTest {
 		BigList.transferCopy(l1, 0, 3, l1, 3, 2);
 	}
 
+	@Trace(parameters = Trace.THIS | Trace.ALL_PARAMS, result = Trace.PARAM0 | Trace.PARAM3)
+	public static void testTransferAdd() {
+		IList<Integer> l1 = getSortedBigList(7);
+		IList<Integer> l2 = getSortedBigList(7);
+		for (int i = 0; i < l2.size(); i++) {
+			l2.set(i, l2.get(i) + 10);
+		}
+
+		BigList.transferAdd(l1, 0, 3, l2, 0);
+
+		// transferCopy on one list
+		l1 = getSortedBigList(7);
+		BigList.transferAdd(l1, 0, 3, l1, 3);
+	}
+
 	@Trace(parameters = Trace.THIS | Trace.ALL_PARAMS, result = Trace.THIS)
 	public static void testClear() {
 		getSortedBigList(0).clear();

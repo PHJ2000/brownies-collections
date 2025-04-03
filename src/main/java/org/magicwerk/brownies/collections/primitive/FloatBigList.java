@@ -1423,7 +1423,7 @@ public class FloatBigList extends IFloatList {
          * Constructs a new node.
          *
          * @param parent			parent node (null for root)
-         * @param relativePosition  the relative position of the node (absolute position for root)
+         * @param relPos  			the relative position of the node (absolute position for root)
          * @param block				the block to store
          * @param rightFollower 	the node following this one
          * @param leftFollower 		the node leading this one
@@ -1500,7 +1500,7 @@ public class FloatBigList extends IFloatList {
         /**
          * Inserts new node holding specified block on the node's left side.
          *
-         * @param index 	index of the position relative to the position of the parent node
+         * @param relIndex 	index of the position relative to the position of the parent node
          * @param obj 		object to store in the position
          * @return			this node or node replacing this node in the tree (if tree must be rebalanced)
          */
@@ -1527,7 +1527,7 @@ public class FloatBigList extends IFloatList {
         /**
          * Inserts new node holding specified block on the node's right side.
          *
-         * @param index 	index of the position relative to the position of the parent node
+         * @param relIndex 	index of the position relative to the position of the parent node
          * @param obj 		object to store in the position
          * @return			this node or node replacing this node in the tree (if tree must be rebalanced)
          */

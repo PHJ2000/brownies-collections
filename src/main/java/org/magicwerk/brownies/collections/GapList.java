@@ -438,7 +438,7 @@ public class GapList<E> extends IList<E> {
 	 * Checks whether elements are stored normalized, i.e. start is at position 0 and there is no gap.
 	 */
 	boolean isNormalized() {
-		return start == 0 && gapSize == 0 && gapStart == 0 && gapIndex == 0;
+		return start == 0 && gapSize == 0;
 	}
 
 	/**

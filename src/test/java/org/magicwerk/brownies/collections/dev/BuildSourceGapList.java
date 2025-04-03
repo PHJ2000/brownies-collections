@@ -144,20 +144,30 @@ public class BuildSourceGapList extends FileBuilder {
 		src = substitute("Function\\<E, R\\>", src, "Function<{WRAPPER}, R>");
 
 		if ("char".equals(BuildSourceGapList.this.builder.getPrimitiveType())) {
-			String add = "   // Special string methods \r\n" +
-					"\r\n" +
-					"	public static CharGapList create(String str) {\r\n" +
-					"		return new CharGapList(str);\r\n" +
-					"	}\r\n" +
-					"\r\n" +
-					"	public CharGapList(String str) {\r\n" +
-					"		init(str);\r\n" +
-					"	}\r\n" +
-					"\r\n" +
-					"	public void init(String str) {\r\n" +
-					"		char[] array = str.toCharArray();\r\n" +
-					"		init(array, array.length);\r\n" +
-					"	}\r\n";
+			String add = "   // Special string methods \r\n"
+					+ "\r\n"
+					+ "	public static CharGapList create(String str) {\r\n"
+					+ "		return new CharGapList(str);\r\n"
+					+ "	}\r\n"
+					+ "\r\n"
+					+ "	public CharGapList(String str) {\r\n"
+					+ "		init(str);\r\n"
+					+ "	}\r\n"
+					+ "\r\n"
+					+ "	public void init(String str) {\r\n"
+					+ "		char[] array = str.toCharArray();\r\n"
+					+ "		init(array, array.length);\r\n"
+					+ "	}\r\n"
+					+ "\r\n"
+					+ "	@Override\r\n"
+					+ "	public String toString() {\r\n"
+					+ "		if (start == 0 && values.length == size) {\r\n"
+					+ "			return new String(values);\r\n"
+					+ "		} else {\r\n"
+					+ "			return new String(toArray());\r\n"
+					+ "		}\r\n"
+					+ "	}\r\n"
+					+ "";
 			int pos = src.lastIndexOf('}');
 			src = src.substring(0, pos) + add + src.substring(pos);
 		}

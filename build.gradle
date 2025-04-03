@@ -88,11 +88,6 @@ dependencies {
     testImplementation libraries.junit
     testImplementation libraries.guava_testlib
 }
-// Exclude old version which are otherwise referenced in Eclipse (coming from Rrownies-Collections)
-configurations.all {
-   exclude group: "org.apache.commons", module: "commons-lang3"
-   exclude group: "org.apache.commons", module: "commons-text"
-}
 
 
 javadoc {
