@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyMap;
 import org.magicwerk.brownies.collections.helper.Option;
 
 /**
@@ -394,18 +395,12 @@ public abstract class KeyListImpl<E> extends IList<E> {
 
 	@Override
 	protected void doRemoveAll(int index, int len) {
-		if (keyColl.isListSortedByElem()) {
-			for (int i = 0; i < len; i++) {
-				E removed = list.get(index);
-				keyColl.remove(removed);
-			}
-		} else {
-			for (int i = 0; i < len; i++) {
-				E removed = list.get(index + i);
-				keyColl.remove(removed);
-			}
-			list.doRemoveAll(index, len);
+		KeyMap<?, ?> ignore = (keyColl.isListSortedByElem()) ? keyColl.keyMaps[0] : null;
+		for (int i = 0; i < len; i++) {
+			E removed = list.get(index + i);
+			keyColl.remove(removed, ignore);
 		}
+		list.doRemoveAll(index, len);
 		if (DEBUG_CHECK)
 			debugCheck();
 	}

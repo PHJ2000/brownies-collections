@@ -74,7 +74,7 @@ public class CharBigList extends ICharList {
     /**
      * Set to true for debugging during developing
      */
-    private static final boolean CHECK = false;
+    private static final boolean DEBUG_CHECK = false;
 
     // -- EMPTY --
     // Cannot make a static reference to the non-static type E:
@@ -321,8 +321,53 @@ public class CharBigList extends ICharList {
         currCharBlockStart = 0;
         currCharBlockEnd = 0;
         currModify = 0;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
+    }
+
+    @Override
+    protected void doClear() {
+        doRelease();
+        rootNode = null;
+        currCharBlockStart = 0;
+        currCharBlockEnd = 0;
+        currModify = 0;
+        currNode = null;
+        size = 0;
+        doInit(blockSize, 0);
+    }
+
+    @Override
+    protected void finalize() {
+        // This list will be garbage collected, so unref all blocks.
+        // As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
+        if (rootNode != null) {
+            doRelease();
+        }
+    }
+
+    protected void doRelease() {
+        CharBlockNode node = rootNode.min();
+        while (node != null) {
+            node.block.unref();
+            node = node.next();
+        }
+    }
+
+    /**
+     * Explicitly release this instance of {@link CharBigList} by unreferencing all blocks.
+     * Calling this method manually can improve sharing of blocks as their reference count is updated before the GC is running.
+     * Note that you must not use the instance after calling release (typically NullPointerException will result).
+     */
+    public void release() {
+        doRelease();
+        rootNode = null;
+        currCharBlockStart = -1;
+        currCharBlockEnd = -1;
+        currModify = -1;
+        currNode = null;
+        size = -1;
+        blockSize = -1;
     }
 
     /**
@@ -349,17 +394,6 @@ public class CharBigList extends ICharList {
     @Override
     public char getDefaultElem() {
         return (char) 0;
-    }
-
-    @Override
-    protected void finalize() {
-        // This list will be garbage collected, so unref all referenced blocks.
-        // As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
-        CharBlockNode node = rootNode.min();
-        while (node != null) {
-            node.block.unref();
-            node = node.next();
-        }
     }
 
     @Override
@@ -636,8 +670,8 @@ public class CharBigList extends ICharList {
             }
         }
         size++;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return true;
     }
 
@@ -775,8 +809,8 @@ public class CharBigList extends ICharList {
         if (index == -1) {
             index = size;
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         int oldSize = size;
         if (list.size() == 1) {
             return doAdd(index, list.get(0));
@@ -804,8 +838,8 @@ public class CharBigList extends ICharList {
             }
         }
         assert (oldSize + addLen == size);
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return true;
     }
 
@@ -922,8 +956,8 @@ public class CharBigList extends ICharList {
             numElems -= should;
             numCharBlocks--;
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         while (numCharBlocks > 0) {
             int add = numElems / numCharBlocks;
             assert (add > 0);
@@ -941,21 +975,9 @@ public class CharBigList extends ICharList {
             currCharBlockEnd += add;
             size += add;
             numCharBlocks--;
-            if (CHECK)
-                check();
+            if (DEBUG_CHECK)
+                debugCheck();
         }
-    }
-
-    @Override
-    protected void doClear() {
-        finalize();
-        rootNode = null;
-        currCharBlockStart = 0;
-        currCharBlockEnd = 0;
-        currModify = 0;
-        currNode = null;
-        size = 0;
-        doInit(blockSize, 0);
     }
 
     @Override
@@ -995,13 +1017,13 @@ public class CharBigList extends ICharList {
             // Delete from start block
             doRemoveAll2(index, len, startPos, startNode, endNode);
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
     }
 
     private void doRemoveAll2(int index, int len, int startPos, CharBlockNode startNode, CharBlockNode endNode) {
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         int startLen = startNode.block.size() - startPos;
         getCharBlockIndex(index, true, -startLen);
         startNode.block.remove(startPos, startLen);
@@ -1027,8 +1049,8 @@ public class CharBigList extends ICharList {
                 }
                 len -= s;
                 size -= s;
-                if (CHECK)
-                    check();
+                if (DEBUG_CHECK)
+                    debugCheck();
             } else {
                 modify(currNode, -len);
                 currNode.block.remove(0, len);
@@ -1037,8 +1059,8 @@ public class CharBigList extends ICharList {
             }
         }
         releaseCharBlock();
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         getCharBlockIndex(index, false, 0);
         merge(currNode);
     }
@@ -1109,8 +1131,8 @@ public class CharBigList extends ICharList {
             }
         }
         size--;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return oldElem;
     }
 
@@ -1256,16 +1278,17 @@ public class CharBigList extends ICharList {
         }
     }
 
-    private void check() {
+    /**
+     * Check object invariants and fail with assert if violated.
+     * This method is only invoked in a debug build if DEBUG_HECK is true.
+     */
+    private void debugCheck() {
+        assert rootNode != null;
+        checkHeight(rootNode);
         if (currNode != null) {
             assert (currCharBlockStart >= 0 && currCharBlockEnd <= size && currCharBlockStart <= currCharBlockEnd);
             assert (currCharBlockStart + currNode.block.size() == currCharBlockEnd);
         }
-        if (rootNode == null) {
-            assert (size == 0);
-            return;
-        }
-        checkHeight(rootNode);
         CharBlockNode oldCurrNode = currNode;
         int oldCurrModify = currModify;
         if (currModify != 0) {

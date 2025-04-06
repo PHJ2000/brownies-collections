@@ -74,7 +74,7 @@ public class IntBigList extends IIntList {
     /**
      * Set to true for debugging during developing
      */
-    private static final boolean CHECK = false;
+    private static final boolean DEBUG_CHECK = false;
 
     // -- EMPTY --
     // Cannot make a static reference to the non-static type E:
@@ -321,8 +321,53 @@ public class IntBigList extends IIntList {
         currIntBlockStart = 0;
         currIntBlockEnd = 0;
         currModify = 0;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
+    }
+
+    @Override
+    protected void doClear() {
+        doRelease();
+        rootNode = null;
+        currIntBlockStart = 0;
+        currIntBlockEnd = 0;
+        currModify = 0;
+        currNode = null;
+        size = 0;
+        doInit(blockSize, 0);
+    }
+
+    @Override
+    protected void finalize() {
+        // This list will be garbage collected, so unref all blocks.
+        // As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
+        if (rootNode != null) {
+            doRelease();
+        }
+    }
+
+    protected void doRelease() {
+        IntBlockNode node = rootNode.min();
+        while (node != null) {
+            node.block.unref();
+            node = node.next();
+        }
+    }
+
+    /**
+     * Explicitly release this instance of {@link IntBigList} by unreferencing all blocks.
+     * Calling this method manually can improve sharing of blocks as their reference count is updated before the GC is running.
+     * Note that you must not use the instance after calling release (typically NullPointerException will result).
+     */
+    public void release() {
+        doRelease();
+        rootNode = null;
+        currIntBlockStart = -1;
+        currIntBlockEnd = -1;
+        currModify = -1;
+        currNode = null;
+        size = -1;
+        blockSize = -1;
     }
 
     /**
@@ -349,17 +394,6 @@ public class IntBigList extends IIntList {
     @Override
     public int getDefaultElem() {
         return 0;
-    }
-
-    @Override
-    protected void finalize() {
-        // This list will be garbage collected, so unref all referenced blocks.
-        // As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
-        IntBlockNode node = rootNode.min();
-        while (node != null) {
-            node.block.unref();
-            node = node.next();
-        }
     }
 
     @Override
@@ -636,8 +670,8 @@ public class IntBigList extends IIntList {
             }
         }
         size++;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return true;
     }
 
@@ -775,8 +809,8 @@ public class IntBigList extends IIntList {
         if (index == -1) {
             index = size;
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         int oldSize = size;
         if (list.size() == 1) {
             return doAdd(index, list.get(0));
@@ -804,8 +838,8 @@ public class IntBigList extends IIntList {
             }
         }
         assert (oldSize + addLen == size);
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return true;
     }
 
@@ -922,8 +956,8 @@ public class IntBigList extends IIntList {
             numElems -= should;
             numIntBlocks--;
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         while (numIntBlocks > 0) {
             int add = numElems / numIntBlocks;
             assert (add > 0);
@@ -941,21 +975,9 @@ public class IntBigList extends IIntList {
             currIntBlockEnd += add;
             size += add;
             numIntBlocks--;
-            if (CHECK)
-                check();
+            if (DEBUG_CHECK)
+                debugCheck();
         }
-    }
-
-    @Override
-    protected void doClear() {
-        finalize();
-        rootNode = null;
-        currIntBlockStart = 0;
-        currIntBlockEnd = 0;
-        currModify = 0;
-        currNode = null;
-        size = 0;
-        doInit(blockSize, 0);
     }
 
     @Override
@@ -995,13 +1017,13 @@ public class IntBigList extends IIntList {
             // Delete from start block
             doRemoveAll2(index, len, startPos, startNode, endNode);
         }
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
     }
 
     private void doRemoveAll2(int index, int len, int startPos, IntBlockNode startNode, IntBlockNode endNode) {
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         int startLen = startNode.block.size() - startPos;
         getIntBlockIndex(index, true, -startLen);
         startNode.block.remove(startPos, startLen);
@@ -1027,8 +1049,8 @@ public class IntBigList extends IIntList {
                 }
                 len -= s;
                 size -= s;
-                if (CHECK)
-                    check();
+                if (DEBUG_CHECK)
+                    debugCheck();
             } else {
                 modify(currNode, -len);
                 currNode.block.remove(0, len);
@@ -1037,8 +1059,8 @@ public class IntBigList extends IIntList {
             }
         }
         releaseIntBlock();
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         getIntBlockIndex(index, false, 0);
         merge(currNode);
     }
@@ -1109,8 +1131,8 @@ public class IntBigList extends IIntList {
             }
         }
         size--;
-        if (CHECK)
-            check();
+        if (DEBUG_CHECK)
+            debugCheck();
         return oldElem;
     }
 
@@ -1256,16 +1278,17 @@ public class IntBigList extends IIntList {
         }
     }
 
-    private void check() {
+    /**
+     * Check object invariants and fail with assert if violated.
+     * This method is only invoked in a debug build if DEBUG_HECK is true.
+     */
+    private void debugCheck() {
+        assert rootNode != null;
+        checkHeight(rootNode);
         if (currNode != null) {
             assert (currIntBlockStart >= 0 && currIntBlockEnd <= size && currIntBlockStart <= currIntBlockEnd);
             assert (currIntBlockStart + currNode.block.size() == currIntBlockEnd);
         }
-        if (rootNode == null) {
-            assert (size == 0);
-            return;
-        }
-        checkHeight(rootNode);
         IntBlockNode oldCurrNode = currNode;
         int oldCurrModify = currModify;
         if (currModify != 0) {

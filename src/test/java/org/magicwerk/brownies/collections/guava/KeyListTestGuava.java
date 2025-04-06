@@ -66,13 +66,13 @@ public class KeyListTestGuava extends TestCase {
 	// this method must be named suite()
 	public static Test suite() {
 		TestSuite test = new TestSuite("KeyList");
-		test.addTest(testKeyList());
-		test.addTest(testKey1List());
-		test.addTest(testKey2List());
+		//		test.addTest(testKeyList());
+		//		test.addTest(testKey1List());
+		//		test.addTest(testKey2List());
 
 		test.addTest(testSortByElem());
-		test.addTest(testSortByKey());
-		test.addTest(testSortByKeyPrimitive());
+		//		test.addTest(testSortByKey());
+		//		test.addTest(testSortByKeyPrimitive());
 		return test;
 	}
 

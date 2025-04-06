@@ -3814,6 +3814,47 @@
       <error></error>
     </traceStep>
   </traceTest>
+  <traceTest name="testTransferAdd">
+    <runDate>2025-04-06T20:41:00.6275925+02:00</runDate>
+    <runDuration>6.666E-4</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.BigList</traceClass>
+    <traceMethod>transferAdd</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"transferAdd"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#2">"0"</paramText>
+        <paramText outputType="VALUE" param="#3">"3"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 10, 11, 12, 13, 14, 15, 16 }"</paramText>
+        <paramText outputType="VALUE" param="#5">"0"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 10, 11, 12, 13, 14, 15, 16 }"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"transferAdd"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#2">"0"</paramText>
+        <paramText outputType="VALUE" param="#3">"3"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#5">"3"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
   <traceTest name="testTransferCopy">
     <runDate>2015-03-01T14:56:33.611+01:00</runDate>
     <runDuration>0.029108274</runDuration>

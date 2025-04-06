@@ -1208,6 +1208,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					mapIter.remove();
 				}
 				keyColl.remove(elem, keyMap);
+
+				if (DEBUG_CHECK)
+					keyColl.debugCheck();
 			}
 		}
 
@@ -1268,6 +1271,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					mapIter.remove();
 				}
 				keyColl.size--;
+
+				if (DEBUG_CHECK)
+					keyColl.debugCheck();
 			}
 		}
 
@@ -2073,7 +2079,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 	@Override
 	public boolean remove(Object elem) {
-		return remove(elem, null);
+		boolean removed = remove(elem, null);
+		if (DEBUG_CHECK)
+			debugCheck();
+		return removed;
 	}
 
 	void checkAddElem(E elem) {
@@ -2097,8 +2106,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		if (removed.hasValue() || ignore != null) {
 			size--;
 		}
-		if (DEBUG_CHECK)
-			debugCheck();
 		afterDelete((E) elem);
 		return removed.hasValue();
 	}

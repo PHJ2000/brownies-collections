@@ -698,6 +698,7 @@ public abstract class IList<E>
 			}
 		}
 		if (dst < size) {
+			// doRemoveAll must handle the case correctly that a sorted list may be not sorted after moving elements until the removal has taken place
 			doRemoveAll(dst, size - dst);
 		}
 		return dst < size;

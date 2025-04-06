@@ -1326,8 +1326,8 @@ public class DoubleGapList extends IDoubleList {
     }
 
     /**
-     * Private method to check invariant of DoubleGapList.
-     * It is only used for debugging.
+     * Check object invariants and fail with assert if violated.
+     * This method is only invoked in a debug build if DEBUG_CHECK is true.
      */
     private void debugCheck() {
         // If the DoubleGapList is not used for storing content in KeyListImpl, values may be 0

@@ -85,7 +85,6 @@ dependencies {
     testImplementation "org.magicwerk.magictest:magictest-ng:0.9.11"
 
     testImplementation libraries.junit
-    testImplementation libraries.junit
     testImplementation libraries.guava_testlib
 }
 
