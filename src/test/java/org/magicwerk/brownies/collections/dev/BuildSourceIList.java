@@ -239,7 +239,11 @@ public class BuildSourceIList extends FileBuilder {
 							+ "	@Override\r\n" 
 							+ "	public CharSequence subSequence(int start, int end) {\r\n" 
 							+ "		return getAll(start, end-start);\r\n"
-							+ "	}\r\n";
+							+ "	}\r\n"
+							+ "\r\n"
+							+ "	public abstract void init(String str); \r\n" 
+							+ "\r\n"
+							+ "	public abstract void init(CharSequence str); \r\n"; 
 			//@formatter:on
 			int pos = src.lastIndexOf('}');
 			src = src.substring(0, pos) + add + src.substring(pos);

@@ -1933,6 +1933,15 @@ public class CharBigList extends ICharList {
         init(str);
     }
 
+    public void init(CharSequence str) {
+        int len = str.length();
+        char[] array = new char[len];
+        for (int i = 0; i < len; i++) {
+            array[i] = str.charAt(i);
+        }
+        initArray(array);
+    }
+
     public void init(String str) {
         char[] array = str.toCharArray();
         initArray(array);

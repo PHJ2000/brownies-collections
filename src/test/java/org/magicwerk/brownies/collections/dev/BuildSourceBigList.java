@@ -198,7 +198,15 @@ public class BuildSourceBigList extends FileBuilder {
 					"	public CharBigList(String str) {\r\n" +
 					"		init(str);\r\n" +
 					"	}\r\n" +
-					"\r\n" +
+					"\r\n"
+					+ "	public void init(CharSequence str) {\r\n"
+					+ "		int len = str.length();\r\n"
+					+ "		char[] array = new char[len];\r\n"
+					+ "		for (int i=0; i<len; i++) {\r\n"
+					+ "			array[i] = str.charAt(i);\r\n"
+					+ "		}\r\n"
+					+ "		initArray(array);\r\n" // TODO array is copied twice
+					+ "	}\r\n" +
 					"	public void init(String str) {\r\n" +
 					"		char[] array = str.toCharArray();\r\n" +
 					"		initArray(array);\r\n" + // TODO array is copied twice

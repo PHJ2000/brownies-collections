@@ -627,6 +627,7 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
             }
         }
         if (dst < size) {
+            // doRemoveAll must handle the case correctly that a sorted list may be not sorted after moving elements until the removal has taken place
             doRemoveAll(dst, size - dst);
         }
         return dst < size;
@@ -2535,6 +2536,10 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
     public CharSequence subSequence(int start, int end) {
         return getAll(start, end - start);
     }
+
+    public abstract void init(String str);
+
+    public abstract void init(CharSequence str);
 
     // Implementation of IPrimitiveList
     @Override
