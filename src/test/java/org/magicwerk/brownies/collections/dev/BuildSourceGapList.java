@@ -161,7 +161,7 @@ public class BuildSourceGapList extends FileBuilder {
 					+ "	public void init(CharSequence str) {\r\n"
 					+ "		int len = str.length();\r\n"
 					+ "		char[] array = new char[len];\r\n"
-					+ "		for (int i=0; i<len; i++) {;\r\n"
+					+ "		for (int i=0; i<len; i++) {\r\n"
 					+ "			array[i] = str.charAt(i);\r\n"
 					+ "		}\r\n"
 					+ "		init(array, array.length);\r\n"

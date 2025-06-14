@@ -2541,6 +2541,35 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
 
     public abstract void init(CharSequence str);
 
+    /**
+     * Wrapper to treat a {@link CharSequence} as {@link ICharListable}.
+     */
+    protected static class ICharListableFromCharSequence implements ICharListable {
+
+        CharSequence str;
+
+        ICharListableFromCharSequence(CharSequence str) {
+            this.str = str;
+        }
+
+        public int size() {
+            return str.length();
+        }
+
+        public char get(int index) {
+            return str.charAt(index);
+        }
+    }
+
+    public boolean addString(CharSequence str) {
+        return doAddAll(-1, new ICharListableFromCharSequence(str));
+    }
+
+    public boolean addString(int index, CharSequence str) {
+        checkIndexAdd(index);
+        return doAddAll(index, new ICharListableFromCharSequence(str));
+    }
+
     // Implementation of IPrimitiveList
     @Override
     public Class<?> getPrimitiveClass() {

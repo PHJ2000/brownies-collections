@@ -1568,7 +1568,6 @@ public class CharGapList extends ICharList {
         int len = str.length();
         char[] array = new char[len];
         for (int i = 0; i < len; i++) {
-            ;
             array[i] = str.charAt(i);
         }
         init(array, array.length);
