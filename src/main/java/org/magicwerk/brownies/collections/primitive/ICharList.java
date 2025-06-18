@@ -2548,16 +2548,28 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
 
         CharSequence str;
 
+        int off;
+
+        int len;
+
         ICharListableFromCharSequence(CharSequence str) {
             this.str = str;
+            this.off = 0;
+            this.len = str.length();
+        }
+
+        ICharListableFromCharSequence(CharSequence str, int off, int len) {
+            this.str = str;
+            this.off = off;
+            this.len = len;
         }
 
         public int size() {
-            return str.length();
+            return len;
         }
 
         public char get(int index) {
-            return str.charAt(index);
+            return str.charAt(off + index);
         }
     }
 
@@ -2565,9 +2577,26 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
         return doAddAll(-1, new ICharListableFromCharSequence(str));
     }
 
+    public boolean addString(CharSequence str, int off, int len) {
+        return doAddAll(-1, new ICharListableFromCharSequence(str, off, len));
+    }
+
     public boolean addString(int index, CharSequence str) {
         checkIndexAdd(index);
         return doAddAll(index, new ICharListableFromCharSequence(str));
+    }
+
+    public boolean addString(int index, CharSequence str, int off, int len) {
+        checkIndexAdd(index);
+        return doAddAll(index, new ICharListableFromCharSequence(str, off, len));
+    }
+
+    public void putString(int index, CharSequence str) {
+        doPutAll(index, new ICharListableFromCharSequence(str));
+    }
+
+    public void putString(int index, CharSequence str, int off, int len) {
+        doPutAll(index, new ICharListableFromCharSequence(str, off, len));
     }
 
     // Implementation of IPrimitiveList
