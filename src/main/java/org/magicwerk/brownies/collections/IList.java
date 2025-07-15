@@ -601,22 +601,6 @@ public abstract class IList<E>
 	}
 
 	/**
-	 * Create a new list by applying the specified transforming operator to all elements.
-	 *
-	 * @param op	transforming operator
-	 * @return		created list
-	 */
-	public IList<E> transformedList(UnaryOperator<E> op) {
-		int size = size();
-		IList<E> list = doCreate(size);
-		for (int i = 0; i < size; i++) {
-			E e = doGet(i);
-			list.add(op.apply(e));
-		}
-		return list;
-	}
-
-	/**
 	 * Change the list by applying the specified operator to all elements.
 	 *
 	 * @param op	transforming operator
