@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.magicwerk.brownies.collections.GapList;
 import org.magicwerk.brownies.core.regex.RegexTools;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -15,6 +16,10 @@ import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import com.github.javaparser.printer.configuration.PrettyPrinterConfiguration;
 
+/**
+ * Class {@link RefactorVisitor} prints source code by refactoring the passed {@link CompilationUnit} as configured by 
+ * {@link #removeTypes}, {@link #removeMethods}, {@link #refactorMethods}.
+ */
 public class RefactorVisitor extends DefaultPrettyPrinterVisitor {
 
 	public static class RefactorMethod {

@@ -194,11 +194,13 @@ public class BuildSource {
 			return src;
 		}
 
+		/** Read source string into {@link CompilationUnit} */
 		CompilationUnit readSource(String src) {
 			CompilationUnit cu = javaParserReader.parseCompilationUnit(src);
 			return cu;
 		}
 
+		/** Write {@link CompilationUnit} as source string */
 		String writeSource(CompilationUnit cu) {
 			return cu.toString();
 		}
@@ -208,6 +210,7 @@ public class BuildSource {
 			return visitor.toString();
 		}
 
+		/** Read text content from file */
 		String readFile(String file) {
 			return FileTools.readFile().setFile(file).readText();
 		}
