@@ -543,22 +543,6 @@ public abstract class IDoubleList implements IDoubleListable, IPrimitiveList {
     }
 
     /**
-     * Create a new list by applying the specified transforming operator to all elements.
-     *
-     * @param op	transforming operator
-     * @return		created list
-     */
-    public IDoubleList transformedList(UnaryOperator<Double> op) {
-        int size = size();
-        IDoubleList list = doCreate(size);
-        for (int i = 0; i < size; i++) {
-            double e = doGet(i);
-            list.add(op.apply(e));
-        }
-        return list;
-    }
-
-    /**
      * Change the list by applying the specified operator to all elements.
      *
      * @param op	transforming operator

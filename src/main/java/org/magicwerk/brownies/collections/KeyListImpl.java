@@ -34,7 +34,7 @@ import org.magicwerk.brownies.collections.helper.Option;
  * @param <E> type of elements stored in the list
  */
 @SuppressWarnings("serial")
-public abstract class KeyListImpl<E> extends IList<E> {
+public class KeyListImpl<E> extends IList<E> {
 
 	/**
 	 * Key collection used for key storage (never null).
@@ -74,20 +74,43 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	@Override
-	public KeyListImpl<E> clone() {
+	public KeyListImpl<E> copy() {
+		if (isReadOnly()) {
+			KeyListImpl<E> list = new KeyListImpl<>(null);
+			list.initCopy(this);
+			return list;
+		} else {
+			return doCopy();
+		}
+	}
+
+	protected KeyListImpl<E> doCopy() {
 		KeyListImpl<E> copy = (KeyListImpl<E>) super.clone();
 		copy.initCopy(this);
 		return copy;
 	}
 
-	/**
-	 * Returns a copy this list but without elements.	 
-	 * The new list will have the same type as this list and use the same comparator, ordering, etc.
-	 * 
-	 * @return  an empty copy of this list
-	 */
+	@Override
+	public KeyListImpl<E> clone() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return doCopy();
+		}
+	}
+
 	@Override
 	public KeyListImpl<E> crop() {
+		if (isReadOnly()) {
+			KeyListImpl<E> list = new KeyListImpl<>(null);
+			list.initCrop(this);
+			return list;
+		} else {
+			return doCrop();
+		}
+	}
+
+	protected KeyListImpl<E> doCrop() {
 		KeyListImpl<E> copy = (KeyListImpl<E>) super.clone();
 		copy.initCrop(this);
 		return copy;
@@ -827,108 +850,129 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		return list.doCreate(capacity);
 	}
 
-	//-- Key methods
-	// The key methods can not be defined here.
-	// Due to the generic type parameters, the methods cannot be overridden.
+	// --- ReadOnlyKeyListImpl ---
 
-	//-- Invalidate
+	@Override
+	public boolean isReadOnly() {
+		return this instanceof ReadOnlyKeyListImpl;
+	}
 
-	//
-	//  public void invalidate(E elem) {
-	//  	int index = indexOf(elem);
-	//  	if (index == -1) {
-	//  		throw new IllegalArgumentException("Element not found: " + elem);
-	//  	}
-	//  	invalidate(index);
-	//  }
-	//
-	//  public void invalidate(int index) {
-	//  	E elem = doGet(index);
-	//      for (int i=0; i<keyMaps.length; i++) {
-	//  		Object key = invalidate(keyMaps[i], elem);
-	//  		if (key != null) {
-	//  			if (i == 0 && keyMaps[i].sortedKeys != null && keyMaps[i].sortedKeys != this) {
-	//  				// First key is sorted
-	//  				int idx = super.indexOf(elem);
-	//  				super.doRemove(idx);
-	//  				idx = doAddKey(keyMaps[i], -1, elem);
-	//  				super.doAdd(idx, elem);
-	//  			} else {
-	//  				// Not first or not sorted key
-	//  				doAddKey(keyMaps[i], -1, elem);
-	//  			}
-	//  		}
-	//      }
-	//      if (DEBUG_CHECK) debugCheck();
-	//  }
-	//
-	//  /**
-	//   * @param keyMap
-	//   * @param elem
-	//   * @return			null if key for keyMap and element is correct, else key which must be added to keymap
-	//   */
-	//  private Object invalidate(KeyMap keyMap, Object elem) {
-	//  	boolean allowDuplicates = (keyMap.duplicateMode == DuplicateMode.ALLOW);
-	//  	Object key = keyMap.mapper.getKey(elem);
-	//
-	//  	if (keyMap.unsortedKeys != null) {
-	//  		Iterator<Map.Entry> iter = keyMap.unsortedKeys.entrySet().iterator();
-	//  		while (iter.hasNext()) {
-	//  		    Map.Entry entry = iter.next();
-	//  		    if (equalsElem(elem, entry.getValue())) {
-	//  		    	if (equalsElem(key, entry.getKey())) {
-	//  		    		return null;
-	//  		    	}
-	//  		        iter.remove();
-	//  		        if (!allowDuplicates) {
-	//  		        	break;
-	//  		        }
-	//  		    }
-	//  		}
-	//  	} else {
-	//  		assert(keyMap.sortedKeys != null);
-	//  		for (int i=0; i<size(); i++) {
-	//  			if (equalsElem(elem, doGet(i))) {
-	//  				if (equalsElem(key, keyMap.sortedKeys.get(i))) {
-	//  					return null;
-	//  				}
-	//  				keyMap.sortedKeys.remove(i);
-	//  		        if (!allowDuplicates) {
-	//  		        	break;
-	//  		        }
-	//  			}
-	//  		}
-	//  	}
-	//  	return key;
-	//  }
+	@Override
+	public KeyListImpl<E> unmodifiableList() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return new ReadOnlyKeyListImpl<E>(this);
+		}
+	}
 
-	//	// Fast doAddAll() implementation for window size
-	//	protected boolean doAddAll(int index, E[] array) {
-	//        checkIndexAdd(index);
-	//
-	//        int addSize = array.length;
-	//		if (addSize == 0) {
-	//			return false;
-	//		}
-	//		int overlap = size()+addSize - maxSize;
-	//		if (overlap > 0) {
-	//			if (index >= overlap) {
-	//				super.remove(0, overlap);
-	//			} else {
-	//				super.remove(0, index);
-	//			}
-	//			index = index - overlap;
-	//		}
-	//		if (index >= 0) {
-	//			for (int i=0; i<addSize; i++) {
-	//				super.doAdd(index+i, array[i]);
-	//			}
-	//		} else {
-	//			for (int i=0; i<addSize+index; i++) {
-	//				super.doAdd(0, array[i-index]);
-	//			}
-	//		}
-	//		return true;
-	//	}
+	@Override
+	public KeyListImpl<E> immutableList() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return new ReadOnlyKeyListImpl<E>(copy());
+		}
+	}
+
+	protected KeyListImpl(KeyListImpl<E> that) {
+		if (that != null) {
+			doAssign(that);
+		}
+	}
+
+	/**
+	 * A read-only version of {@link KeyList}.
+	 * It is used to implement both unmodifiable and immutable lists.
+	 * Note that the client cannot change the list, but the content may change if the underlying list is changed.
+	 */
+	protected static class ReadOnlyKeyListImpl<E> extends KeyListImpl<E> {
+
+		/** UID for serialization */
+		private static final long serialVersionUID = -1352274047348922584L;
+
+		/**
+		 * Private constructor used internally.
+		 *
+		 * @param that  list to create an immutable view of
+		 */
+		protected ReadOnlyKeyListImpl(KeyListImpl<E> that) {
+			super(that);
+		}
+
+		@Override
+		protected void doEnsureCapacity(int capacity) {
+			error();
+		}
+
+		@Override
+		protected boolean doAdd(int index, E elem) {
+			error();
+			return false;
+		}
+
+		@Override
+		protected E doSet(int index, E elem) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E doReSet(int index, E elem) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E doRemove(int index) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected void doRemoveAll(int index, int len) {
+			error();
+		}
+
+		@Override
+		protected void doClear() {
+			error();
+		}
+
+		@Override
+		protected void doModify() {
+			error();
+		}
+
+		@Override
+		protected E removeByKey(int keyIndex, Object key) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected IList<E> removeAllByKey(int keyIndex, Object key) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E putByKey(int keyIndex, E elem, boolean replace) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected void invalidateKey(int keyIndex, Object oldKey, Object newKey, E elem) {
+			error();
+		}
+
+		/**
+		 * Throw exception if an attempt is made to change an immutable list.
+		 */
+		private void error() {
+			throw new UnsupportedOperationException("list is immutable");
+		}
+	}
 
 }

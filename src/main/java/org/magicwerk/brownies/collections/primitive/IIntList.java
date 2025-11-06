@@ -542,22 +542,6 @@ public abstract class IIntList implements IIntListable, IPrimitiveList {
     }
 
     /**
-     * Create a new list by applying the specified transforming operator to all elements.
-     *
-     * @param op	transforming operator
-     * @return		created list
-     */
-    public IIntList transformedList(UnaryOperator<Integer> op) {
-        int size = size();
-        IIntList list = doCreate(size);
-        for (int i = 0; i < size; i++) {
-            int e = doGet(i);
-            list.add(op.apply(e));
-        }
-        return list;
-    }
-
-    /**
      * Change the list by applying the specified operator to all elements.
      *
      * @param op	transforming operator

@@ -532,22 +532,6 @@ public abstract class ICharList implements ICharListable, IPrimitiveList, CharSe
     }
 
     /**
-     * Create a new list by applying the specified transforming operator to all elements.
-     *
-     * @param op	transforming operator
-     * @return		created list
-     */
-    public ICharList transformedList(UnaryOperator<Character> op) {
-        int size = size();
-        ICharList list = doCreate(size);
-        for (int i = 0; i < size; i++) {
-            char e = doGet(i);
-            list.add(op.apply(e));
-        }
-        return list;
-    }
-
-    /**
      * Change the list by applying the specified operator to all elements.
      *
      * @param op	transforming operator

@@ -543,22 +543,6 @@ public abstract class IFloatList implements IFloatListable, IPrimitiveList {
     }
 
     /**
-     * Create a new list by applying the specified transforming operator to all elements.
-     *
-     * @param op	transforming operator
-     * @return		created list
-     */
-    public IFloatList transformedList(UnaryOperator<Float> op) {
-        int size = size();
-        IFloatList list = doCreate(size);
-        for (int i = 0; i < size; i++) {
-            float e = doGet(i);
-            list.add(op.apply(e));
-        }
-        return list;
-    }
-
-    /**
      * Change the list by applying the specified operator to all elements.
      *
      * @param op	transforming operator

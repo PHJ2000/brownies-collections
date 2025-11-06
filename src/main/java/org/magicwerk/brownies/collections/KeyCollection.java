@@ -38,7 +38,7 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	/**
 	 * Builder to construct KeyCollection instances.
 	 */
-	public static class Builder<E> extends BuilderImpl<E> {
+	public static class Builder<E> extends BuilderImpl<E, Builder<E>> {
 		/**
 		 * Default constructor.
 		 */
@@ -72,69 +72,69 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 
 		@Override
 		public Builder<E> withNull(boolean allowNull) {
-			return (Builder<E>) super.withNull(allowNull);
+			return super.withNull(allowNull);
 		}
 
 		@Override
 		public Builder<E> withConstraint(Predicate<E> constraint) {
-			return (Builder<E>) super.withConstraint(constraint);
+			return super.withConstraint(constraint);
 		}
 
 		// -- Triggers
 
 		@Override
 		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
+			return super.withBeforeInsertTrigger(trigger);
 		}
 
 		@Override
 		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterInsertTrigger(trigger);
+			return super.withAfterInsertTrigger(trigger);
 		}
 
 		@Override
 		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
+			return super.withBeforeDeleteTrigger(trigger);
 		}
 
 		@Override
 		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
+			return super.withAfterDeleteTrigger(trigger);
 		}
 
 		//-- Content
 
 		@Override
 		public Builder<E> withCapacity(int capacity) {
-			return (Builder<E>) super.withCapacity(capacity);
+			return super.withCapacity(capacity);
 		}
 
 		@Override
 		public Builder<E> withContent(Collection<? extends E> elements) {
-			return (Builder<E>) super.withContent(elements);
+			return super.withContent(elements);
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
 		public Builder<E> withContent(E... elements) {
-			return (Builder<E>) super.withContent(elements);
+			return super.withContent(elements);
 		}
 
 		@Override
 		public Builder<E> withMaxSize(int maxSize) {
-			return (Builder<E>) super.withMaxSize(maxSize);
+			return super.withMaxSize(maxSize);
 		}
 
 		//-- Element key
 
 		@Override
 		public Builder<E> withSetBehavior(boolean setBehavior) {
-			return (Builder<E>) super.withSetBehavior(setBehavior);
+			return super.withSetBehavior(setBehavior);
 		}
 
 		@Override
 		public Builder<E> withElemCount(boolean count) {
-			return (Builder<E>) super.withElemCount(count);
+			return super.withElemCount(count);
 		}
 
 		/**
@@ -144,52 +144,52 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 		 */
 		@Override
 		public Builder<E> withElemSet() {
-			return (Builder<E>) super.withElemSet();
+			return super.withElemSet();
 		}
 
 		@Override
 		public Builder<E> withOrderByElem(boolean orderBy) {
-			return (Builder<E>) super.withOrderByElem(orderBy);
+			return super.withOrderByElem(orderBy);
 		}
 
 		@Override
 		public Builder<E> withElemNull(boolean allowNull) {
-			return (Builder<E>) super.withElemNull(allowNull);
+			return super.withElemNull(allowNull);
 		}
 
 		@Override
 		public Builder<E> withElemDuplicates(boolean allowDuplicates) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates);
+			return super.withElemDuplicates(allowDuplicates);
 		}
 
 		@Override
 		public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
+			return super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
 		}
 
 		@Override
 		public Builder<E> withElemSort(boolean sort) {
-			return (Builder<E>) super.withElemSort(sort);
+			return super.withElemSort(sort);
 		}
 
 		@Override
 		public Builder<E> withElemSort(Comparator<? super E> comparator) {
-			return (Builder<E>) super.withElemSort(comparator);
+			return super.withElemSort(comparator);
 		}
 
 		@Override
 		public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
+			return super.withElemSort(comparator, sortNullsFirst);
 		}
 
 		@Override
 		public Builder<E> withPrimaryElem() {
-			return (Builder<E>) super.withPrimaryElem();
+			return super.withPrimaryElem();
 		}
 
 		@Override
 		public Builder<E> withUniqueElem() {
-			return (Builder<E>) super.withUniqueElem();
+			return super.withUniqueElem();
 		}
 
 	}

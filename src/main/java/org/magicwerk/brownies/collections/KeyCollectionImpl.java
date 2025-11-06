@@ -64,7 +64,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	/**
 	 * Implementation of builder.
 	 */
-	public static class BuilderImpl<E> {
+	public static class BuilderImpl<E, B extends BuilderImpl<E, B>> {
 
 		public static class KeyMapBuilder<E, K> {
 			/** True to order collection by this key map */
@@ -121,6 +121,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		// Interface
 
+		protected B cast() {
+			return (B) this;
+		}
+
 		/**
 		 * Specifies whether null elements are allowed or not.
 		 * A null element will have null keys.
@@ -129,12 +133,12 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements (default), false to disallow
 		 * @return          this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withNull(boolean allowNull) {
+		protected B withNull(boolean allowNull) {
 			this.allowNullElem = allowNull;
 			if (hasElemMapBuilder()) {
 				getKeyMapBuilder(0).allowNull = allowNull;
 			}
-			return this;
+			return cast();
 		}
 
 		/**
@@ -143,9 +147,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param constraint	constraint element must satisfy, null for none (default)
 		 * @return 				this (fluent interface)
 		 */
-		protected BuilderImpl<E> withConstraint(Predicate<E> constraint) {
+		protected B withConstraint(Predicate<E> constraint) {
 			this.constraint = constraint;
-			return this;
+			return cast();
 		}
 
 		// -- Triggers
@@ -156,9 +160,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withBeforeInsertTrigger(Consumer<E> trigger) {
+		protected B withBeforeInsertTrigger(Consumer<E> trigger) {
 			this.beforeInsertTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -167,9 +171,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withAfterInsertTrigger(Consumer<E> trigger) {
+		protected B withAfterInsertTrigger(Consumer<E> trigger) {
 			this.afterInsertTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -178,9 +182,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
+		protected B withBeforeDeleteTrigger(Consumer<E> trigger) {
 			this.beforeDeleteTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -189,9 +193,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withAfterDeleteTrigger(Consumer<E> trigger) {
+		protected B withAfterDeleteTrigger(Consumer<E> trigger) {
 			this.afterDeleteTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		//-- Content
@@ -202,9 +206,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param capacity	initial capacity
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withCapacity(int capacity) {
+		protected B withCapacity(int capacity) {
 			this.capacity = capacity;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -213,9 +217,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param elements	initial elements
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withContent(Collection<? extends E> elements) {
+		protected B withContent(Collection<? extends E> elements) {
 			this.collection = elements;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -225,9 +229,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return			this (fluent interface)
 		 */
 		@SuppressWarnings("unchecked")
-		protected BuilderImpl<E> withContent(E... elements) {
+		protected B withContent(E... elements) {
 			this.array = elements;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -237,13 +241,13 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param maxSize	maximum size
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withMaxSize(int maxSize) {
+		protected B withMaxSize(int maxSize) {
 			if (movingWindow != null) {
 				throw new IllegalArgumentException("maximum or window size alreay set");
 			}
 			this.maxSize = maxSize;
 			this.movingWindow = false;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -253,13 +257,13 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param maxSize	maximum window size
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withWindowSize(int maxSize) {
+		protected B withWindowSize(int maxSize) {
 			if (movingWindow != null) {
 				throw new IllegalArgumentException("maximum or window size alreay set");
 			}
 			this.maxSize = maxSize;
 			this.movingWindow = true;
-			return this;
+			return cast();
 		}
 
 		//-- Element key
@@ -271,9 +275,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param setBehavior	true to define set behavior (default is false)
 		 * @return				this (fluent interface)
 		 */
-		protected BuilderImpl<E> withSetBehavior(boolean setBehavior) {
+		protected B withSetBehavior(boolean setBehavior) {
 			this.setBehavior = setBehavior;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -283,9 +287,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param count	true to count only number of occurrences (default is false)
 		 * @return		this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemCount(boolean count) {
+		protected B withElemCount(boolean count) {
 			this.count = count;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -293,7 +297,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSet() {
+		protected B withElemSet() {
 			return withKeyMap(0, IdentMapper.INSTANCE);
 		}
 
@@ -307,7 +311,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 					(default is false, only one key map or the element set can have the order by option set)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withOrderByElem(boolean orderBy) {
+		protected B withOrderByElem(boolean orderBy) {
 			return withOrderByKey(0, orderBy);
 		}
 
@@ -321,7 +325,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return		this (fluent interface)
 		 */
 		// only for KeyList (if the element is a primitive, no keys can be extracted from it so Key1List and Key2List does not make sense)
-		protected BuilderImpl<E> withOrderByElem(Class<?> type) {
+		protected B withOrderByElem(Class<?> type) {
 			return withOrderByKey(0, type);
 		}
 
@@ -333,7 +337,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements, false to disallow (default is true)
 		 * @return          this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemNull(boolean allowNull) {
+		protected B withElemNull(boolean allowNull) {
 			return withKeyNull(0, allowNull);
 		}
 
@@ -344,7 +348,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicates   true to allow duplicates (default is true)
 		 * @return              	this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemDuplicates(boolean allowDuplicates) {
+		protected B withElemDuplicates(boolean allowDuplicates) {
 			return withElemDuplicates(allowDuplicates, allowDuplicates);
 		}
 
@@ -356,7 +360,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicatesNull	true to allow duplicate null values (default is true)
 		 * @return						this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+		protected B withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
 			return withKeyDuplicates(0, allowDuplicates, allowDuplicatesNull);
 		}
 
@@ -369,7 +373,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sort    true to sorted, false for unsorted (default is false)
 		 * @return        this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(boolean sort) {
+		protected B withElemSort(boolean sort) {
 			return withKeySort(0, sort);
 		}
 
@@ -384,7 +388,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param comparator    comparator to use for sorting (null for natural comparator)
 		 * @return              this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(Comparator<? super E> comparator) {
+		protected B withElemSort(Comparator<? super E> comparator) {
 			return withKeySort(0, comparator);
 		}
 
@@ -399,7 +403,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sortNullsFirst	   true to sort null values first, false for last
 		 * @return                     this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
+		protected B withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
 			return withKeySort(0, comparator, sortNullsFirst);
 		}
 
@@ -409,7 +413,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected BuilderImpl<E> withPrimaryElem() {
+		protected B withPrimaryElem() {
 			return withPrimaryKeyMap(0, null);
 		}
 
@@ -419,14 +423,14 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected BuilderImpl<E> withUniqueElem() {
+		protected B withUniqueElem() {
 			return withUniqueKeyMap(0, null);
 		}
 
 		//
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		protected BuilderImpl<E> withKeyMap(int keyIndex, Function mapper) {
+		protected B withKeyMap(int keyIndex, Function mapper) {
 			if (mapper == null) {
 				throw new IllegalArgumentException("Mapper may not be null");
 			}
@@ -435,19 +439,19 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				throw new IllegalArgumentException("Mapper already set");
 			}
 			kmb.mapper = mapper;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withOrderByKey(int keyIndex, boolean orderBy) {
+		protected B withOrderByKey(int keyIndex, boolean orderBy) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.orderBy != null) {
 				throw new IllegalArgumentException("Order by already set");
 			}
 			kmb.orderBy = orderBy;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withOrderByKey(int keyIndex, Class<?> type) {
+		protected B withOrderByKey(int keyIndex, Class<?> type) {
 			if (type == null) {
 				throw new IllegalArgumentException("Order by type may not be null");
 			}
@@ -460,7 +464,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 			kmb.orderBy = true;
 			kmb.primitiveListType = type;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -470,7 +474,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return		this (fluent interface)
 		 */
 		// only for KeyList.withListType
-		protected BuilderImpl<E> withListType(Class<?> type) {
+		protected B withListType(Class<?> type) {
 			if (type == null) {
 				throw new IllegalArgumentException("Class type may not be null");
 			}
@@ -479,7 +483,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(0);
 			kmb.primitiveListType = type;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -489,12 +493,12 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return		this (fluent interface)
 		 */
 		// only for KeyList / Key1List / Key2List
-		protected BuilderImpl<E> withListBig(boolean big) {
+		protected B withListBig(boolean big) {
 			this.useBigList = big;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withKeyNull(int keyIndex, boolean allowNull) {
+		protected B withKeyNull(int keyIndex, boolean allowNull) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.allowNull != null) {
 				throw new IllegalArgumentException("AllowNull already set");
@@ -503,20 +507,20 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (keyIndex == 0) {
 				allowNullElem = allowNull;
 			}
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
+		protected B withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.allowDuplicates != null) {
 				throw new IllegalArgumentException("AllowDuplicates already set");
 			}
 			kmb.allowDuplicates = allowDuplicates;
 			kmb.allowDuplicatesNull = allowDuplicatesNull;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withKeySort(int keyIndex, boolean sort) {
+		protected B withKeySort(int keyIndex, boolean sort) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -525,10 +529,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			kmb.comparator = null;
 			kmb.comparatorSortsNull = false;
 			kmb.sortNullsFirst = false;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withKeySort(int keyIndex, Comparator<?> comparator) {
+		protected B withKeySort(int keyIndex, Comparator<?> comparator) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -537,10 +541,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			kmb.comparator = comparator;
 			kmb.comparatorSortsNull = true;
 			kmb.sortNullsFirst = false;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
+		protected B withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -549,28 +553,28 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			kmb.comparator = comparator;
 			kmb.comparatorSortsNull = false;
 			kmb.sortNullsFirst = sortNullsFirst;
-			return this;
+			return cast();
 		}
 
 		@SuppressWarnings("rawtypes")
-		protected BuilderImpl<E> withPrimaryKeyMap(int keyIndex, Function mapper) {
+		protected B withPrimaryKeyMap(int keyIndex, Function mapper) {
 			if (mapper != null) {
 				// mapper may be null if called by withPrimaryElem()
 				withKeyMap(keyIndex, mapper);
 			}
 			withKeyNull(keyIndex, false);
 			withKeyDuplicates(keyIndex, false, false);
-			return this;
+			return cast();
 		}
 
 		@SuppressWarnings("rawtypes")
-		protected BuilderImpl<E> withUniqueKeyMap(int keyIndex, Function mapper) {
+		protected B withUniqueKeyMap(int keyIndex, Function mapper) {
 			if (mapper != null) {
 				withKeyMap(keyIndex, mapper);
 			}
 			withKeyNull(keyIndex, true);
 			withKeyDuplicates(keyIndex, false, true);
-			return this;
+			return cast();
 		}
 
 		// -- Key1
@@ -588,7 +592,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 					(default is false, only one key map or the element set can have the order by option set)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withOrderByKey1(boolean orderBy) {
+		protected B withOrderByKey1(boolean orderBy) {
 			return withOrderByKey(1, orderBy);
 		}
 
@@ -602,7 +606,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return		this (fluent interface)
 		 */
 		// only for Key1List / Key2List
-		protected BuilderImpl<E> withOrderByKey1(Class<?> type) {
+		protected B withOrderByKey1(Class<?> type) {
 			return withOrderByKey(1, type);
 		}
 
@@ -613,7 +617,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements, false to disallow
 		 * @return          this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey1Null(boolean allowNull) {
+		protected B withKey1Null(boolean allowNull) {
 			return withKeyNull(1, allowNull);
 		}
 
@@ -623,7 +627,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicates   true to allow duplicates
 		 * @return              	this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey1Duplicates(boolean allowDuplicates) {
+		protected B withKey1Duplicates(boolean allowDuplicates) {
 			return withKeyDuplicates(1, allowDuplicates, allowDuplicates);
 		}
 
@@ -634,7 +638,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicatesNull	true to allow duplicate null values
 		 * @return						this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+		protected B withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
 			return withKeyDuplicates(1, allowDuplicates, allowDuplicatesNull);
 		}
 
@@ -646,7 +650,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return        this (fluent interface)
 		 */
 		// The other overloaded methods also named withKey1Sort must defined directly in the concrete classes due to the generic types
-		protected BuilderImpl<E> withKey1Sort(boolean sort) {
+		protected B withKey1Sort(boolean sort) {
 			return withKeySort(1, sort);
 		}
 
@@ -665,7 +669,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 					(default is false, only one key map or the element set can have the order by option set)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withOrderByKey2(boolean orderBy) {
+		protected B withOrderByKey2(boolean orderBy) {
 			return withOrderByKey(2, orderBy);
 		}
 
@@ -678,7 +682,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 				(only one key map or the element set can have the order by option set)
 		 * @return		this (fluent interface)
 		 */
-		protected BuilderImpl<E> withOrderByKey2(Class<?> type) {
+		protected B withOrderByKey2(Class<?> type) {
 			return withOrderByKey(2, type);
 		}
 
@@ -689,7 +693,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements, false to disallow
 		 * @return          this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey2Null(boolean allowNull) {
+		protected B withKey2Null(boolean allowNull) {
 			return withKeyNull(2, allowNull);
 		}
 
@@ -699,7 +703,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicates   true to allow duplicates
 		 * @return              	this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey2Duplicates(boolean allowDuplicates) {
+		protected B withKey2Duplicates(boolean allowDuplicates) {
 			return withKeyDuplicates(2, allowDuplicates, allowDuplicates);
 		}
 
@@ -710,7 +714,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicatesNull	true to allow duplicate null values
 		 * @return						this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+		protected B withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
 			return withKeyDuplicates(2, allowDuplicates, allowDuplicatesNull);
 		}
 
@@ -722,7 +726,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return        this (fluent interface)
 		 */
 		// The other overloaded methods also named withKey2Sort must defined directly in the concrete classes due to the generic types
-		protected BuilderImpl<E> withKey2Sort(boolean sort) {
+		protected B withKey2Sort(boolean sort) {
 			return withKeySort(2, sort);
 		}
 
