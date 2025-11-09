@@ -28,7 +28,6 @@ import org.magictest.client.Assert;
 import org.magictest.client.Capture;
 import org.magictest.client.Report;
 import org.magictest.client.Trace;
-import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyCollectionImplBuilder;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
 import org.magicwerk.brownies.collections.TestHelper.Ticket;
@@ -36,7 +35,6 @@ import org.magicwerk.brownies.core.CheckTools;
 import org.magicwerk.brownies.core.RunTools;
 import org.magicwerk.brownies.core.Timer;
 import org.magicwerk.brownies.core.logback.LogbackTools;
-import org.magicwerk.brownies.core.objects.Triad;
 import org.magicwerk.brownies.core.reflect.ReflectTools;
 import org.slf4j.Logger;
 
@@ -63,46 +61,7 @@ public class KeyListTest {
 		//testRemove();
 		//testReorder();
 
-		new Key3List().run();
-
 		//testPerformance();
-	}
-
-	/** Show to create a KeyList with 3 keys */
-	static class Key3List {
-
-		static class KeyListImplBuilder<E> extends KeyCollectionImplBuilder<E, KeyListImplBuilder<E>> {
-
-			public KeyListImpl<E> build() {
-				KeyCollectionImpl<E> keyColl = new KeyCollectionImpl<>();
-				build(keyColl, true);
-				KeyListImpl<E> keyList = new KeyListImpl<E>();
-				init(keyColl, keyList);
-				return keyList;
-			}
-		}
-
-		void run() {
-			Triad<Integer> t0 = Triad.of(0, 1, 2);
-			Triad<Integer> t1 = Triad.of(1, 2, 3);
-			Triad<Integer> t2 = Triad.of(2, 3, 4);
-
-			KeyListImplBuilder<Triad<Integer>> builder = new KeyListImplBuilder<>();
-			builder.withKeyMap(1, t -> ((Triad) t).getItem0());
-			builder.withKeyMap(2, t -> ((Triad) t).getItem1());
-			builder.withKeyMap(3, t -> ((Triad) t).getItem2());
-			KeyListImpl<Triad<Integer>> key3List = builder.build();
-
-			key3List.add(t0);
-			key3List.add(t1);
-			key3List.add(t2);
-			LOG.info("{}", key3List);
-
-			LOG.info("{}", key3List.getByKey(1, 0));
-			LOG.info("{}", key3List.getByKey(2, 2));
-			LOG.info("{}", key3List.getByKey(3, 4));
-		}
-
 	}
 
 	//	static void testPerformanceSortedList() {

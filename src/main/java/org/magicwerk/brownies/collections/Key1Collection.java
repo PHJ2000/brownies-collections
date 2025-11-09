@@ -17,11 +17,11 @@
  */
 package org.magicwerk.brownies.collections;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Key1Collection implements a collection with 1 key.
@@ -37,8 +37,13 @@ import java.util.function.Predicate;
  */
 public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 
+	/** Build {@link Key1Collection} with specified builder function */
+	public static <E, K> Key1Collection<E, K> buildCollection(UnaryOperator<Key1Collection.Builder<E, K>> builder) {
+		return builder.apply(new Key1Collection.Builder<>()).build();
+	}
+
 	/**
-	 * Builder to construct Key1Collection instances.
+	 * Builder to construct {@link Key1Collection} instances.
 	 */
 	public static class Builder<E, K> extends Key1CollectionImplBuilder<E, K, Builder<E, K>> {
 
@@ -50,11 +55,11 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending Key1Collection.
+		 * Protected constructor used if extending Key1Collection.
 		 *
 		 * @param keyColl	key collection
 		 */
-		Builder(Key1Collection<E, K> keyColl) {
+		protected Builder(Key1Collection<E, K> keyColl) {
 			this.keyColl = keyColl;
 			initKeyMapBuilder(1);
 		}
@@ -70,109 +75,6 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 			build(keyColl, false);
 			init(keyColl);
 			return (Key1Collection<E, K>) keyColl;
-		}
-
-		// -- Element key
-
-		@Override
-		public Builder<E, K> withSetBehavior(boolean setBehavior) {
-			return super.withSetBehavior(setBehavior);
-		}
-
-		// -- Key1
-
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@Override
-		public Builder<E, K> withKey1Map(Function<? super E, K> mapper) {
-			return withKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withPrimaryKey1Map(Function<? super E, K> mapper) {
-			return super.withPrimaryKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withUniqueKey1Map(Function<? super E, K> mapper) {
-			return super.withUniqueKeyMap(1, mapper);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withOrderByKey1(boolean orderBy) {
-			return super.withOrderByKey1(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Null(boolean allowNull) {
-			return super.withKey1Null(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Duplicates(boolean allowDuplicates) {
-			return super.withKey1Duplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return super.withKey1Duplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Sort(boolean sort) {
-			return super.withKey1Sort(sort);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator) {
-			return super.withKeySort(1, comparator);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator, boolean sortNullsFirst) {
-			return super.withKeySort(1, comparator, sortNullsFirst);
 		}
 
 	}

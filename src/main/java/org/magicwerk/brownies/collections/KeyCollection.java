@@ -18,6 +18,7 @@
 package org.magicwerk.brownies.collections;
 
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * KeyCollection implements a collection.
@@ -32,10 +33,16 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class KeyCollection<E> extends KeyCollectionImpl<E> {
 
+	/** Build {@link KeyCollection} with specified builder function */
+	public static <E> KeyCollection<E> buildCollection(UnaryOperator<KeyCollection.Builder<E>> builder) {
+		return builder.apply(new KeyCollection.Builder<>()).build();
+	}
+
 	/**
 	 * Builder to construct KeyCollection instances.
 	 */
 	public static class Builder<E> extends KeyCollectionImplBuilder<E, Builder<E>> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -44,11 +51,11 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeyCollection.
+		 * Protected constructor used if extending KeyCollection.
 		 *
 		 * @param keyColl	key collection
 		 */
-		Builder(KeyCollection<E> keyColl) {
+		protected Builder(KeyCollection<E> keyColl) {
 			this.keyColl = keyColl;
 			initKeyMapBuilder(0);
 		}

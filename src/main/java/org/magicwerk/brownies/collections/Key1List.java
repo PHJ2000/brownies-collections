@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.magicwerk.brownies.collections.KeyCollectionImpl.Key1CollectionImplBuilder;
 
@@ -37,8 +38,13 @@ import org.magicwerk.brownies.collections.KeyCollectionImpl.Key1CollectionImplBu
  */
 public class Key1List<E, K> extends KeyListImpl<E> {
 
+	/** Build {@link Key1List} with specified builder function */
+	public static <E, K> Key1List<E, K> buildList(UnaryOperator<Key1List.Builder<E, K>> builder) {
+		return builder.apply(new Key1List.Builder<>()).build();
+	}
+
 	/**
-	 * Builder to construct Key1List instances.
+	 * Builder to construct {@link Key1List} instances.
 	 */
 	public static class Builder<E, K> extends Key1CollectionImplBuilder<E, K, Builder<E, K>> {
 		/**

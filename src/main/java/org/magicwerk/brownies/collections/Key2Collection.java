@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Key2Collection implements a collection with 2 keys.
@@ -37,6 +38,11 @@ import java.util.function.Predicate;
  * @param <K2> type of second key
  */
 public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
+
+	/** Build {@link Key2Collection} with specified builder function */
+	public static <E, K1, K2> Key2Collection<E, K1, K2> buildCollection(UnaryOperator<Key2Collection.Builder<E, K1, K2>> builder) {
+		return builder.apply(new Key2Collection.Builder<>()).build();
+	}
 
 	/**
 	 * Builder to construct Key2Collection instances.

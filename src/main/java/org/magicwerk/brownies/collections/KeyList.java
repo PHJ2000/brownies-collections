@@ -19,6 +19,7 @@ package org.magicwerk.brownies.collections;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyCollectionImplBuilder;
 
@@ -34,10 +35,16 @@ import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyCollectionImplBui
 @SuppressWarnings("serial")
 public class KeyList<E> extends KeyListImpl<E> {
 
+	/** Build {@link KeyList} with specified builder function */
+	public static <E> KeyList<E> buildList(UnaryOperator<KeyList.Builder<E>> builder) {
+		return builder.apply(new KeyList.Builder<>()).build();
+	}
+
 	/**
 	 * Builder to construct KeyList instances.
 	 */
 	public static class Builder<E> extends KeyCollectionImplBuilder<E, Builder<E>> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -46,11 +53,11 @@ public class KeyList<E> extends KeyListImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeyList.
+		 * Protected constructor used if extending KeyList.
 		 *
 		 * @param keyList	key list
 		 */
-		Builder(KeyList<E> keyList) {
+		protected Builder(KeyList<E> keyList) {
 			this.keyList = keyList;
 			initKeyMapBuilder(0);
 		}

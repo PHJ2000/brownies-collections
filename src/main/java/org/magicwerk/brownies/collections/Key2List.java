@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.magicwerk.brownies.collections.KeyCollectionImpl.Key2CollectionImplBuilder;
 
@@ -37,6 +38,11 @@ import org.magicwerk.brownies.collections.KeyCollectionImpl.Key2CollectionImplBu
  * @param <K2> type of second key
  */
 public class Key2List<E, K1, K2> extends KeyListImpl<E> {
+
+	/** Build {@link Key2List} with specified builder function */
+	public static <E, K1, K2> Key2List<E, K1, K2> buildList(UnaryOperator<Key2List.Builder<E, K1, K2>> builder) {
+		return builder.apply(new Key2List.Builder<>()).build();
+	}
 
 	/**
 	 * Builder to construct Key2List instances.

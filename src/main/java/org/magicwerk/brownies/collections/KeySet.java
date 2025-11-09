@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * KeySet implements a set.
@@ -35,10 +36,22 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 
+	/** Build {@link KeySet} with specified builder function */
+	public static <E> KeySet<E> buildSet(UnaryOperator<KeySet.Builder<E>> builder) {
+		return builder.apply(new KeySet.Builder<>()).build();
+	}
+
+	/** Use {@link #buildSet} instead (method will throw exception) */
+	public static <E> KeyCollection<E> buildCollection(UnaryOperator<KeyCollection.Builder<E>> builder) {
+		// Method cannot be hidden, throw UnsupportedOperationException instead
+		throw new UnsupportedOperationException();
+	}
+
 	/**
 	 * Builder to construct KeySet instances.
 	 */
 	public static class Builder<E> extends KeyCollection.Builder<E> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -47,11 +60,11 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeySet.
+		 * Protected constructor used if extending KeySet.
 		 *
 		 * @param keySet	key set
 		 */
-		Builder(KeySet<E> keySet) {
+		protected Builder(KeySet<E> keySet) {
 			this.keyColl = keySet;
 			initKeyMapBuilder(0);
 		}

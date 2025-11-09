@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Key2Set implements a set.
@@ -34,6 +35,17 @@ import java.util.function.Predicate;
  * @param <E> type of elements stored in the set
  */
 public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set<E> {
+
+	/** Build {@link Key2Set} with specified builder function */
+	public static <E, K1, K2> Key2Set<E, K1, K2> buildSet(UnaryOperator<Key2Set.Builder<E, K1, K2>> builder) {
+		return builder.apply(new Key2Set.Builder<>()).build();
+	}
+
+	/** Use {@link #buildSet} instead (method will throw exception) */
+	public static <E, K1, K2> Key2Collection<E, K1, K2> buildCollection(UnaryOperator<Key2Collection.Builder<E, K1, K2>> builder) {
+		// Method cannot be hidden, throw UnsupportedOperationException instead
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Builder to construct Key2Set instances.

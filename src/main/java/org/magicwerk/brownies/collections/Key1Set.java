@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Key1Set implements a set.
@@ -36,8 +37,19 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class Key1Set<E, K> extends Key1Collection<E, K> implements Set<E> {
 
+	/** Build {@link Key1Set} with specified builder function */
+	public static <E, K> Key1Set<E, K> buildSet(UnaryOperator<Key1Set.Builder<E, K>> builder) {
+		return builder.apply(new Key1Set.Builder<>()).build();
+	}
+
+	/** Use {@link #buildSet} instead (method will throw exception) */
+	public static <E, K> Key1Collection<E, K> buildCollection(UnaryOperator<Key1Collection.Builder<E, K>> builder) {
+		// Method cannot be hidden, throw UnsupportedOperationException instead
+		throw new UnsupportedOperationException();
+	}
+
 	/**
-	 * Builder to construct Key1Set instances.
+	 * Builder to construct {@link Key1Set} instances.
 	 */
 	public static class Builder<E, K> extends Key1Collection.Builder<E, K> {
 		/**

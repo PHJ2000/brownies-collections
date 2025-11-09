@@ -385,6 +385,67 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		/**
+		 * Specify initial capacity.
+		 *
+		 * @param capacity	initial capacity
+		 * @return			this (fluent interface)
+		 */
+		public B withCapacity(int capacity) {
+			this.capacity = capacity;
+			return cast();
+		}
+
+		/**
+		 * Specify element constraint.
+		 *
+		 * @param constraint	constraint element must satisfy, null for none (default)
+		 * @return 				this (fluent interface)
+		 */
+		public B withConstraint(Predicate<E> constraint) {
+			this.constraint = constraint;
+			return cast();
+		}
+
+		/**
+		 * Specify elements added to the collection upon creation.
+		 *
+		 * @param elements	initial elements
+		 * @return			this (fluent interface)
+		 */
+		public B withContent(Collection<? extends E> elements) {
+			this.collection = elements;
+			return cast();
+		}
+
+		/**
+		 * Specify elements added to the collection upon creation.
+		 *
+		 * @param elements	initial elements
+		 * @return			this (fluent interface)
+		 */
+		@SuppressWarnings("unchecked")
+		public B withContent(E... elements) {
+			this.array = elements;
+			return cast();
+		}
+
+		/**
+		 * Specify maximum size of collection.
+		 * If an attempt is made to add more elements, an exception is thrown.
+		 *
+		 * @param maxSize	maximum size
+		 * @return			this (fluent interface)
+		 */
+		public B withMaxSize(int maxSize) {
+			if (movingWindow != null) {
+				throw new IllegalArgumentException("maximum or window size alreay set");
+			}
+			this.maxSize = maxSize;
+			this.movingWindow = false;
+			return cast();
+		}
+
+		/**
 		 * Specifies whether null elements are allowed or not.
 		 * A null element will have null keys.
 		 * This method does not implicitly create an element set, where as {@link #withElemNull} does.
@@ -401,13 +462,75 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		/**
-		 * Specify element constraint.
+		 * Specifies that the collection behaves like a {@link Set} on adding elements, i.e.
+		 * if an element cannot be added due to duplicate or other constraints, no exception is thrown.
 		 *
-		 * @param constraint	constraint element must satisfy, null for none (default)
-		 * @return 				this (fluent interface)
+		 * @param setBehavior	true to define set behavior (default is false)
+		 * @return				this (fluent interface)
 		 */
-		public B withConstraint(Predicate<E> constraint) {
-			this.constraint = constraint;
+		public B withSetBehavior(boolean setBehavior) {
+			this.setBehavior = setBehavior;
+			return cast();
+		}
+
+		/**
+		 * Specify maximum window size of collection.
+		 * If an attempt is made to add and additional element, the first element is removed.
+		 *
+		 * @param maxSize	maximum window size
+		 * @return			this (fluent interface)
+		 */
+		// only for KeyList / Key1List / Key2List
+		protected B withWindowSize(int maxSize) {
+			if (movingWindow != null) {
+				throw new IllegalArgumentException("maximum or window size alreay set");
+			}
+			this.maxSize = maxSize;
+			this.movingWindow = true;
+			return cast();
+		}
+
+		/**
+		 * Specify whether list should be stored in an instance of BigList or GapList.
+		 *
+		 * @param big	true to store list content in an instance of BigList, false for GapList
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyList / Key1List / Key2List
+		protected B withListBig(boolean big) {
+			this.useBigList = big;
+			return cast();
+		}
+
+		/**
+		 * Specifies that the list will store its elements as primitive type.
+		 *
+		 * @param type	primitive type to use for list
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyList
+		protected B withListType(Class<?> type) {
+			if (type == null) {
+				throw new IllegalArgumentException("Class type may not be null");
+			}
+			if (!type.isPrimitive()) {
+				throw new IllegalArgumentException("Class type must be primitive");
+			}
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(0);
+			kmb.primitiveListType = type;
+			return cast();
+		}
+
+		/**
+		 * Specifies that the collection only counts the number of occurrences
+		 * of equal elements, but does not store the elements themselves.
+		 *
+		 * @param count	true to count only number of occurrences (default is false)
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyCollection
+		protected B withElemCount(boolean count) {
+			this.count = count;
 			return cast();
 		}
 
@@ -457,101 +580,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		//-- Content
-
-		/**
-		 * Specify initial capacity.
-		 *
-		 * @param capacity	initial capacity
-		 * @return			this (fluent interface)
-		 */
-		public B withCapacity(int capacity) {
-			this.capacity = capacity;
-			return cast();
-		}
-
-		/**
-		 * Specify elements added to the collection upon creation.
-		 *
-		 * @param elements	initial elements
-		 * @return			this (fluent interface)
-		 */
-		public B withContent(Collection<? extends E> elements) {
-			this.collection = elements;
-			return cast();
-		}
-
-		/**
-		 * Specify elements added to the collection upon creation.
-		 *
-		 * @param elements	initial elements
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public B withContent(E... elements) {
-			this.array = elements;
-			return cast();
-		}
-
-		/**
-		 * Specify maximum size of collection.
-		 * If an attempt is made to add more elements, an exception is thrown.
-		 *
-		 * @param maxSize	maximum size
-		 * @return			this (fluent interface)
-		 */
-		public B withMaxSize(int maxSize) {
-			if (movingWindow != null) {
-				throw new IllegalArgumentException("maximum or window size alreay set");
-			}
-			this.maxSize = maxSize;
-			this.movingWindow = false;
-			return cast();
-		}
-
-		/**
-		 * Specify maximum window size of collection.
-		 * If an attempt is made to add and additional element, the first element is removed.
-		 *
-		 * @param maxSize	maximum window size
-		 * @return			this (fluent interface)
-		 */
-		// only for KeyList / Key1List / Key2List
-		protected B withWindowSize(int maxSize) {
-			if (movingWindow != null) {
-				throw new IllegalArgumentException("maximum or window size alreay set");
-			}
-			this.maxSize = maxSize;
-			this.movingWindow = true;
-			return cast();
-		}
-
 		//-- Element key
-
-		/**
-		 * Specifies that the collection behaves like a {@link Set} on adding elements, i.e.
-		 * if an element cannot be added due to duplicate or other constraints, no exception is thrown.
-		 *
-		 * @param setBehavior	true to define set behavior (default is false)
-		 * @return				this (fluent interface)
-		 */
-		protected B withSetBehavior(boolean setBehavior) {
-			this.setBehavior = setBehavior;
-			return cast();
-		}
-
-		/**
-		 * Specifies that the collection only counts the number of occurrences
-		 * of equal elements, but does not store the elements themselves.
-		 *
-		 * @param count	true to count only number of occurrences (default is false)
-		 * @return		this (fluent interface)
-		 */
-		// only for KeyCollection
-		protected B withElemCount(boolean count) {
-			this.count = count;
-			return cast();
-		}
 
 		/**
 		 * Add element map (with ident mapper).
@@ -559,7 +588,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return			this (fluent interface)
 		 */
 		public B withElemSet() {
-			return withKeyMap(0, IdentMapper.INSTANCE);
+			return withKeyMap(0, IdentMapper.INSTANCE());
 		}
 
 		/**
@@ -688,7 +717,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return withUniqueKeyMap(0, null);
 		}
 
-		//
+		// Key Map N
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		protected B withKeyMap(int keyIndex, Function mapper) {
@@ -703,59 +732,24 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withOrderByKey(int keyIndex, boolean orderBy) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.orderBy != null) {
-				throw new IllegalArgumentException("Order by already set");
+		@SuppressWarnings("rawtypes")
+		protected B withPrimaryKeyMap(int keyIndex, Function mapper) {
+			if (mapper != null) {
+				// mapper may be null if called by withPrimaryElem()
+				withKeyMap(keyIndex, mapper);
 			}
-			kmb.orderBy = orderBy;
+			withKeyNull(keyIndex, false);
+			withKeyDuplicates(keyIndex, false, false);
 			return cast();
 		}
 
-		protected B withOrderByKey(int keyIndex, Class<?> type) {
-			if (type == null) {
-				throw new IllegalArgumentException("Order by type may not be null");
+		@SuppressWarnings("rawtypes")
+		protected B withUniqueKeyMap(int keyIndex, Function mapper) {
+			if (mapper != null) {
+				withKeyMap(keyIndex, mapper);
 			}
-			if (!type.isPrimitive()) {
-				throw new IllegalArgumentException("Class type must be primitive");
-			}
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.orderBy != null) {
-				throw new IllegalArgumentException("Order by already set");
-			}
-			kmb.orderBy = true;
-			kmb.primitiveListType = type;
-			return cast();
-		}
-
-		/**
-		 * Specifies that the list will store its elements as primitive type.
-		 *
-		 * @param type	primitive type to use for list
-		 * @return		this (fluent interface)
-		 */
-		// only for KeyList
-		protected B withListType(Class<?> type) {
-			if (type == null) {
-				throw new IllegalArgumentException("Class type may not be null");
-			}
-			if (!type.isPrimitive()) {
-				throw new IllegalArgumentException("Class type must be primitive");
-			}
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(0);
-			kmb.primitiveListType = type;
-			return cast();
-		}
-
-		/**
-		 * Specify whether list should be stored in an instance of BigList or GapList.
-		 *
-		 * @param big	true to store list content in an instance of BigList, false for GapList
-		 * @return		this (fluent interface)
-		 */
-		// only for KeyList / Key1List / Key2List
-		protected B withListBig(boolean big) {
-			this.useBigList = big;
+			withKeyNull(keyIndex, true);
+			withKeyDuplicates(keyIndex, false, true);
 			return cast();
 		}
 
@@ -821,24 +815,28 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		@SuppressWarnings("rawtypes")
-		protected B withPrimaryKeyMap(int keyIndex, Function mapper) {
-			if (mapper != null) {
-				// mapper may be null if called by withPrimaryElem()
-				withKeyMap(keyIndex, mapper);
+		protected B withOrderByKey(int keyIndex, boolean orderBy) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.orderBy != null) {
+				throw new IllegalArgumentException("Order by already set");
 			}
-			withKeyNull(keyIndex, false);
-			withKeyDuplicates(keyIndex, false, false);
+			kmb.orderBy = orderBy;
 			return cast();
 		}
 
-		@SuppressWarnings("rawtypes")
-		protected B withUniqueKeyMap(int keyIndex, Function mapper) {
-			if (mapper != null) {
-				withKeyMap(keyIndex, mapper);
+		protected B withOrderByKey(int keyIndex, Class<?> type) {
+			if (type == null) {
+				throw new IllegalArgumentException("Order by type may not be null");
 			}
-			withKeyNull(keyIndex, true);
-			withKeyDuplicates(keyIndex, false, true);
+			if (!type.isPrimitive()) {
+				throw new IllegalArgumentException("Class type must be primitive");
+			}
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.orderBy != null) {
+				throw new IllegalArgumentException("Order by already set");
+			}
+			kmb.orderBy = true;
+			kmb.primitiveListType = type;
 			return cast();
 		}
 
@@ -989,7 +987,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 						}
 						if (kmb.mapper == null) {
 							if (i == 0) {
-								kmb.mapper = IdentMapper.INSTANCE;
+								kmb.mapper = (IdentMapper) IdentMapper.INSTANCE();
 							} else {
 								throw new IllegalArgumentException("No mapper for key " + i + " defined");
 							}
