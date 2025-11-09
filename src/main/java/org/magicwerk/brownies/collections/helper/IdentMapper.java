@@ -31,18 +31,21 @@ import java.util.function.Function;
 public class IdentMapper<E> implements Function<E, E>, Serializable {
 
 	/** Singleton instance */
-    @SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes")
 	public static final IdentMapper INSTANCE = new IdentMapper();
 
+	public static final <T> IdentMapper<T> INSTANCE() {
+		return INSTANCE;
+	}
 
-    /**
-     * Prevent construction.
-     */
-    private IdentMapper() {
-    }
+	/**
+	 * Prevent construction.
+	 */
+	private IdentMapper() {
+	}
 
-    @Override
-    public E apply(E v) {
-        return v;
-    }
+	@Override
+	public E apply(E v) {
+		return v;
+	}
 }

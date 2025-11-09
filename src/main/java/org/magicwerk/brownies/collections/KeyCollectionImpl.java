@@ -61,10 +61,268 @@ import org.magicwerk.brownies.collections.helper.SortedLists;
  */
 public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Cloneable {
 
+	protected abstract static class Key2CollectionImplBuilder<E, K1, K2, B extends Key1CollectionImplBuilder<E, K1, B>>
+			extends Key1CollectionImplBuilder<E, K1, B> {
+
+		/**
+		 * Add key map.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withKey2Map(Function<? super E, K2> mapper) {
+			return super.withKeyMap(2, mapper);
+		}
+
+		/**
+		 * Specify this key to be a primary key.
+		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(false), and withKey2Duplicates(false)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withPrimaryKey2Map(Function<? super E, K2> mapper) {
+			return super.withPrimaryKeyMap(2, mapper);
+		}
+
+		/**
+		* Specify this key to be a unique key.
+		* This is identical to calling {@code withKey2Map(mapper), withKey2Null(true), and withKey2Duplicates(false, true)}.
+		*
+		* @param mapper	mapper to use
+		* @return			this (fluent interface)
+		*/
+		public B withUniqueKey2Map(Function<? super E, K2> mapper) {
+			return super.withUniqueKeyMap(2, mapper);
+		}
+
+		/**
+		 * Specify whether null elements are allowed or not.
+		 * A null element will have a null key.
+		 *
+		 * @param allowNull true to allow null elements, false to disallow
+		 * @return          this (fluent interfaces)
+		 */
+		public B withKey2Null(boolean allowNull) {
+			return withKeyNull(2, allowNull);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates   true to allow duplicates
+		 * @return              	this (fluent interfaces)
+		 */
+		public B withKey2Duplicates(boolean allowDuplicates) {
+			return withKeyDuplicates(2, allowDuplicates, allowDuplicates);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates		true to allow duplicates
+		 * @param allowDuplicatesNull	true to allow duplicate null values
+		 * @return						this (fluent interfaces)
+		 */
+		public B withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+			return withKeyDuplicates(2, allowDuplicates, allowDuplicatesNull);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param sort    true to sort key map
+		 * @return        this (fluent interface)
+		 */
+		public B withKey2Sort(boolean sort) {
+			return withKeySort(2, sort);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator    comparator to use for sorting
+		 * @return              this (fluent interface)
+		 */
+		public B withKey2Sort(Comparator<? super K2> comparator) {
+			return super.withKeySort(2, comparator);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator            comparator to use for sorting
+		 * @param sortNullsFirst   		true if null will be sorted first, false for last
+		 * @return                      this (fluent interface)
+		 */
+		public B withKey2Sort(Comparator<? super K2> comparator, boolean sortNullsFirst) {
+			return super.withKeySort(2, comparator, sortNullsFirst);
+		}
+
+		/**
+		 * Specifies that the collection will have the order of the key map.
+		 * The key map must be sorted, if no sort order has been defined,
+		 * the natural comparator will be used. If the map allows null
+		 * values, the used comparator will sort them last.
+		 *
+		 * @param orderBy	if true the collection will have the order of the key map
+		 * 					(default is false, only one key map or the element set can have the order by option set)
+		 * @return			this (fluent interface)
+		 */
+		public B withOrderByKey2(boolean orderBy) {
+			return withOrderByKey(2, orderBy);
+		}
+
+		/**
+		 * Specifies that the list will have the order of the key map.
+		 * The key map will store values of the primitive type specified like <code>int</code>.
+		 * The key map will be sorted using the natural comparator and no null values are allowed.
+		 *
+		 * @param type	primitive type to use for key map
+		 * 				(only one key map or the element set can have the order by option set)
+		 * @return		this (fluent interface)
+		 */
+		protected B withOrderByKey2(Class<?> type) {
+			return withOrderByKey(2, type);
+		}
+	}
+
+	protected abstract static class Key1CollectionImplBuilder<E, K, B extends KeyCollectionImplBuilder<E, B>>
+			extends KeyCollectionImplBuilder<E, B> {
+
+		/**
+		 * Add key map.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withKey1Map(Function<? super E, K> mapper) {
+			return super.withKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specify this key to be a primary key.
+		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withPrimaryKey1Map(Function<? super E, K> mapper) {
+			return super.withPrimaryKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specify this key to be a unique key.
+		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withUniqueKey1Map(Function<? super E, K> mapper) {
+			return super.withUniqueKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specifies that the collection will have the order of the key map.
+		 * The key map must be sorted, if no sort order has been defined,
+		 * the natural comparator will be used. If the map allows null
+		 * values, the used comparator will sort them last.
+		 *
+		 * @param orderBy	if true the collection will have the order of the key map
+		 * 					(default is false, only one key map or the element set can have the order by option set)
+		 * @return			this (fluent interface)
+		 */
+		public B withOrderByKey1(boolean orderBy) {
+			return withOrderByKey(1, orderBy);
+		}
+
+		/**
+		 * Specifies that the list will have the order of the key map.
+		 * The key map will store values of the primitive type specified like <code>int</code>.
+		 * The key map will be sorted using the natural comparator and no null values are allowed.
+		 *
+		 * @param type	primitive type to use for key map
+		 * 				(only one key map or the element set can have the order by option set)
+		 * @return		this (fluent interface)
+		 */
+		public B withOrderByKey1(Class<?> type) {
+			return withOrderByKey(1, type);
+		}
+
+		/**
+		 * Specify whether null elements are allowed or not.
+		 * A null element will have a null key.
+		 *
+		 * @param allowNull true to allow null elements, false to disallow
+		 * @return          this (fluent interfaces)
+		 */
+		public B withKey1Null(boolean allowNull) {
+			return withKeyNull(1, allowNull);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates   true to allow duplicates
+		 * @return              	this (fluent interfaces)
+		 */
+		public B withKey1Duplicates(boolean allowDuplicates) {
+			return withKeyDuplicates(1, allowDuplicates, allowDuplicates);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates		true to allow duplicates
+		 * @param allowDuplicatesNull	true to allow duplicate null values
+		 * @return						this (fluent interfaces)
+		 */
+		public B withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+			return withKeyDuplicates(1, allowDuplicates, allowDuplicatesNull);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param sort	  true to sort key map
+		 * @return        this (fluent interface)
+		 */
+		public B withKey1Sort(boolean sort) {
+			return withKeySort(1, sort);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator    comparator to use for sorting
+		 * @return              this (fluent interface)
+		 */
+		public B withKey1Sort(Comparator<? super K> comparator) {
+			return super.withKeySort(1, comparator);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator            comparator to use for sorting
+		 * @param sortNullsFirst   		true if null will be sorted first, false for last
+		 * @return                      this (fluent interface)
+		 */
+		public B withKey1Sort(Comparator<? super K> comparator, boolean sortNullsFirst) {
+			return super.withKeySort(1, comparator, sortNullsFirst);
+		}
+	}
+
 	/**
 	 * Implementation of builder.
 	 */
-	public static class BuilderImpl<E, B extends BuilderImpl<E, B>> {
+	public static class KeyCollectionImplBuilder<E, B extends KeyCollectionImplBuilder<E, B>> {
 
 		public static class KeyMapBuilder<E, K> {
 			/** True to order collection by this key map */
@@ -121,6 +379,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		// Interface
 
+		@SuppressWarnings("unchecked")
 		protected B cast() {
 			return (B) this;
 		}
@@ -133,7 +392,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements (default), false to disallow
 		 * @return          this (fluent interfaces)
 		 */
-		protected B withNull(boolean allowNull) {
+		public B withNull(boolean allowNull) {
 			this.allowNullElem = allowNull;
 			if (hasElemMapBuilder()) {
 				getKeyMapBuilder(0).allowNull = allowNull;
@@ -147,7 +406,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param constraint	constraint element must satisfy, null for none (default)
 		 * @return 				this (fluent interface)
 		 */
-		protected B withConstraint(Predicate<E> constraint) {
+		public B withConstraint(Predicate<E> constraint) {
 			this.constraint = constraint;
 			return cast();
 		}
@@ -160,7 +419,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected B withBeforeInsertTrigger(Consumer<E> trigger) {
+		public B withBeforeInsertTrigger(Consumer<E> trigger) {
 			this.beforeInsertTrigger = trigger;
 			return cast();
 		}
@@ -171,7 +430,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected B withAfterInsertTrigger(Consumer<E> trigger) {
+		public B withAfterInsertTrigger(Consumer<E> trigger) {
 			this.afterInsertTrigger = trigger;
 			return cast();
 		}
@@ -182,7 +441,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected B withBeforeDeleteTrigger(Consumer<E> trigger) {
+		public B withBeforeDeleteTrigger(Consumer<E> trigger) {
 			this.beforeDeleteTrigger = trigger;
 			return cast();
 		}
@@ -193,7 +452,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected B withAfterDeleteTrigger(Consumer<E> trigger) {
+		public B withAfterDeleteTrigger(Consumer<E> trigger) {
 			this.afterDeleteTrigger = trigger;
 			return cast();
 		}
@@ -206,7 +465,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param capacity	initial capacity
 		 * @return			this (fluent interface)
 		 */
-		protected B withCapacity(int capacity) {
+		public B withCapacity(int capacity) {
 			this.capacity = capacity;
 			return cast();
 		}
@@ -217,7 +476,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param elements	initial elements
 		 * @return			this (fluent interface)
 		 */
-		protected B withContent(Collection<? extends E> elements) {
+		public B withContent(Collection<? extends E> elements) {
 			this.collection = elements;
 			return cast();
 		}
@@ -229,7 +488,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @return			this (fluent interface)
 		 */
 		@SuppressWarnings("unchecked")
-		protected B withContent(E... elements) {
+		public B withContent(E... elements) {
 			this.array = elements;
 			return cast();
 		}
@@ -241,7 +500,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param maxSize	maximum size
 		 * @return			this (fluent interface)
 		 */
-		protected B withMaxSize(int maxSize) {
+		public B withMaxSize(int maxSize) {
 			if (movingWindow != null) {
 				throw new IllegalArgumentException("maximum or window size alreay set");
 			}
@@ -257,6 +516,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param maxSize	maximum window size
 		 * @return			this (fluent interface)
 		 */
+		// only for KeyList / Key1List / Key2List
 		protected B withWindowSize(int maxSize) {
 			if (movingWindow != null) {
 				throw new IllegalArgumentException("maximum or window size alreay set");
@@ -287,6 +547,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param count	true to count only number of occurrences (default is false)
 		 * @return		this (fluent interface)
 		 */
+		// only for KeyCollection
 		protected B withElemCount(boolean count) {
 			this.count = count;
 			return cast();
@@ -297,7 +558,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return			this (fluent interface)
 		 */
-		protected B withElemSet() {
+		public B withElemSet() {
 			return withKeyMap(0, IdentMapper.INSTANCE);
 		}
 
@@ -311,7 +572,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 					(default is false, only one key map or the element set can have the order by option set)
 		 * @return			this (fluent interface)
 		 */
-		protected B withOrderByElem(boolean orderBy) {
+		public B withOrderByElem(boolean orderBy) {
 			return withOrderByKey(0, orderBy);
 		}
 
@@ -324,7 +585,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 				(only one key map or the element set can have the order by option set)
 		 * @return		this (fluent interface)
 		 */
-		// only for KeyList (if the element is a primitive, no keys can be extracted from it so Key1List and Key2List does not make sense)
+		// only for KeyList
 		protected B withOrderByElem(Class<?> type) {
 			return withOrderByKey(0, type);
 		}
@@ -337,7 +598,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements, false to disallow (default is true)
 		 * @return          this (fluent interfaces)
 		 */
-		protected B withElemNull(boolean allowNull) {
+		public B withElemNull(boolean allowNull) {
 			return withKeyNull(0, allowNull);
 		}
 
@@ -348,7 +609,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicates   true to allow duplicates (default is true)
 		 * @return              	this (fluent interfaces)
 		 */
-		protected B withElemDuplicates(boolean allowDuplicates) {
+		public B withElemDuplicates(boolean allowDuplicates) {
 			return withElemDuplicates(allowDuplicates, allowDuplicates);
 		}
 
@@ -360,7 +621,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicatesNull	true to allow duplicate null values (default is true)
 		 * @return						this (fluent interfaces)
 		 */
-		protected B withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+		public B withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
 			return withKeyDuplicates(0, allowDuplicates, allowDuplicatesNull);
 		}
 
@@ -373,7 +634,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sort    true to sorted, false for unsorted (default is false)
 		 * @return        this (fluent interface)
 		 */
-		protected B withElemSort(boolean sort) {
+		public B withElemSort(boolean sort) {
 			return withKeySort(0, sort);
 		}
 
@@ -388,7 +649,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param comparator    comparator to use for sorting (null for natural comparator)
 		 * @return              this (fluent interface)
 		 */
-		protected B withElemSort(Comparator<? super E> comparator) {
+		public B withElemSort(Comparator<? super E> comparator) {
 			return withKeySort(0, comparator);
 		}
 
@@ -403,7 +664,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sortNullsFirst	   true to sort null values first, false for last
 		 * @return                     this (fluent interface)
 		 */
-		protected B withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
+		public B withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
 			return withKeySort(0, comparator, sortNullsFirst);
 		}
 
@@ -413,7 +674,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected B withPrimaryElem() {
+		public B withPrimaryElem() {
 			return withPrimaryKeyMap(0, null);
 		}
 
@@ -423,7 +684,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected B withUniqueElem() {
+		public B withUniqueElem() {
 			return withUniqueKeyMap(0, null);
 		}
 
@@ -473,7 +734,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param type	primitive type to use for list
 		 * @return		this (fluent interface)
 		 */
-		// only for KeyList.withListType
+		// only for KeyList
 		protected B withListType(Class<?> type) {
 			if (type == null) {
 				throw new IllegalArgumentException("Class type may not be null");
@@ -508,6 +769,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				allowNullElem = allowNull;
 			}
 			return cast();
+		}
+
+		protected B withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
+			return withKeyDuplicates(keyIndex, allowDuplicates, allowDuplicates);
 		}
 
 		protected B withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
@@ -575,159 +840,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			withKeyNull(keyIndex, true);
 			withKeyDuplicates(keyIndex, false, true);
 			return cast();
-		}
-
-		// -- Key1
-		//
-		// Just define methods which can be overridden so Javadoc can be inherited.
-		// All methods with generic type parameters must explicitly be defined in concrete classes.
-
-		/**
-		 * Specifies that the collection will have the order of the key map.
-		 * The key map must be sorted, if no sort order has been defined,
-		 * the natural comparator will be used. If the map allows null
-		 * values, the used comparator will sort them last.
-		 *
-		 * @param orderBy	if true the collection will have the order of the key map
-		 * 					(default is false, only one key map or the element set can have the order by option set)
-		 * @return			this (fluent interface)
-		 */
-		protected B withOrderByKey1(boolean orderBy) {
-			return withOrderByKey(1, orderBy);
-		}
-
-		/**
-		 * Specifies that the list will have the order of the key map.
-		 * The key map will store values of the primitive type specified like <code>int</code>.
-		 * The key map will be sorted using the natural comparator and no null values are allowed.
-		 *
-		 * @param type	primitive type to use for key map
-		 * 				(only one key map or the element set can have the order by option set)
-		 * @return		this (fluent interface)
-		 */
-		// only for Key1List / Key2List
-		protected B withOrderByKey1(Class<?> type) {
-			return withOrderByKey(1, type);
-		}
-
-		/**
-		 * Specify whether null elements are allowed or not.
-		 * A null element will have a null key.
-		 *
-		 * @param allowNull true to allow null elements, false to disallow
-		 * @return          this (fluent interfaces)
-		 */
-		protected B withKey1Null(boolean allowNull) {
-			return withKeyNull(1, allowNull);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates   true to allow duplicates
-		 * @return              	this (fluent interfaces)
-		 */
-		protected B withKey1Duplicates(boolean allowDuplicates) {
-			return withKeyDuplicates(1, allowDuplicates, allowDuplicates);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates		true to allow duplicates
-		 * @param allowDuplicatesNull	true to allow duplicate null values
-		 * @return						this (fluent interfaces)
-		 */
-		protected B withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return withKeyDuplicates(1, allowDuplicates, allowDuplicatesNull);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param sort	  true to sort key map
-		 * @return        this (fluent interface)
-		 */
-		// The other overloaded methods also named withKey1Sort must defined directly in the concrete classes due to the generic types
-		protected B withKey1Sort(boolean sort) {
-			return withKeySort(1, sort);
-		}
-
-		// -- Key2
-		//
-		// Just define methods which can be overridden so Javadoc can be inherited.
-		// All methods with generic type parameters must explicitly be defined in concrete classes.
-
-		/**
-		 * Specifies that the collection will have the order of the key map.
-		 * The key map must be sorted, if no sort order has been defined,
-		 * the natural comparator will be used. If the map allows null
-		 * values, the used comparator will sort them last.
-		 *
-		 * @param orderBy	if true the collection will have the order of the key map
-		 * 					(default is false, only one key map or the element set can have the order by option set)
-		 * @return			this (fluent interface)
-		 */
-		protected B withOrderByKey2(boolean orderBy) {
-			return withOrderByKey(2, orderBy);
-		}
-
-		/**
-		 * Specifies that the list will have the order of the key map.
-		 * The key map will store values of the primitive type specified like <code>int</code>.
-		 * The key map will be sorted using the natural comparator and no null values are allowed.
-		 *
-		 * @param type	primitive type to use for key map
-		 * 				(only one key map or the element set can have the order by option set)
-		 * @return		this (fluent interface)
-		 */
-		protected B withOrderByKey2(Class<?> type) {
-			return withOrderByKey(2, type);
-		}
-
-		/**
-		 * Specify whether null elements are allowed or not.
-		 * A null element will have a null key.
-		 *
-		 * @param allowNull true to allow null elements, false to disallow
-		 * @return          this (fluent interfaces)
-		 */
-		protected B withKey2Null(boolean allowNull) {
-			return withKeyNull(2, allowNull);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates   true to allow duplicates
-		 * @return              	this (fluent interfaces)
-		 */
-		protected B withKey2Duplicates(boolean allowDuplicates) {
-			return withKeyDuplicates(2, allowDuplicates, allowDuplicates);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates		true to allow duplicates
-		 * @param allowDuplicatesNull	true to allow duplicate null values
-		 * @return						this (fluent interfaces)
-		 */
-		protected B withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return withKeyDuplicates(2, allowDuplicates, allowDuplicatesNull);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param sort    true to sort key map
-		 * @return        this (fluent interface)
-		 */
-		// The other overloaded methods also named withKey2Sort must defined directly in the concrete classes due to the generic types
-		protected B withKey2Sort(boolean sort) {
-			return withKeySort(2, sort);
 		}
 
 		//-- Implementation
@@ -1577,7 +1689,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	//-- KeyCollectionImpl --
 
 	static final Object SYMBOL_ADDED = new Object();
-	static final Object SYMBOL_NOT_ADDED = new Object();
+	static final Object SYMBOL_NO_KEYS = new Object();
 	static final Object SYMBOL_ERROR_NULL_KEY = new Object();
 
 	/** If true the invariants are checked for debugging */
@@ -2063,11 +2175,12 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		Object symbol = doAdd(elem, null);
 		if (symbol == SYMBOL_ADDED) {
 			size++;
-		} else if (symbol == SYMBOL_NOT_ADDED) {
+		} else if (symbol == SYMBOL_NO_KEYS) {
 			// nothing todo
 		} else if (symbol == SYMBOL_ERROR_NULL_KEY) {
 			errorNullKey();
 		} else {
+			// symbol contains duplicate key
 			if (setBehavior) {
 				return false;
 			}
@@ -2428,7 +2541,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		Object symbol = doAdd(elem, ignore);
 		if (symbol == SYMBOL_ADDED) {
 			return true;
-		} else if (symbol == SYMBOL_NOT_ADDED) {
+		} else if (symbol == SYMBOL_NO_KEYS) {
 			return false;
 		} else if (symbol == SYMBOL_ERROR_NULL_KEY) {
 			errorNullKey();
@@ -2451,7 +2564,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 */
 	Object doAdd(E elem, KeyMap<?, ?> ignore) {
 		if (keyMaps == null) {
-			return SYMBOL_NOT_ADDED;
+			return SYMBOL_NO_KEYS;
 		}
 		Object symbol = SYMBOL_ADDED;
 		RuntimeException error = null;

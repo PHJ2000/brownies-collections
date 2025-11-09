@@ -35,6 +35,7 @@ import org.magictest.client.Report;
 import org.magictest.client.Trace;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
+import org.magicwerk.brownies.collections.TestHelper.Ticket;
 import org.magicwerk.brownies.core.CheckTools;
 import org.magicwerk.brownies.core.logback.LogbackTools;
 import org.slf4j.Logger;
@@ -47,6 +48,12 @@ import org.slf4j.Logger;
 public class KeyCollectionTest {
 
 	static final Logger LOG = LogbackTools.getConsoleLogger();
+
+	static class TicketCollection extends KeyCollection<Ticket> {
+		public TicketCollection() {
+			getBuilder().withElemNull(true).build();
+		}
+	}
 
 	public static void main(String[] args) {
 		test();

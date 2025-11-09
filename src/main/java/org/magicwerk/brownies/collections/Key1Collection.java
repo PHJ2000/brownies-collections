@@ -17,11 +17,9 @@
  */
 package org.magicwerk.brownies.collections;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -42,7 +40,8 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 	/**
 	 * Builder to construct Key1Collection instances.
 	 */
-	public static class Builder<E, K> extends BuilderImpl<E, Builder<E, K>> {
+	public static class Builder<E, K> extends Key1CollectionImplBuilder<E, K, Builder<E, K>> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -73,138 +72,11 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 			return (Key1Collection<E, K>) keyColl;
 		}
 
-		// -- Constraint
+		// -- Element key
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withNull(boolean allowNull) {
-			return super.withNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withConstraint(Predicate<E> constraint) {
-			return super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return super.withBeforeInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withAfterInsertTrigger(Consumer<E> trigger) {
-			return super.withAfterInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withCapacity(int capacity) {
-			return super.withCapacity(capacity);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withContent(Collection<? extends E> elements) {
-			return super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withContent(E... elements) {
-			return super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withMaxSize(int maxSize) {
-			return super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K> withSetBehavior(boolean setBehavior) {
 			return super.withSetBehavior(setBehavior);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSet() {
-			return super.withElemSet();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withOrderByElem(boolean orderBy) {
-			return super.withOrderByElem(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemNull(boolean allowNull) {
-			return super.withElemNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemDuplicates(boolean allowDuplicates) {
-			return super.withElemDuplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(boolean sort) {
-			return super.withElemSort(sort);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(Comparator<? super E> comparator) {
-			return super.withElemSort(comparator);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withPrimaryElem() {
-			return super.withPrimaryElem();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withUniqueElem() {
-			return super.withUniqueElem();
 		}
 
 		// -- Key1
@@ -215,7 +87,7 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		 * @param mapper	mapper to use
 		 * @return			this (fluent interface)
 		 */
-		@SuppressWarnings("unchecked")
+		@Override
 		public Builder<E, K> withKey1Map(Function<? super E, K> mapper) {
 			return withKeyMap(1, mapper);
 		}
@@ -227,6 +99,7 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		 * @param mapper	mapper to use
 		 * @return			this (fluent interface)
 		 */
+		@Override
 		@SuppressWarnings("unchecked")
 		public Builder<E, K> withPrimaryKey1Map(Function<? super E, K> mapper) {
 			return super.withPrimaryKeyMap(1, mapper);
@@ -239,6 +112,7 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		 * @param mapper	mapper to use
 		 * @return			this (fluent interface)
 		 */
+		@Override
 		@SuppressWarnings("unchecked")
 		public Builder<E, K> withUniqueKey1Map(Function<? super E, K> mapper) {
 			return super.withUniqueKeyMap(1, mapper);
@@ -281,6 +155,7 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		 * @param comparator    comparator to use for sorting
 		 * @return              this (fluent interface)
 		 */
+		@Override
 		@SuppressWarnings("unchecked")
 		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator) {
 			return super.withKeySort(1, comparator);
@@ -294,6 +169,7 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 		 * @param sortNullsFirst   		true if null will be sorted first, false for last
 		 * @return                      this (fluent interface)
 		 */
+		@Override
 		@SuppressWarnings("unchecked")
 		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator, boolean sortNullsFirst) {
 			return super.withKeySort(1, comparator, sortNullsFirst);

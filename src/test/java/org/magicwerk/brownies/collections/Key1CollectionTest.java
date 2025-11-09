@@ -210,7 +210,7 @@ public class Key1CollectionTest {
 	@Trace(traceMethod = "/.*/", parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
 	public static void testDuplicates() {
 		// Check that duplicates are added at the end and removed from the head
-		Key1Collection<ComparableName, ComparableName> coll = new Key1Collection.Builder<ComparableName, ComparableName>().withKey1Map(IdentMapper.INSTANCE)
+		Key1Collection<ComparableName, ComparableName> coll = new Key1Collection.Builder<ComparableName, ComparableName>().withKey1Map(IdentMapper.INSTANCE())
 				.withKey1Sort(true).withKey1Duplicates(true).build();
 		coll.add(new ComparableName("d", 4));
 		coll.add(new ComparableName("c", 2));

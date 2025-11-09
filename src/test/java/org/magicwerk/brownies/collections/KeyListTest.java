@@ -28,7 +28,7 @@ import org.magictest.client.Assert;
 import org.magictest.client.Capture;
 import org.magictest.client.Report;
 import org.magictest.client.Trace;
-import org.magicwerk.brownies.collections.KeyCollectionImpl.BuilderImpl;
+import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyCollectionImplBuilder;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
 import org.magicwerk.brownies.collections.TestHelper.Ticket;
@@ -71,7 +71,7 @@ public class KeyListTest {
 	/** Show to create a KeyList with 3 keys */
 	static class Key3List {
 
-		static class KeyListImplBuilder<E> extends BuilderImpl<E, KeyListImplBuilder<E>> {
+		static class KeyListImplBuilder<E> extends KeyCollectionImplBuilder<E, KeyListImplBuilder<E>> {
 
 			public KeyListImpl<E> build() {
 				KeyCollectionImpl<E> keyColl = new KeyCollectionImpl<>();

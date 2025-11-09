@@ -47,11 +47,11 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 		}
 
 		/**
-		 * Private constructor used if extending KeySet.
+		 * Protected constructor used if extending Key2Set.
 		 *
 		 * @param keySet	key set
 		 */
-		Builder(Key2Set<E, K1, K2> keySet) {
+		protected Builder(Key2Set<E, K1, K2> keySet) {
 			this.keyColl = keySet;
 			initKeyMapBuilder(0);
 		}
@@ -73,7 +73,38 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 			return (Key2Set<E, K1, K2>) keyColl;
 		}
 
-		// Builder: Overriden
+		// -- Builder
+
+		@Override
+		public Builder<E, K1, K2> withCapacity(int capacity) {
+			return (Builder<E, K1, K2>) super.withCapacity(capacity);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withConstraint(Predicate<E> constraint) {
+			return (Builder<E, K1, K2>) super.withConstraint(constraint);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withContent(Collection<? extends E> elements) {
+			return (Builder<E, K1, K2>) super.withContent(elements);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Builder<E, K1, K2> withContent(E... elements) {
+			return (Builder<E, K1, K2>) super.withContent(elements);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withMaxSize(int maxSize) {
+			return (Builder<E, K1, K2>) super.withMaxSize(maxSize);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withNull(boolean allowNull) {
+			return (Builder<E, K1, K2>) super.withNull(allowNull);
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -86,6 +117,61 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 				KeyCollectionImpl.errorInvalidSetBehavior();
 			}
 			return (Builder<E, K1, K2>) super.withSetBehavior(setBehavior);
+		}
+
+		// -- Triggers
+
+		@Override
+		public Builder<E, K1, K2> withBeforeInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E, K1, K2>) super.withBeforeInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withAfterInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E, K1, K2>) super.withAfterInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withBeforeDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E, K1, K2>) super.withBeforeDeleteTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E, K1, K2> withAfterDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E, K1, K2>) super.withAfterDeleteTrigger(trigger);
+		}
+
+		// -- Elem Map
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link Key2Set} always has an element set, so this call is not necessary.
+		 */
+		@Override
+		public Builder<E, K1, K2> withElemSet() {
+			return (Builder<E, K1, K2>) super.withElemSet();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link Key2Set} always has an element set, so this call is not necessary.
+		 */
+		@Override
+		public Builder<E, K1, K2> withPrimaryElem() {
+			return this;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link Key2Set} always has an element set, so an exception is thrown.
+		 */
+		@Override
+		public Builder<E, K1, K2> withUniqueElem() {
+			KeyCollectionImpl.errorInvalidSetBehavior();
+			return this;
 		}
 
 		/**
@@ -114,96 +200,6 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 			return (Builder<E, K1, K2>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
 		}
 
-		// Builder: Verbatim copy of Key2Collection
-
-		// -- Constraint
-
-		@Override
-		public Builder<E, K1, K2> withNull(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withNull(allowNull);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withConstraint(Predicate<E> constraint) {
-			return (Builder<E, K1, K2>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@Override
-		public Builder<E, K1, K2> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@Override
-		public Builder<E, K1, K2> withCapacity(int capacity) {
-			return (Builder<E, K1, K2>) super.withCapacity(capacity);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withContent(Collection<? extends E> elements) {
-			return (Builder<E, K1, K2>) super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withContent(E... elements) {
-			return (Builder<E, K1, K2>) super.withContent(elements);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withMaxSize(int maxSize) {
-			return (Builder<E, K1, K2>) super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		@SuppressWarnings("unchecked")
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that {@link Key2Set} does not support duplicates, so an exception is thrown if the argument is true.
-		 */
-		@Override
-		public Builder<E, K1, K2> withElemCount(boolean count) {
-			if (count) {
-				KeyCollectionImpl.errorInvaliDuplicates();
-			}
-			return (Builder<E, K1, K2>) super.withElemCount(count);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link Key2Set} always has an element set, so this call is not necessary.
-		 */
-		@Override
-		public Builder<E, K1, K2> withElemSet() {
-			return (Builder<E, K1, K2>) super.withElemSet();
-		}
-
-		@Override
-		public Builder<E, K1, K2> withOrderByElem(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByElem(orderBy);
-		}
-
 		@Override
 		public Builder<E, K1, K2> withElemNull(boolean allowNull) {
 			return (Builder<E, K1, K2>) super.withElemNull(allowNull);
@@ -224,75 +220,26 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 			return (Builder<E, K1, K2>) super.withElemSort(comparator, sortNullsFirst);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link Key2Set} always has an element set, so this call is not necessary.
-		 */
 		@Override
-		public Builder<E, K1, K2> withPrimaryElem() {
-			return this;
+		public Builder<E, K1, K2> withOrderByElem(boolean orderBy) {
+			return (Builder<E, K1, K2>) super.withOrderByElem(orderBy);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link Key2Set} always has an element set, so an exception is thrown.
-		 */
-		@Override
-		public Builder<E, K1, K2> withUniqueElem() {
-			KeyCollectionImpl.errorInvalidSetBehavior();
-			return this;
-		}
+		// -- Key Map 1
 
-		// -- Key1
-
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withKey1Map(Function<? super E, K1> mapper) {
 			return (Builder<E, K1, K2>) super.withKeyMap(1, mapper);
 		}
 
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withPrimaryKey1Map(Function<? super E, K1> mapper) {
 			return (Builder<E, K1, K2>) super.withPrimaryKeyMap(1, mapper);
 		}
 
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withUniqueKey1Map(Function<? super E, K1> mapper) {
 			return (Builder<E, K1, K2>) super.withUniqueKeyMap(1, mapper);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withOrderByKey1(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByKey1(orderBy);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withKey1Null(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withKey1Null(allowNull);
 		}
 
 		@Override
@@ -306,85 +253,45 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 		}
 
 		@Override
+		public Builder<E, K1, K2> withKey1Null(boolean allowNull) {
+			return (Builder<E, K1, K2>) super.withKey1Null(allowNull);
+		}
+
+		@Override
 		public Builder<E, K1, K2> withKey1Sort(boolean sort) {
 			return (Builder<E, K1, K2>) super.withKey1Sort(sort);
 		}
 
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list collection, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withKey1Sort(Comparator<? super K1> comparator) {
 			return (Builder<E, K1, K2>) super.withKeySort(1, comparator);
 		}
 
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list collection, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withKey1Sort(Comparator<? super K1> comparator, boolean sortNullsFirst) {
 			return (Builder<E, K1, K2>) super.withKeySort(1, comparator, sortNullsFirst);
 		}
 
-		// -- Key2
+		@Override
+		public Builder<E, K1, K2> withOrderByKey1(boolean orderBy) {
+			return (Builder<E, K1, K2>) super.withOrderByKey1(orderBy);
+		}
 
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
+		// -- Key Map 2
+
 		@Override
 		public Builder<E, K1, K2> withKey2Map(Function<? super E, K2> mapper) {
 			return (Builder<E, K1, K2>) super.withKeyMap(2, mapper);
 		}
 
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(false), and withKey2Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withPrimaryKey2Map(Function<? super E, K2> mapper) {
 			return (Builder<E, K1, K2>) super.withPrimaryKeyMap(2, mapper);
 		}
 
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(true), and withKey2Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withUniqueKey2Map(Function<? super E, K2> mapper) {
 			return (Builder<E, K1, K2>) super.withUniqueKeyMap(2, mapper);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withOrderByKey2(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByKey2(orderBy);
-		}
-
-		@Override
-		public Builder<E, K1, K2> withKey2Null(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withKey2Null(allowNull);
 		}
 
 		@Override
@@ -398,37 +305,29 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 		}
 
 		@Override
+		public Builder<E, K1, K2> withKey2Null(boolean allowNull) {
+			return (Builder<E, K1, K2>) super.withKey2Null(allowNull);
+		}
+
+		@Override
 		public Builder<E, K1, K2> withKey2Sort(boolean sort) {
 			return (Builder<E, K1, K2>) super.withKey2Sort(sort);
 		}
 
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withKey2Sort(Comparator<? super K2> comparator) {
 			return (Builder<E, K1, K2>) super.withKeySort(2, comparator);
 		}
 
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public Builder<E, K1, K2> withKey2Sort(Comparator<? super K2> comparator, boolean sortNullsFirst) {
 			return (Builder<E, K1, K2>) super.withKeySort(2, comparator, sortNullsFirst);
 		}
 
+		@Override
+		public Builder<E, K1, K2> withOrderByKey2(boolean orderBy) {
+			return (Builder<E, K1, K2>) super.withOrderByKey2(orderBy);
+		}
 	}
 
 	/**

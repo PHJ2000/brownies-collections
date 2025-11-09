@@ -17,9 +17,6 @@
  */
 package org.magicwerk.brownies.collections;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -38,7 +35,7 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	/**
 	 * Builder to construct KeyCollection instances.
 	 */
-	public static class Builder<E> extends BuilderImpl<E, Builder<E>> {
+	public static class Builder<E> extends KeyCollectionImplBuilder<E, Builder<E>> {
 		/**
 		 * Default constructor.
 		 */
@@ -68,130 +65,12 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 			return (KeyCollection<E>) keyColl;
 		}
 
-		// -- Constraint
-
-		@Override
-		public Builder<E> withNull(boolean allowNull) {
-			return super.withNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withConstraint(Predicate<E> constraint) {
-			return super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@Override
-		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return super.withBeforeInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-			return super.withAfterInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@Override
-		public Builder<E> withCapacity(int capacity) {
-			return super.withCapacity(capacity);
-		}
-
-		@Override
-		public Builder<E> withContent(Collection<? extends E> elements) {
-			return super.withContent(elements);
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E> withContent(E... elements) {
-			return super.withContent(elements);
-		}
-
-		@Override
-		public Builder<E> withMaxSize(int maxSize) {
-			return super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		@Override
-		public Builder<E> withSetBehavior(boolean setBehavior) {
-			return super.withSetBehavior(setBehavior);
-		}
+		// -- Builder
 
 		@Override
 		public Builder<E> withElemCount(boolean count) {
 			return super.withElemCount(count);
 		}
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link KeyCollection} always has an element set, so this call is not necessary.
-		 */
-		@Override
-		public Builder<E> withElemSet() {
-			return super.withElemSet();
-		}
-
-		@Override
-		public Builder<E> withOrderByElem(boolean orderBy) {
-			return super.withOrderByElem(orderBy);
-		}
-
-		@Override
-		public Builder<E> withElemNull(boolean allowNull) {
-			return super.withElemNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates) {
-			return super.withElemDuplicates(allowDuplicates);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@Override
-		public Builder<E> withElemSort(boolean sort) {
-			return super.withElemSort(sort);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator) {
-			return super.withElemSort(comparator);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@Override
-		public Builder<E> withPrimaryElem() {
-			return super.withPrimaryElem();
-		}
-
-		@Override
-		public Builder<E> withUniqueElem() {
-			return super.withUniqueElem();
-		}
-
 	}
 
 	/**
