@@ -1176,6 +1176,15 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 		}
 
+		Set<K> createKeysSet() {
+			if (keysMap instanceof HashMap) {
+				return new HashSet<>();
+			} else {
+				TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
+				return new TreeSet<>(treeMap.comparator());
+			}
+		}
+
 		Set<K> copyKeysSet(Map<K, Object> keysMap) {
 			if (keysMap instanceof HashMap) {
 				return new HashSet<>(keysMap.keySet());
@@ -2776,8 +2785,14 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @return      	list with all elements
 	 */
 	protected Collection<E> getAllByKey(int keyIndex, Object key) {
-		@SuppressWarnings("unchecked")
-		Collection<E> coll = crop();
+		Collection<E> coll;
+		if (keyList != null) {
+			coll = keyList.list.crop();
+		} else if (this instanceof Set) {
+			coll = new HashSet<>();
+		} else {
+			coll = GapList.create();
+		}
 		getAllByKey(keyIndex, key, coll);
 		return coll;
 	}

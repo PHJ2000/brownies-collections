@@ -17,6 +17,7 @@
  */
 package org.magicwerk.brownies.collections;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -179,9 +180,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> getAllByKey1(K1 key) {
-		return (Key2Collection<E, K1, K2>) super.getAllByKey(1, key);
+	public Collection<E> getAllByKey1(K1 key) {
+		return super.getAllByKey(1, key);
 	}
 
 	/**
@@ -338,9 +338,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> getAllByKey2(K2 key) {
-		return (Key2Collection<E, K1, K2>) super.getAllByKey(2, key);
+	public Collection<E> getAllByKey2(K2 key) {
+		return super.getAllByKey(2, key);
 	}
 
 	/**

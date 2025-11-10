@@ -64,6 +64,7 @@ public class KeyCollectionTest {
 		//testPut();
 		testElemCount();
 		//testEquals();
+		//testKey();
 	}
 
 	@Capture
@@ -81,7 +82,7 @@ public class KeyCollectionTest {
 		ComparableName cn = new ComparableName("d", -1);
 		ComparableName cn2 = coll.getByKey(0, cn);
 		CheckTools.check(cn.equals(cn2));
-		KeyCollection<ComparableName> es = coll.getAll(cn);
+		Collection<ComparableName> es = coll.getAll(cn);
 		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
 
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(true).withElemSort(false).build();

@@ -51,6 +51,26 @@ public class Key2ListTest {
 		//testKey2List();
 	}
 
+	@Trace
+	public void testGetAllByKeys() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+		Pair<Integer> p12b = Pair.of(1, 2);
+
+		Key2List<Pair<Integer>, Integer, Integer> list = new Key2List.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		list.add(p01);
+		list.add(p02);
+		list.add(p12);
+		list.add(p12b);
+
+		list.getAllByKeys(0, 1);
+		list.getAllByKeys(0, 2);
+		list.getAllByKeys(1, 2);
+		list.getAllByKeys(0, 0);
+	}
+
 	static class TicketList extends Key2List<Ticket, Integer, String> {
 		public TicketList() {
 			getBuilder().withPrimaryKey1Map(Ticket.IdMapper).withUniqueKey2Map(Ticket.ExtIdMapper).build();

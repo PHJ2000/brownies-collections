@@ -17,6 +17,7 @@
  */
 package org.magicwerk.brownies.collections;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -179,9 +180,8 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key1Collection<E, K> getAllByKey1(K key) {
-		return (Key1Collection<E, K>) super.getAllByKey(1, key);
+	public Collection<E> getAllByKey1(K key) {
+		return super.getAllByKey(1, key);
 	}
 
 	/**

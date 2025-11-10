@@ -454,6 +454,31 @@ public class Key2List<E, K1, K2> extends KeyListImpl<E> {
 	}
 
 	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	public IList<E> getAllByKeys(K1 key1, K2 key2) {
+		int count1 = getCountByKey1(key1);
+		int count2 = getCountByKey2(key2);
+		if (count1 == 0 || count2 == 0) {
+			return GapList.create();
+		}
+
+		if (count1 <= count2) {
+			IList<E> elems = getAllByKey1(key1);
+			Function<E, K2> map2 = getKey2Mapper();
+			return elems.filter(e -> equalsElem(map2.apply(e), key2));
+		} else {
+			IList<E> elems = getAllByKey2(key2);
+			Function<E, K1> map1 = getKey1Mapper();
+			return elems.filter(e -> equalsElem(map1.apply(e), key1));
+		}
+	}
+
+	/**
 	 * Returns the number of elements with specified key.
 	 *
 	 * @param key	key

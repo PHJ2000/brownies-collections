@@ -17,6 +17,7 @@
  */
 package org.magicwerk.brownies.collections;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -447,7 +448,7 @@ public class KeyCollectionsExamples {
 		}
 
 		public IntGapList getZips(String city) {
-			Key2Collection<ZipCity, Integer, String> entries = getAllByKey2(city);
+			Collection<ZipCity> entries = getAllByKey2(city);
 			IntGapList zips = IntGapList.create(entries.size());
 			for (ZipCity entry : entries) {
 				zips.add(entry.getZip());

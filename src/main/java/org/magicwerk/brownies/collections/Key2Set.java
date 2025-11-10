@@ -19,6 +19,8 @@ package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -372,15 +374,38 @@ public class Key2Set<E, K1, K2> extends Key2Collection<E, K1, K2> implements Set
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public Key2Set<E, K1, K2> getAllByKey1(K1 key) {
-		return (Key2Set<E, K1, K2>) super.getAllByKey(1, key);
+	public Set<E> getAllByKey1(K1 key) {
+		return (Set<E>) super.getAllByKey(1, key);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public Key2Set<E, K1, K2> getAllByKey2(K2 key) {
-		return (Key2Set<E, K1, K2>) super.getAllByKey(2, key);
+	public Set<E> getAllByKey2(K2 key) {
+		return (Set<E>) super.getAllByKey(2, key);
+	}
+
+	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	public Set<E> getAllByKeys(K1 key1, K2 key2) {
+		int count1 = getCountByKey1(key1);
+		int count2 = getCountByKey2(key2);
+		if (count1 == 0 || count2 == 0) {
+			return new HashSet<>();
+		}
+
+		if (count1 <= count2) {
+			Set<E> elems = getAllByKey1(key1);
+			Function<E, K2> map2 = getKey2Mapper();
+			return ICollectionTools.filter(elems, e -> Objects.equals(map2.apply(e), key2), HashSet::new);
+		} else {
+			Set<E> elems = getAllByKey2(key2);
+			Function<E, K1> map1 = getKey1Mapper();
+			return ICollectionTools.filter(elems, e -> Objects.equals(map1.apply(e), key1), HashSet::new);
+		}
 	}
 
 	@Override

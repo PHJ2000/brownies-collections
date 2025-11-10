@@ -28,6 +28,7 @@ import org.magictest.client.Assert;
 import org.magictest.client.Test;
 import org.magictest.client.Trace;
 import org.magicwerk.brownies.core.logback.LogbackTools;
+import org.magicwerk.brownies.core.objects.Pair;
 import org.magicwerk.brownies.tools.dev.jvm.JmhRunner;
 import org.magicwerk.brownies.tools.dev.jvm.JmhRunner.Options;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -47,12 +48,14 @@ public class KeySetTest {
 	static final Logger LOG = LogbackTools.getConsoleLogger();
 
 	public static void main(String[] args) {
-		test();
+		new KeySetTest().run();
 	}
 
-	static void test() {
+	void run() {
 		//testEquals();
-		AddPerformanceJmhTest.test();
+		testGetAllByKeys();
+
+		//AddPerformanceJmhTest.test();
 	}
 
 	KeySet<Integer> getKeySet(int num) {
@@ -61,6 +64,24 @@ public class KeySetTest {
 			set.add(i);
 		}
 		return set;
+	}
+
+	@Trace(traceClass = "Key2Set")
+	public void testGetAllByKeys() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+
+		Key2Set<Pair<Integer>, Integer, Integer> set = new Key2Set.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		set.add(p01);
+		set.add(p02);
+		set.add(p12);
+
+		set.getAllByKeys(0, 1);
+		set.getAllByKeys(0, 2);
+		set.getAllByKeys(1, 2);
+		set.getAllByKeys(0, 0);
 	}
 
 	// ICollection

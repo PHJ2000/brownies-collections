@@ -17,6 +17,7 @@
  */
 package org.magicwerk.brownies.collections;
 
+import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -108,8 +109,8 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	//-- Element methods
 
 	@Override
-	public KeyCollection<E> getAll(E elem) {
-		return (KeyCollection<E>) super.getAll(elem);
+	public Collection<E> getAll(E elem) {
+		return super.getAll(elem);
 	}
 
 	@Override
