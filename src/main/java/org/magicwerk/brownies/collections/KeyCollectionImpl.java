@@ -720,7 +720,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		// Key Map N
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		protected B withKeyMap(int keyIndex, Function mapper) {
+		public B withKeyMap(int keyIndex, Function mapper) {
 			if (mapper == null) {
 				throw new IllegalArgumentException("Mapper may not be null");
 			}
@@ -733,7 +733,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		@SuppressWarnings("rawtypes")
-		protected B withPrimaryKeyMap(int keyIndex, Function mapper) {
+		public B withPrimaryKeyMap(int keyIndex, Function mapper) {
 			if (mapper != null) {
 				// mapper may be null if called by withPrimaryElem()
 				withKeyMap(keyIndex, mapper);
@@ -744,7 +744,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		@SuppressWarnings("rawtypes")
-		protected B withUniqueKeyMap(int keyIndex, Function mapper) {
+		public B withUniqueKeyMap(int keyIndex, Function mapper) {
 			if (mapper != null) {
 				withKeyMap(keyIndex, mapper);
 			}
@@ -753,7 +753,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withKeyNull(int keyIndex, boolean allowNull) {
+		public B withKeyNull(int keyIndex, boolean allowNull) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.allowNull != null) {
 				throw new IllegalArgumentException("AllowNull already set");
@@ -765,11 +765,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
+		public B withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
 			return withKeyDuplicates(keyIndex, allowDuplicates, allowDuplicates);
 		}
 
-		protected B withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
+		public B withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.allowDuplicates != null) {
 				throw new IllegalArgumentException("AllowDuplicates already set");
@@ -779,7 +779,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withKeySort(int keyIndex, boolean sort) {
+		public B withKeySort(int keyIndex, boolean sort) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -791,7 +791,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withKeySort(int keyIndex, Comparator<?> comparator) {
+		public B withKeySort(int keyIndex, Comparator<?> comparator) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -803,7 +803,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
+		public B withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.sort != null) {
 				throw new IllegalArgumentException("Sort already set");
@@ -815,7 +815,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return cast();
 		}
 
-		protected B withOrderByKey(int keyIndex, boolean orderBy) {
+		public B withOrderByKey(int keyIndex, boolean orderBy) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.orderBy != null) {
 				throw new IllegalArgumentException("Order by already set");
@@ -2778,6 +2778,31 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	}
 
 	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	protected Collection<E> getAllByKeys(int keyIndex1, Object key1, int keyIndex2, Object key2) {
+		int count1 = getCountByKey(keyIndex1, key1);
+		int count2 = getCountByKey(keyIndex2, key2);
+		if (count1 == 0 || count2 == 0) {
+			return createCollection();
+		}
+
+		if (count1 <= count2) {
+			Collection<E> elems = getAllByKey(keyIndex1, key1);
+			Function<E, Object> map2 = getKeyMapper(keyIndex2);
+			return ICollectionTools.filter(elems, e -> Objects.equals(map2.apply(e), key2), this::createCollection);
+		} else {
+			Collection<E> elems = getAllByKey(keyIndex2, key2);
+			Function<E, Object> map1 = getKeyMapper(keyIndex1);
+			return ICollectionTools.filter(elems, e -> Objects.equals(map1.apply(e), key1), this::createCollection);
+		}
+	}
+
+	/**
 	 * Returns a collection with all elements with the specified key.
 	 *
 	 * @param keyIndex	key index
@@ -2785,16 +2810,23 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @return      	list with all elements
 	 */
 	protected Collection<E> getAllByKey(int keyIndex, Object key) {
-		Collection<E> coll;
-		if (keyList != null) {
-			coll = keyList.list.crop();
-		} else if (this instanceof Set) {
-			coll = new HashSet<>();
-		} else {
-			coll = GapList.create();
-		}
+		Collection<E> coll = createCollection();
 		getAllByKey(keyIndex, key, coll);
 		return coll;
+	}
+
+	/**
+	 * Create collection used to return elements from methods like getAllByKey().
+	 * The type will either be HashSet for sets or GapList/BigList for lists.
+	 */
+	Collection<E> createCollection() {
+		if (keyList != null) {
+			return keyList.list.crop();
+		} else if (this instanceof Set) {
+			return new HashSet<>();
+		} else {
+			return GapList.create();
+		}
 	}
 
 	/**
@@ -3065,8 +3097,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @return      	true if elements have been removed, false otherwise
 	 */
 	protected Collection<E> removeAllByKey(int keyIndex, Object key) {
-		@SuppressWarnings("unchecked")
-		Collection<E> removeds = crop();
+		Collection<E> removeds = createCollection();
 		removeAllByKey(keyIndex, key, removeds);
 		return removeds;
 	}

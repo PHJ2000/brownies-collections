@@ -107,18 +107,6 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 
 	//-- Element methods
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key2Collection<E, K1, K2> getAll(E elem) {
-		return (Key2Collection<E, K1, K2>) super.getAll(elem);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key2Collection<E, K1, K2> removeAll(E elem) {
-		return (Key2Collection<E, K1, K2>) super.removeAll(elem);
-	}
-
 	@Override
 	public E put(E elem) {
 		return super.put(elem);
@@ -211,9 +199,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> removeAllByKey1(K1 key) {
-		return (Key2Collection<E, K1, K2>) super.removeAllByKey(1, key);
+	public Collection<E> removeAllByKey1(K1 key) {
+		return super.removeAllByKey(1, key);
 	}
 
 	/**
@@ -343,6 +330,17 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	}
 
 	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	public Collection<E> getAllByKeys(K1 key1, K2 key2) {
+		return getAllByKeys(1, key1, 2, key2);
+	}
+
+	/**
 	 * Returns the number of elements with specified key.
 	 *
 	 * @param key	key
@@ -369,9 +367,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> removeAllByKey2(K2 key) {
-		return (Key2Collection<E, K1, K2>) super.removeAllByKey(2, key);
+	public Collection<E> removeAllByKey2(K2 key) {
+		return super.removeAllByKey(2, key);
 	}
 
 	/**

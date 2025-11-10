@@ -263,8 +263,13 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 	}
 
 	@Override
-	public KeySet<E> getAll(E elem) {
-		return (KeySet<E>) super.getAll(elem);
+	public Set<E> getAll(E elem) {
+		return (Set<E>) super.getAll(elem);
+	}
+
+	@Override
+	public Set<E> removeAll(E elem) {
+		return (Set<E>) super.removeAll(elem);
 	}
 
 	@Override

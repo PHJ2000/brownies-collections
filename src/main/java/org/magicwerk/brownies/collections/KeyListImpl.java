@@ -530,9 +530,11 @@ public class KeyListImpl<E> extends IList<E> {
 	 * @return      	list with all elements
 	 */
 	public IList<E> getAllByKey(int keyIndex, Object key) {
-		IList<E> list = doCreate(-1);
-		keyColl.getAllByKey(keyIndex, key, list);
-		return list;
+		return (IList<E>) keyColl.getAllByKey(keyIndex, key);
+	}
+
+	public IList<E> getAllByKeys(int keyIndex1, Object key1, int keyIndex2, Object key2) {
+		return (IList<E>) keyColl.getAllByKeys(keyIndex1, key1, keyIndex2, key2);
 	}
 
 	/**

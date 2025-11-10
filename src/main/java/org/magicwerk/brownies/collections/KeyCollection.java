@@ -114,8 +114,8 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	}
 
 	@Override
-	public KeyCollection<E> removeAll(E elem) {
-		return (KeyCollection<E>) super.removeAll(elem);
+	public Collection<E> removeAll(E elem) {
+		return super.removeAll(elem);
 	}
 
 	@Override

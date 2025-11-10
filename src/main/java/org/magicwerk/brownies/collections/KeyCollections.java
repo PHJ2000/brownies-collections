@@ -241,54 +241,54 @@ public class KeyCollections {
 
 			@SuppressWarnings("rawtypes")
 			@Override
-			protected Builder<E> withKeyMap(int keyIndex, Function mapper) {
+			public Builder<E> withKeyMap(int keyIndex, Function mapper) {
 				return (Builder<E>) super.withKeyMap(keyIndex, mapper);
 			}
 
 			@SuppressWarnings("rawtypes")
 			@Override
-			protected Builder<E> withPrimaryKeyMap(int keyIndex, Function mapper) {
+			public Builder<E> withPrimaryKeyMap(int keyIndex, Function mapper) {
 				return (Builder<E>) super.withPrimaryKeyMap(keyIndex, mapper);
 			}
 
 			@SuppressWarnings("rawtypes")
 			@Override
-			protected Builder<E> withUniqueKeyMap(int keyIndex, Function mapper) {
+			public Builder<E> withUniqueKeyMap(int keyIndex, Function mapper) {
 				return (Builder<E>) super.withUniqueKeyMap(keyIndex, mapper);
 			}
 
 			@Override
-			protected Builder<E> withKeyNull(int keyIndex, boolean allowNull) {
+			public Builder<E> withKeyNull(int keyIndex, boolean allowNull) {
 				return (Builder<E>) super.withKeyNull(keyIndex, allowNull);
 			}
 
 			@Override
-			protected Builder<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
+			public Builder<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
 				return (Builder<E>) super.withKeyDuplicates(keyIndex, allowDuplicates);
 			}
 
 			@Override
-			protected Builder<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
+			public Builder<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
 				return (Builder<E>) super.withKeyDuplicates(keyIndex, allowDuplicates, allowDuplicatesNull);
 			}
 
 			@Override
-			protected Builder<E> withKeySort(int keyIndex, boolean sort) {
+			public Builder<E> withKeySort(int keyIndex, boolean sort) {
 				return (Builder<E>) super.withKeySort(keyIndex, sort);
 			}
 
 			@Override
-			protected Builder<E> withKeySort(int keyIndex, Comparator<?> comparator) {
+			public Builder<E> withKeySort(int keyIndex, Comparator<?> comparator) {
 				return (Builder<E>) super.withKeySort(keyIndex, comparator);
 			}
 
 			@Override
-			protected Builder<E> withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
+			public Builder<E> withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
 				return (Builder<E>) super.withKeySort(keyIndex, comparator, sortNullsFirst);
 			}
 
 			@Override
-			protected Builder<E> withOrderByKey(int keyIndex, boolean orderBy) {
+			public Builder<E> withOrderByKey(int keyIndex, boolean orderBy) {
 				return (Builder<E>) super.withOrderByKey(keyIndex, orderBy);
 			}
 

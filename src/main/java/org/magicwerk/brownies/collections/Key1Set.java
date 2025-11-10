@@ -316,14 +316,18 @@ public class Key1Set<E, K> extends Key1Collection<E, K> implements Set<E> {
 	}
 
 	@Override
-	public Key1Set<E, K> getAll(E elem) {
-		return (Key1Set<E, K>) super.getAll(elem);
+	public Set<E> getAll(E elem) {
+		return (Set<E>) super.getAll(elem);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public Key1Set<E, K> getAllByKey1(K key) {
-		return (Key1Set<E, K>) super.getAllByKey(1, key);
+	public Set<E> getAllByKey1(K key) {
+		return (Set<E>) super.getAllByKey1(key);
+	}
+
+	@Override
+	public Set<E> removeAllByKey1(K key) {
+		return (Set<E>) super.removeAllByKey1(key);
 	}
 
 	@Override

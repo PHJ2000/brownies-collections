@@ -53,17 +53,32 @@ public class KeySetTest {
 
 	void run() {
 		//testEquals();
+		//testGetAllByKey();
 		testGetAllByKeys();
 
 		//AddPerformanceJmhTest.test();
 	}
 
-	KeySet<Integer> getKeySet(int num) {
-		KeySet<Integer> set = new KeySet.Builder<Integer>().build();
-		for (int i = 0; i < num; i++) {
-			set.add(i);
-		}
-		return set;
+	// Key2Set
+
+	@Trace(traceClass = "Key2Set", traceMethod = "/getAll.*/")
+	public void testGetAllByKey() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+
+		Key2Set<Pair<Integer>, Integer, Integer> set = new Key2Set.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		set.add(p01);
+		set.add(p02);
+		set.add(p12);
+
+		set.getAllByKey1(1);
+		set.getAllByKey(1, 1);
+		set.getAllByKey2(2);
+		set.getAllByKey(2, 2);
+
+		set.getAll(p01);
 	}
 
 	@Trace(traceClass = "Key2Set")
@@ -85,6 +100,14 @@ public class KeySetTest {
 	}
 
 	// ICollection
+
+	KeySet<Integer> getKeySet(int num) {
+		KeySet<Integer> set = new KeySet.Builder<Integer>().build();
+		for (int i = 0; i < num; i++) {
+			set.add(i);
+		}
+		return set;
+	}
 
 	@Trace
 	public void testGetFirst() {

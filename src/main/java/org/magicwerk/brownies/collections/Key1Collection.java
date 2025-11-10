@@ -107,18 +107,6 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 
 	//-- Element methods
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key1Collection<E, K> getAll(E elem) {
-		return (Key1Collection<E, K>) super.getAll(elem);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key1Collection<E, K> removeAll(E elem) {
-		return (Key1Collection<E, K>) super.removeAll(elem);
-	}
-
 	@Override
 	public E put(E elem) {
 		return super.put(elem);
@@ -210,11 +198,9 @@ public class Key1Collection<E, K> extends KeyCollectionImpl<E> {
 	 *
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
-	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	public Key1Collection<E, K> removeAllByKey1(K key) {
-		return (Key1Collection<E, K>) super.removeAllByKey(1, key);
+	public Collection<E> removeAllByKey1(K key) {
+		return super.removeAllByKey(1, key);
 	}
 
 	/**
