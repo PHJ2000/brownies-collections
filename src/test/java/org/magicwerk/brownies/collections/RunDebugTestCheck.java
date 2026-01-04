@@ -44,20 +44,30 @@ public class RunDebugTestCheck {
 	 * This test will fail if GapList contains DEBUG_CHECK = true and assertions are enabled.
 	 */
 	void testGapList() {
-		GapList<String> list = GapList.create();
-		list.add("b");
-		ReflectTools.setAnyBeanValue(list, "size", 2);
-		list.add("c");
+		try {
+			GapList<String> list = GapList.create();
+			list.add("b");
+			ReflectTools.setFieldValue(list, GapList.class.getDeclaredField("size"), 2);
+			//ReflectTools.setAnyBeanValue(list, "size", 2);
+			list.add("c");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * This test will fail if BigList contains DEBUG_CHECK = true and assertions are enabled.
 	 */
 	void testBigList() {
-		BigList<String> list = BigList.create();
-		list.add("b");
-		ReflectTools.setAnyBeanValue(list, "rootNode", null);
-		list.add("c");
+		try {
+			BigList<String> list = BigList.create();
+			list.add("b");
+			//ReflectTools.setAnyBeanValue(list, "rootNode", null);
+			ReflectTools.setFieldValue(list, BigList.class.getDeclaredField("rootNode"), null);
+			list.add("c");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
