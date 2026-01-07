@@ -26,7 +26,7 @@ public class CapacityHelper {
 
 	/**
 	 * Calculate new capacity.
-	 * The capacity will not shrink, so the returned capacity can be equal to values.length.
+	 * The capacity will not shrink, so the returned capacity can be equal to oldCapacity.
 	 * 
 	 * @param minCapacity the desired minimum capacity
 	 * @param oldCapacity the old capacity in use
