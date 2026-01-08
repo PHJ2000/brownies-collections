@@ -1,18 +1,17 @@
 Manifest-Version: 1.0
+Bundle-Description: Brownies Collections contains high-performance col
+ lections complementing the Java Collections Framework.
 Automatic-Module-Name: org.magicwerk.brownies.collections
-Specification-Title: magicwerk.org
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.magicwerk.brownies.collections
-Bundle-Name: Brownies-Collections
-Bundle-Version: 0.9.24-SNAPSHOT
-Bundle-Description: Brownies Collections contains high-performance colle
- ctions complementing the Java Collections Framework.
 Bundle-License: https://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-SymbolicName: org.magicwerk.brownies.collections
+Export-Package: org.magicwerk.brownies.collections;version="0.9.24",or
+ g.magicwerk.brownies.collections.exceptions;version="0.9.24",org.magi
+ cwerk.brownies.collections.helper;version="0.9.24",org.magicwerk.brow
+ nies.collections.helper.primitive;version="0.9.24",org.magicwerk.brow
+ nies.collections.primitive;version="0.9.24"
+Bundle-Name: Brownies-Collections
+Bundle-Version: 0.9.24
+Bundle-ManifestVersion: 2
+Specification-Title: magicwerk.org
 Bundle-DocURL: http://www.magicwerk.org/collections
-Export-Package: org.magicwerk.brownies.collections;version="0.9.24-SNAPS
- HOT",org.magicwerk.brownies.collections.exceptions;version="0.9.24-SNAP
- SHOT",org.magicwerk.brownies.collections.helper;version="0.9.24-SNAPSHO
- T",org.magicwerk.brownies.collections.helper.primitive;version="0.9.24-
- SNAPSHOT",org.magicwerk.brownies.collections.primitive;version="0.9.24-
- SNAPSHOT"
 
