@@ -74,33 +74,30 @@ public abstract class IList<E>
 	}
 
 	/**
-	 * Returns a shallow copy of this list.
+	 * Returns a modifiable shallow copy of this list.
 	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
 	 * The capacity of the list will be set to the number of elements, i.e. size and capacity are equal.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * This method is identical to clone() except that it returns an object with the exact type.
+	 * This returned list will be modifiable, i.e. a read-only list will be copied and be modifiable again.
+	 * Use {@link #clone} if a read-only list should not be copied. 
 	 *
 	 * @return a modifiable copy of this list
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public IList<E> copy() {
-		return (IList<E>) clone();
-	}
+	public abstract IList<E> copy();
 
 	/**
-	 * Returns a shallow copy of this list.
+	 * Returns a shallow clone of this list.
 	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
 	 * The capacity of the list will be set to the number of elements, i.e. size and capacity are equal.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * It is advised to use copy() which is identical except that it returns an object with the exact type.
+	 * If the list is read-only, the same list is returned without change.
+	 * Use {@link #copy} to get a modifiable list in any case.
 	 *
-	 * @return a modifiable copy of this list
+	 * @return a clone of this list
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object clone() {
+	public IList<E> clone() {
 		try {
+			@SuppressWarnings("unchecked")
 			IList<E> list = (IList<E>) super.clone();
 			list.doClone(this);
 			return list;
@@ -122,23 +119,39 @@ public abstract class IList<E>
 	}
 
 	/**
-	 * Returns an unmodifiable view of this list. This method allows modules to provide users with "read-only" access to internal lists.
-	 * Query operations on the returned list "read through" to the specified list, and attempts to modify the returned list, whether direct or
-	 * via its iterator, result in an UnsupportedOperationException. If this list is already unmodifiable, it is returned unchanged.
+	 * Returns true if this list is either unmodifiable or immutable, false otherwise. 
+	 */
+	public abstract boolean isReadOnly();
+
+	/**
+	 * Returns an unmodifiable view of this list. This method allows modules to provide users with "read-only" access to internal lists,
+	 * where changes made to the original list are visible as query operations on the returned list "read through" to the specified list.
+	 * Attempts to modify the returned list, whether direct or via its iterator, result in an UnsupportedOperationException. 
+	 * If this list is already unmodifiable, it is returned unchanged.
+	 * See {@link #immutableList} to get an immutable copy of a list.
 	 *
 	 * @return an unmodifiable view of the specified list
 	 */
 	// Naming as in java.util.Collections#unmodifiableList
-	abstract public IList<E> unmodifiableList();
+	public abstract IList<E> unmodifiableList();
 
-	abstract public IList<E> immutableList();
+	/**
+	 * Returns an immutable copy of this list. 
+	 * The returned list is independent from the original list, i.e. changes done later are not seen.
+	 * Attempts to modify the returned list, whether direct or via its iterator, result in an UnsupportedOperationException.
+	 * If this list is already immutable, it is returned unchanged.
+	 * See {@link #unmodifiableList} to get unmodifiable view of a list.
+	 *
+	 * @return an immutable copy of the specified list
+	 */
+	public abstract IList<E> immutableList();
 
 	/**
 	 * Initialize this object after the bitwise copy has been made by Object.clone().
 	 *
 	 * @param that	source object
 	 */
-	abstract protected void doClone(IList<E> that);
+	protected abstract void doClone(IList<E> that);
 
 	@Override
 	public void clear() {
@@ -420,14 +433,9 @@ public abstract class IList<E>
 		}
 	}
 
-	/**
-	 * Counts how many times the specified element is contained in the list.
-	 *
-	 * @param elem	element to count
-	 * @return		count how many times the specified element is contained in the list
-	 */
-	// See java.util.Collections.frequency(Collection<?>, Object)
+	@Override
 	public int count(E elem) {
+		// See java.util.Collections.frequency(Collection<?>, Object)
 		int count = 0;
 		int size = size();
 		for (int i = 0; i < size; i++) {
@@ -507,9 +515,9 @@ public abstract class IList<E>
 	}
 
 	/**
-	 * Returns distinct elements in the list.
+	 * Returns set with distinct elements in the list.
 	 *
-	 * @return		distinct elements in the list
+	 * @return		set with distinct elements in the list
 	 */
 	public Set<E> getDistinct() {
 		Set<E> set = new HashSet<E>();
@@ -518,6 +526,24 @@ public abstract class IList<E>
 			set.add(doGet(i));
 		}
 		return set;
+	}
+
+	/**
+	 * Returns iterator for distinct elements in the list.
+	 *
+	 * @return		iterator for distinct elements in the list
+	 */
+	public Iterator<E> iteratorDistinct() {
+		return getDistinct().iterator();
+	}
+
+	/**
+	 * Returns count of distinct elements in the list.
+	 *
+	 * @return		count of distinct elements in the list
+	 */
+	public int countDistinct() {
+		return getDistinct().size();
 	}
 
 	@Override
@@ -570,22 +596,6 @@ public abstract class IList<E>
 				R r = func.apply(e);
 				list.add(r);
 			}
-		}
-		return list;
-	}
-
-	/**
-	 * Create a new list by applying the specified transforming operator to all elements.
-	 *
-	 * @param op	transforming operator
-	 * @return		created list
-	 */
-	public IList<E> transformedList(UnaryOperator<E> op) {
-		int size = size();
-		IList<E> list = doCreate(size);
-		for (int i = 0; i < size; i++) {
-			E e = doGet(i);
-			list.add(op.apply(e));
 		}
 		return list;
 	}
@@ -672,6 +682,7 @@ public abstract class IList<E>
 			}
 		}
 		if (dst < size) {
+			// doRemoveAll must handle the case correctly that a sorted list may be not sorted after moving elements until the removal has taken place
 			doRemoveAll(dst, size - dst);
 		}
 		return dst < size;
@@ -1414,6 +1425,23 @@ public abstract class IList<E>
 	}
 
 	// --- Static bulk transfer methods working with two ILists ---
+
+	/**
+	 * Copies elements from one list and adds them to another.
+	 * The elements and size of source list do not change, where as size of the destination grows.
+	 * Source and destination list can also be identical.
+	 *
+	 * @param src		source list
+	 * @param srcIndex	index of first element in source list
+	 * @param srcLen	number of elements to copy
+	 * @param dst		destination list
+	 * @param dstIndex	index of first element in destination list
+	 * @param <E> 		type of elements stored in the list
+	 * @throws 			IndexOutOfBoundsException if the ranges are invalid
+	 */
+	public static <E> void transferAdd(IList<E> src, int srcIndex, int srcLen, IList<? super E> dst, int dstIndex) {
+		src.doTransfer(TRANSFER_COPY, srcIndex, srcLen, dst, dstIndex, 0);
+	}
 
 	/**
 	 * Copies elements from one list to another.

@@ -35,6 +35,8 @@ import org.magictest.client.Report;
 import org.magictest.client.Trace;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
+import org.magicwerk.brownies.collections.TestHelper.Ticket;
+import org.magicwerk.brownies.core.CheckTools;
 import org.magicwerk.brownies.core.logback.LogbackTools;
 import org.slf4j.Logger;
 
@@ -47,6 +49,12 @@ public class KeyCollectionTest {
 
 	static final Logger LOG = LogbackTools.getConsoleLogger();
 
+	static class TicketCollection extends KeyCollection<Ticket> {
+		public TicketCollection() {
+			getBuilder().withElemNull(true).build();
+		}
+	}
+
 	public static void main(String[] args) {
 		test();
 	}
@@ -54,8 +62,9 @@ public class KeyCollectionTest {
 	static void test() {
 		//testIterator();
 		//testPut();
-		//testElemCount();
-		testEquals();
+		testElemCount();
+		//testEquals();
+		//testKey();
 	}
 
 	@Capture
@@ -63,23 +72,36 @@ public class KeyCollectionTest {
 		KeyCollection<ComparableName> coll;
 
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(false).withElemSort(true).build();
+		CheckTools.check(coll.hasElemCount() == false);
 		coll.add(new ComparableName("d", 0));
 		coll.add(new ComparableName("d", 1));
 		coll.add(new ComparableName("b", 2));
 		coll.add(new ComparableName("aa", 3));
 		LOG.info("withElemCount(false): {}", coll);
 
+		ComparableName cn = new ComparableName("d", -1);
+		ComparableName cn2 = coll.getByKey(0, cn);
+		CheckTools.check(cn.equals(cn2));
+		Collection<ComparableName> es = coll.getAll(cn);
+		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
+
 		coll = new KeyCollection.Builder<ComparableName>().withElemCount(true).withElemSort(false).build();
+		CheckTools.check(coll.hasElemCount() == true);
 		coll.add(new ComparableName("d", 0));
 		coll.add(new ComparableName("d", 1));
 		coll.add(new ComparableName("b", 2));
 		coll.add(new ComparableName("aa", 3));
 		LOG.info("withElemCount(true): {}", coll);
 
-		Set<ComparableName> elems = coll.getDistinct();
+		cn2 = coll.getByKey(0, cn);
+		CheckTools.check(cn.equals(cn2));
+		es = coll.getAll(cn);
+		CheckTools.check(es.size() == 2 && cn.equals(ICollectionTools.getFirst(es)));
+
 		Map<ComparableName, Integer> countedElems = new TreeMap<>();
+		Set<ComparableName> elems = coll.getDistinct();
 		for (ComparableName elem : elems) {
-			int count = coll.getCount(elem);
+			int count = coll.count(elem);
 			countedElems.put(elem, count);
 		}
 		LOG.info("countedElems: {}", countedElems);
@@ -519,16 +541,16 @@ public class KeyCollectionTest {
 
 		coll = getCollection();
 		coll.getAll(d);
-		coll.getCount(d);
+		coll.count(d);
 		coll.getDistinct();
 
 		coll.getAll(x);
-		coll.getCount(x);
+		coll.count(x);
 		coll.remove(x);
 		coll.removeAll(x);
 
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 		coll.remove(n);
 		coll.removeAll(n);
 
@@ -542,24 +564,24 @@ public class KeyCollectionTest {
 		coll.removeAll(a);
 
 		coll.add(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.add(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		Report.printStep("-- Sort --");
 		coll = getCollectionSort();
 		coll.getAll(d);
-		coll.getCount(d);
+		coll.count(d);
 		coll.getDistinct();
 
 		coll.getAll(x);
-		coll.getCount(x);
+		coll.count(x);
 		coll.remove(x);
 		coll.removeAll(x);
 
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 		coll.remove(n);
 		coll.removeAll(n);
 
@@ -572,7 +594,7 @@ public class KeyCollectionTest {
 		Report.printStep("-- Null --");
 		coll = getCollectionNull();
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.remove(n);
 		coll.removeAll(n);
@@ -580,7 +602,7 @@ public class KeyCollectionTest {
 		Report.printStep("-- NullSort --");
 		coll = getCollectionNullSort();
 		coll.getAll(n);
-		coll.getCount(n);
+		coll.count(n);
 
 		coll.remove(n);
 		coll.removeAll(n);

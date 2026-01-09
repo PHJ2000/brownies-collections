@@ -100,20 +100,24 @@ public class LongObjBigList extends IList<Long> {
 		init();
 	}
 
+	public LongObjBigList(int capacity) {
+		list = new LongBigList(capacity);
+	}
+	
+	public LongObjBigList(Collection<? extends Long> elems) {
+		init(elems);
+	}
+
+	public LongObjBigList(LongBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new LongBigList();
 	}
 
-	public LongObjBigList(int capacity) {
-		list = new LongBigList(capacity);
-	}
-
 	public void init(Long... elems) {
 		list = LongBigList.create(toPrimitive(elems));
-	}
-
-	public LongObjBigList(Collection<? extends Long> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Long> elems) {
@@ -132,8 +136,28 @@ public class LongObjBigList extends IList<Long> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableLongObjBigList;
+	}
+
+	@Override
 	public LongObjBigList copy() {
-		return (LongObjBigList) clone();
+		if (this instanceof ImmutableLongObjBigList) {
+			LongObjBigList list = new LongObjBigList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (LongObjBigList) super.clone();
+		}	
+	}
+
+	@Override
+	public LongObjBigList clone() {
+		if (this instanceof ImmutableLongObjBigList) {
+			return this;
+		} else {
+			return (LongObjBigList) super.clone();
+		}	
 	}
 
 	@Override
@@ -206,7 +230,6 @@ public class LongObjBigList extends IList<Long> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

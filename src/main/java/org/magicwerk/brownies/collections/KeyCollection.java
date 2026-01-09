@@ -18,13 +18,12 @@
 package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * KeyCollection implements a collection.
- * It can provide fast access to its elements like a Set.
+ * It can provide fast access to its elements like a Set, but allows duplicates.
  * The elements allowed in the collection can be constraint (null/duplicate values).
  *
  * @author Thomas Mauch
@@ -35,10 +34,16 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class KeyCollection<E> extends KeyCollectionImpl<E> {
 
+	/** Build {@link KeyCollection} with specified builder function */
+	public static <E> KeyCollection<E> buildCollection(UnaryOperator<KeyCollection.Builder<E>> builder) {
+		return builder.apply(new KeyCollection.Builder<>()).build();
+	}
+
 	/**
 	 * Builder to construct KeyCollection instances.
 	 */
-	public static class Builder<E> extends BuilderImpl<E> {
+	public static class Builder<E> extends KeyCollectionImplBuilder<E, Builder<E>> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -47,11 +52,11 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeyCollection.
+		 * Protected constructor used if extending KeyCollection.
 		 *
 		 * @param keyColl	key collection
 		 */
-		Builder(KeyCollection<E> keyColl) {
+		protected Builder(KeyCollection<E> keyColl) {
 			this.keyColl = keyColl;
 			initKeyMapBuilder(0);
 		}
@@ -68,130 +73,12 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 			return (KeyCollection<E>) keyColl;
 		}
 
-		// -- Constraint
-
-		@Override
-		public Builder<E> withNull(boolean allowNull) {
-			return (Builder<E>) super.withNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withConstraint(Predicate<E> constraint) {
-			return (Builder<E>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@Override
-		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@Override
-		public Builder<E> withCapacity(int capacity) {
-			return (Builder<E>) super.withCapacity(capacity);
-		}
-
-		@Override
-		public Builder<E> withContent(Collection<? extends E> elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E> withContent(E... elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		public Builder<E> withMaxSize(int maxSize) {
-			return (Builder<E>) super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		@Override
-		public Builder<E> withSetBehavior(boolean setBehavior) {
-			return (Builder<E>) super.withSetBehavior(setBehavior);
-		}
+		// -- Builder
 
 		@Override
 		public Builder<E> withElemCount(boolean count) {
-			return (Builder<E>) super.withElemCount(count);
+			return super.withElemCount(count);
 		}
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link KeyCollection} always has an element set, so this call is not necessary.
-		 */
-		@Override
-		public Builder<E> withElemSet() {
-			return (Builder<E>) super.withElemSet();
-		}
-
-		@Override
-		public Builder<E> withOrderByElem(boolean orderBy) {
-			return (Builder<E>) super.withOrderByElem(orderBy);
-		}
-
-		@Override
-		public Builder<E> withElemNull(boolean allowNull) {
-			return (Builder<E>) super.withElemNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@Override
-		public Builder<E> withElemSort(boolean sort) {
-			return (Builder<E>) super.withElemSort(sort);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator) {
-			return (Builder<E>) super.withElemSort(comparator);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@Override
-		public Builder<E> withPrimaryElem() {
-			return (Builder<E>) super.withPrimaryElem();
-		}
-
-		@Override
-		public Builder<E> withUniqueElem() {
-			return (Builder<E>) super.withUniqueElem();
-		}
-
 	}
 
 	/**
@@ -222,13 +109,13 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	//-- Element methods
 
 	@Override
-	public KeyCollection<E> getAll(E elem) {
-		return (KeyCollection<E>) super.getAll(elem);
+	public Collection<E> getAll(E elem) {
+		return super.getAll(elem);
 	}
 
 	@Override
-	public KeyCollection<E> removeAll(E elem) {
-		return (KeyCollection<E>) super.removeAll(elem);
+	public Collection<E> removeAll(E elem) {
+		return super.removeAll(elem);
 	}
 
 	@Override
@@ -246,4 +133,14 @@ public class KeyCollection<E> extends KeyCollectionImpl<E> {
 	public KeyCollection<E> filter(Predicate<? super E> filter) {
 		return (KeyCollection<E>) super.filter(filter);
 	}
+
+	/**
+	 * Determines whether this collection is only counting, but not storing all elements.
+	 *
+	 * @return true if this collection is only counting, but not storing all elements
+	 */
+	public boolean hasElemCount() {
+		return keyMaps[0].count;
+	}
+
 }

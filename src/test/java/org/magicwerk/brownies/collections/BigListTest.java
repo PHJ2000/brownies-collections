@@ -16,22 +16,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Test of BigList.
- *
- * @author Thomas Mauch
- * @version $Id: BigListTest.java 2107 2014-01-24 08:08:38Z origo $
+ * Test of class {@link BigList}.
  */
 public class BigListTest {
-	/** Logger */
-	private static Logger LOG = LoggerFactory.getLogger(BigListTest.class);
+
+	static final Logger LOG = LoggerFactory.getLogger(BigListTest.class);
 
 	public static void main(String[] args) {
 		test();
 	}
 
 	static void test() {
-		testReferenceCounting();
-		//testReferenceCountingClear();
+		//testReferenceCounting();
+		testReferenceCountingClear();
 
 		//		testCopy();
 		//		testAdd();
@@ -90,6 +87,10 @@ public class BigListTest {
 		copy.clear();
 		refCount = (Integer) ReflectEl.getByExpr(list, "rootNode.block.refCount.value");
 		Assert.assertTrue(refCount == 1);
+
+		list.release();
+		Object rootNode = ReflectEl.getByExpr(list, "rootNode");
+		Assert.assertTrue(rootNode == null);
 	}
 
 	/**

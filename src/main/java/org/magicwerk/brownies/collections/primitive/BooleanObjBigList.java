@@ -100,20 +100,24 @@ public class BooleanObjBigList extends IList<Boolean> {
 		init();
 	}
 
+	public BooleanObjBigList(int capacity) {
+		list = new BooleanBigList(capacity);
+	}
+	
+	public BooleanObjBigList(Collection<? extends Boolean> elems) {
+		init(elems);
+	}
+
+	public BooleanObjBigList(BooleanBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new BooleanBigList();
 	}
 
-	public BooleanObjBigList(int capacity) {
-		list = new BooleanBigList(capacity);
-	}
-
 	public void init(Boolean... elems) {
 		list = BooleanBigList.create(toPrimitive(elems));
-	}
-
-	public BooleanObjBigList(Collection<? extends Boolean> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Boolean> elems) {
@@ -132,8 +136,28 @@ public class BooleanObjBigList extends IList<Boolean> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableBooleanObjBigList;
+	}
+
+	@Override
 	public BooleanObjBigList copy() {
-		return (BooleanObjBigList) clone();
+		if (this instanceof ImmutableBooleanObjBigList) {
+			BooleanObjBigList list = new BooleanObjBigList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (BooleanObjBigList) super.clone();
+		}	
+	}
+
+	@Override
+	public BooleanObjBigList clone() {
+		if (this instanceof ImmutableBooleanObjBigList) {
+			return this;
+		} else {
+			return (BooleanObjBigList) super.clone();
+		}	
 	}
 
 	@Override
@@ -206,7 +230,6 @@ public class BooleanObjBigList extends IList<Boolean> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

@@ -18,9 +18,11 @@
 package org.magicwerk.brownies.collections;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyMap;
 import org.magicwerk.brownies.collections.helper.Option;
 
 /**
@@ -32,7 +34,7 @@ import org.magicwerk.brownies.collections.helper.Option;
  * @param <E> type of elements stored in the list
  */
 @SuppressWarnings("serial")
-public abstract class KeyListImpl<E> extends IList<E> {
+public class KeyListImpl<E> extends IList<E> {
 
 	/**
 	 * Key collection used for key storage (never null).
@@ -64,12 +66,6 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	KeyListImpl() {
 	}
 
-	protected KeyListImpl(boolean copy, KeyListImpl<E> that) {
-		if (copy) {
-			doAssign(that);
-		}
-	}
-
 	@Override
 	protected void doAssign(IList<E> that) {
 		KeyListImpl<E> list = (KeyListImpl<E>) that;
@@ -78,28 +74,43 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public KeyListImpl<E> copy() {
-		return (KeyListImpl<E>) clone();
+		if (isReadOnly()) {
+			KeyListImpl<E> list = new KeyListImpl<>(null);
+			list.initCopy(this);
+			return list;
+		} else {
+			return doCopy();
+		}
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Object clone() {
+	protected KeyListImpl<E> doCopy() {
 		KeyListImpl<E> copy = (KeyListImpl<E>) super.clone();
 		copy.initCopy(this);
 		return copy;
 	}
 
-	/**
-	 * Returns a copy this list but without elements.	 
-	 * The new list will have the same type as this list and use the same comparator, ordering, etc.
-	 * 
-	 * @return  an empty copy of this list
-	 */
 	@Override
-	@SuppressWarnings("unchecked")
+	public KeyListImpl<E> clone() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return doCopy();
+		}
+	}
+
+	@Override
 	public KeyListImpl<E> crop() {
+		if (isReadOnly()) {
+			KeyListImpl<E> list = new KeyListImpl<>(null);
+			list.initCrop(this);
+			return list;
+		} else {
+			return doCrop();
+		}
+	}
+
+	protected KeyListImpl<E> doCrop() {
 		KeyListImpl<E> copy = (KeyListImpl<E>) super.clone();
 		copy.initCrop(this);
 		return copy;
@@ -191,7 +202,14 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 * @return true if this a sorted list, false if not
 	 */
 	public boolean isSorted() {
-		return keyColl.isSorted();
+		return keyColl.isListSorted();
+	}
+
+	/**
+	 * Returns index of the key controlling the sorting of the collection (with 0 for the element).
+	 */
+	public int getSortedByKey() {
+		return keyColl.getListSortedByKey();
 	}
 
 	@Override
@@ -335,22 +353,22 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		}
 
 		// Add element
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			// Sorted list
 			if (index == -1) {
-				index = keyColl.binarySearchSorted(elem);
+				index = keyColl.binarySearchAdd(elem);
 				if (index < 0) {
 					index = -index - 1;
 				}
 			}
-			keyColl.addSorted(index, elem);
+			keyColl.addListSorted(index, elem);
 			// If list is sorted by element, keyColl points to list so no explicit call to its add method is needed
-			if (!keyColl.isSortedByElem()) {
+			if (!keyColl.isListSortedByElem()) {
 				list.doAdd(index, elem);
 			}
 		} else {
 			// Unsorted list
-			keyColl.addUnsorted(elem);
+			keyColl.addListUnsorted(elem);
 			if (index == -1) {
 				// Element is already added to keyColl
 				index = list.size();
@@ -368,7 +386,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		keyColl.checkElemAllowed(elem);
 
 		E remove = doGet(index);
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			keyColl.setSorted(index, elem, remove);
 
 		} else {
@@ -390,7 +408,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	protected E doRemove(int index) {
 		E removed = list.get(index);
 		keyColl.remove(removed);
-		if (!keyColl.isSortedByElem()) {
+		if (!keyColl.isListSortedByElem()) {
 			list.remove(index);
 		}
 		if (DEBUG_CHECK)
@@ -400,18 +418,12 @@ public abstract class KeyListImpl<E> extends IList<E> {
 
 	@Override
 	protected void doRemoveAll(int index, int len) {
-		if (keyColl.isSortedByElem()) {
-			for (int i = 0; i < len; i++) {
-				E removed = list.get(index);
-				keyColl.remove(removed);
-			}
-		} else {
-			for (int i = 0; i < len; i++) {
-				E removed = list.get(index + i);
-				keyColl.remove(removed);
-			}
-			list.doRemoveAll(index, len);
+		KeyMap<?, ?> ignore = (keyColl.isListSortedByElem()) ? keyColl.keyMaps[0] : null;
+		for (int i = 0; i < len; i++) {
+			E removed = list.get(index + i);
+			keyColl.remove(removed, ignore);
 		}
+		list.doRemoveAll(index, len);
 		if (DEBUG_CHECK)
 			debugCheck();
 	}
@@ -430,7 +442,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public int indexOf(Object elem) {
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			return keyColl.indexOfSorted((E) elem);
 		} else {
 			return super.indexOf(elem);
@@ -443,7 +455,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 * @return	true if calling indexOf() will be fast, otherwise false
 	 */
 	boolean isIndexOfFast() {
-		return keyColl.isSorted();
+		return keyColl.isListSorted();
 	}
 
 	/**
@@ -518,9 +530,11 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 * @return      	list with all elements
 	 */
 	public IList<E> getAllByKey(int keyIndex, Object key) {
-		IList<E> list = doCreate(-1);
-		keyColl.getAllByKey(keyIndex, key, list);
-		return list;
+		return (IList<E>) keyColl.getAllByKey(keyIndex, key);
+	}
+
+	public IList<E> getAllByKeys(int keyIndex1, Object key1, int keyIndex2, Object key2) {
+		return (IList<E>) keyColl.getAllByKeys(keyIndex1, key1, keyIndex2, key2);
 	}
 
 	/**
@@ -600,7 +614,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		IList<E> removeds = doCreate(-1);
 		keyColl.removeAllByKey(keyIndex, key, removeds);
 		if (!removeds.isEmpty()) {
-			if (!keyColl.isSortedByElem()) {
+			if (!keyColl.isListSortedByElem()) {
 				if (!list.removeAll(removeds)) {
 					KeyCollectionImpl.errorInvalidData();
 				}
@@ -612,10 +626,10 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
 	 * @param keyIndex	key index
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	protected IList<Object> getAllKeys(int keyIndex) {
 		Function<E, Object> mapper = keyColl.getKeyMap(keyIndex).mapper;
@@ -627,13 +641,33 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	}
 
 	/**
-	 * Returns set containing all distinct keys.
+	 * Returns set with all distinct keys.
 	 *
 	 * @param keyIndex 	key index
-	 * @return 			list containing all distinct keys
+	 * @return 			set with all distinct keys
 	 */
 	public Set<?> getDistinctKeys(int keyIndex) {
 		return keyColl.getDistinctKeys(keyIndex);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys.
+	 *
+	 * @param keyIndex 	key index
+	 * @return 			iterator for all distinct keys
+	 */
+	public Iterator<?> iteratorDistinctKeys(int keyIndex) {
+		return keyColl.iteratorDistinctKeys(keyIndex);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @param keyIndex 	key index
+	 * @return 			count for all distinct keys
+	 */
+	public int countDistinctKeys(int keyIndex) {
+		return keyColl.countDistinctKeys(keyIndex);
 	}
 
 	@Override
@@ -646,9 +680,9 @@ public abstract class KeyListImpl<E> extends IList<E> {
 
 	@Override
 	public void sort(int index, int len, Comparator<? super E> comparator) {
-		if (keyColl.isSorted()) {
+		if (keyColl.isListSorted()) {
 			// If this is sorted list, the comparator must be equal to the specified one
-			if (keyColl.isSortedByElem()) {
+			if (keyColl.isListSortedByElem()) {
 				if (GapList.equalsElem(comparator, keyColl.getElemSortComparator())) {
 					return;
 				}
@@ -698,6 +732,25 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<E> iteratorDistinct() {
+		if (keyColl.hasElemSet()) {
+			return (Iterator<E>) iteratorDistinctKeys(0);
+		} else {
+			return super.iteratorDistinct();
+		}
+	}
+
+	@Override
+	public int countDistinct() {
+		if (keyColl.hasElemSet()) {
+			return countDistinctKeys(0);
+		} else {
+			return super.countDistinct();
+		}
+	}
+
 	/**
 	 * Adds or replaces element.
 	 * If there is no such element, the element is added.
@@ -744,7 +797,7 @@ public abstract class KeyListImpl<E> extends IList<E> {
 	 */
 	protected void invalidate(E elem) {
 		keyColl.invalidate(elem);
-		if (keyColl.isSorted() && !keyColl.isSortedByElem()) {
+		if (keyColl.isListSorted() && !keyColl.isListSortedByElem()) {
 			int oldIndex = super.indexOf(elem);
 			int newIndex = keyColl.indexOfSorted(elem);
 			if (oldIndex != newIndex) {
@@ -799,108 +852,129 @@ public abstract class KeyListImpl<E> extends IList<E> {
 		return list.doCreate(capacity);
 	}
 
-	//-- Key methods
-	// The key methods can not be defined here.
-	// Due to the generic type parameters, the methods cannot be overridden.
+	// --- ReadOnlyKeyListImpl ---
 
-	//-- Invalidate
+	@Override
+	public boolean isReadOnly() {
+		return this instanceof ReadOnlyKeyListImpl;
+	}
 
-	//
-	//  public void invalidate(E elem) {
-	//  	int index = indexOf(elem);
-	//  	if (index == -1) {
-	//  		throw new IllegalArgumentException("Element not found: " + elem);
-	//  	}
-	//  	invalidate(index);
-	//  }
-	//
-	//  public void invalidate(int index) {
-	//  	E elem = doGet(index);
-	//      for (int i=0; i<keyMaps.length; i++) {
-	//  		Object key = invalidate(keyMaps[i], elem);
-	//  		if (key != null) {
-	//  			if (i == 0 && keyMaps[i].sortedKeys != null && keyMaps[i].sortedKeys != this) {
-	//  				// First key is sorted
-	//  				int idx = super.indexOf(elem);
-	//  				super.doRemove(idx);
-	//  				idx = doAddKey(keyMaps[i], -1, elem);
-	//  				super.doAdd(idx, elem);
-	//  			} else {
-	//  				// Not first or not sorted key
-	//  				doAddKey(keyMaps[i], -1, elem);
-	//  			}
-	//  		}
-	//      }
-	//      if (DEBUG_CHECK) debugCheck();
-	//  }
-	//
-	//  /**
-	//   * @param keyMap
-	//   * @param elem
-	//   * @return			null if key for keyMap and element is correct, else key which must be added to keymap
-	//   */
-	//  private Object invalidate(KeyMap keyMap, Object elem) {
-	//  	boolean allowDuplicates = (keyMap.duplicateMode == DuplicateMode.ALLOW);
-	//  	Object key = keyMap.mapper.getKey(elem);
-	//
-	//  	if (keyMap.unsortedKeys != null) {
-	//  		Iterator<Map.Entry> iter = keyMap.unsortedKeys.entrySet().iterator();
-	//  		while (iter.hasNext()) {
-	//  		    Map.Entry entry = iter.next();
-	//  		    if (equalsElem(elem, entry.getValue())) {
-	//  		    	if (equalsElem(key, entry.getKey())) {
-	//  		    		return null;
-	//  		    	}
-	//  		        iter.remove();
-	//  		        if (!allowDuplicates) {
-	//  		        	break;
-	//  		        }
-	//  		    }
-	//  		}
-	//  	} else {
-	//  		assert(keyMap.sortedKeys != null);
-	//  		for (int i=0; i<size(); i++) {
-	//  			if (equalsElem(elem, doGet(i))) {
-	//  				if (equalsElem(key, keyMap.sortedKeys.get(i))) {
-	//  					return null;
-	//  				}
-	//  				keyMap.sortedKeys.remove(i);
-	//  		        if (!allowDuplicates) {
-	//  		        	break;
-	//  		        }
-	//  			}
-	//  		}
-	//  	}
-	//  	return key;
-	//  }
+	@Override
+	public KeyListImpl<E> unmodifiableList() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return new ReadOnlyKeyListImpl<E>(this);
+		}
+	}
 
-	//	// Fast doAddAll() implementation for window size
-	//	protected boolean doAddAll(int index, E[] array) {
-	//        checkIndexAdd(index);
-	//
-	//        int addSize = array.length;
-	//		if (addSize == 0) {
-	//			return false;
-	//		}
-	//		int overlap = size()+addSize - maxSize;
-	//		if (overlap > 0) {
-	//			if (index >= overlap) {
-	//				super.remove(0, overlap);
-	//			} else {
-	//				super.remove(0, index);
-	//			}
-	//			index = index - overlap;
-	//		}
-	//		if (index >= 0) {
-	//			for (int i=0; i<addSize; i++) {
-	//				super.doAdd(index+i, array[i]);
-	//			}
-	//		} else {
-	//			for (int i=0; i<addSize+index; i++) {
-	//				super.doAdd(0, array[i-index]);
-	//			}
-	//		}
-	//		return true;
-	//	}
+	@Override
+	public KeyListImpl<E> immutableList() {
+		if (isReadOnly()) {
+			return this;
+		} else {
+			return new ReadOnlyKeyListImpl<E>(copy());
+		}
+	}
+
+	protected KeyListImpl(KeyListImpl<E> that) {
+		if (that != null) {
+			doAssign(that);
+		}
+	}
+
+	/**
+	 * A read-only version of {@link KeyList}.
+	 * It is used to implement both unmodifiable and immutable lists.
+	 * Note that the client cannot change the list, but the content may change if the underlying list is changed.
+	 */
+	protected static class ReadOnlyKeyListImpl<E> extends KeyListImpl<E> {
+
+		/** UID for serialization */
+		private static final long serialVersionUID = -1352274047348922584L;
+
+		/**
+		 * Private constructor used internally.
+		 *
+		 * @param that  list to create an immutable view of
+		 */
+		protected ReadOnlyKeyListImpl(KeyListImpl<E> that) {
+			super(that);
+		}
+
+		@Override
+		protected void doEnsureCapacity(int capacity) {
+			error();
+		}
+
+		@Override
+		protected boolean doAdd(int index, E elem) {
+			error();
+			return false;
+		}
+
+		@Override
+		protected E doSet(int index, E elem) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E doReSet(int index, E elem) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E doRemove(int index) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected void doRemoveAll(int index, int len) {
+			error();
+		}
+
+		@Override
+		protected void doClear() {
+			error();
+		}
+
+		@Override
+		protected void doModify() {
+			error();
+		}
+
+		@Override
+		protected E removeByKey(int keyIndex, Object key) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected IList<E> removeAllByKey(int keyIndex, Object key) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected E putByKey(int keyIndex, E elem, boolean replace) {
+			error();
+			return null;
+		}
+
+		@Override
+		protected void invalidateKey(int keyIndex, Object oldKey, Object newKey, E elem) {
+			error();
+		}
+
+		/**
+		 * Throw exception if an attempt is made to change an immutable list.
+		 */
+		private void error() {
+			throw new UnsupportedOperationException("list is immutable");
+		}
+	}
 
 }

@@ -100,20 +100,24 @@ public class FloatObjGapList extends IList<Float> {
 		init();
 	}
 
+	public FloatObjGapList(int capacity) {
+		list = new FloatGapList(capacity);
+	}
+	
+	public FloatObjGapList(Collection<? extends Float> elems) {
+		init(elems);
+	}
+
+	public FloatObjGapList(FloatGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new FloatGapList();
 	}
 
-	public FloatObjGapList(int capacity) {
-		list = new FloatGapList(capacity);
-	}
-
 	public void init(Float... elems) {
 		list = FloatGapList.create(toPrimitive(elems));
-	}
-
-	public FloatObjGapList(Collection<? extends Float> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Float> elems) {
@@ -132,8 +136,28 @@ public class FloatObjGapList extends IList<Float> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableFloatObjGapList;
+	}
+
+	@Override
 	public FloatObjGapList copy() {
-		return (FloatObjGapList) clone();
+		if (this instanceof ImmutableFloatObjGapList) {
+			FloatObjGapList list = new FloatObjGapList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (FloatObjGapList) super.clone();
+		}	
+	}
+
+	@Override
+	public FloatObjGapList clone() {
+		if (this instanceof ImmutableFloatObjGapList) {
+			return this;
+		} else {
+			return (FloatObjGapList) super.clone();
+		}	
 	}
 
 	@Override
@@ -209,7 +233,6 @@ public class FloatObjGapList extends IList<Float> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

@@ -19,7 +19,10 @@ package org.magicwerk.brownies.collections.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -32,7 +35,15 @@ import java.util.stream.Collector;
 
 import org.magicwerk.brownies.collections.BigList;
 import org.magicwerk.brownies.collections.GapList;
+import org.magicwerk.brownies.collections.GapListsImpl;
 import org.magicwerk.brownies.collections.IList;
+import org.magicwerk.brownies.collections.Key1Collection;
+import org.magicwerk.brownies.collections.Key1List;
+import org.magicwerk.brownies.collections.Key2Collection;
+import org.magicwerk.brownies.collections.Key2List;
+import org.magicwerk.brownies.collections.KeyCollectionImpl;
+import org.magicwerk.brownies.collections.KeyListImpl;
+import org.magicwerk.brownies.collections.exceptions.DuplicateKeyException;
 import org.magicwerk.brownies.collections.primitive.BooleanObjGapList;
 import org.magicwerk.brownies.collections.primitive.ByteGapList;
 import org.magicwerk.brownies.collections.primitive.ByteObjGapList;
@@ -40,7 +51,7 @@ import org.magicwerk.brownies.collections.primitive.CharGapList;
 import org.magicwerk.brownies.collections.primitive.CharObjGapList;
 import org.magicwerk.brownies.collections.primitive.DoubleObjGapList;
 import org.magicwerk.brownies.collections.primitive.FloatObjGapList;
-import org.magicwerk.brownies.collections.primitive.GapListPrimitives;
+import org.magicwerk.brownies.collections.primitive.GapListsPrimitiveImpl;
 import org.magicwerk.brownies.collections.primitive.IntObjGapList;
 import org.magicwerk.brownies.collections.primitive.LongObjGapList;
 import org.magicwerk.brownies.collections.primitive.ShortObjGapList;
@@ -49,10 +60,121 @@ import org.magicwerk.brownies.collections.primitive.ShortObjGapList;
  * Helper class offering various functionality: <br>
  * - create wrapper list objects wrapping primitive GapLists <br>
  * - methods interacting with CharSequence, Reader, InputStream <br>
+ * - add methods explaining reason if fails with DuplicateKeyException <br>
  *
  * @author Thomas Mauch
  */
-public class GapLists extends GapListPrimitives {
+public class GapLists {
+
+	/** Class {@link Impl} makes protected members of {@link GapListsImpl} locally accessible */
+	protected static class Impl extends GapListsImpl {
+
+		protected static <E, EE extends E> boolean doAddAllExplained(KeyCollectionImpl<E> list, Collection<EE> adds) {
+			return GapListsImpl.addAllExplained(list, adds);
+		}
+
+		protected static <E, EE extends E> boolean doAddAllExplained(KeyListImpl<E> list, Collection<EE> adds) {
+			return GapListsImpl.addAllExplained(list, adds);
+		}
+
+		protected static <E, EE extends E> boolean doAddExplained(KeyCollectionImpl<E> list, EE add) {
+			return GapListsImpl.addExplained(list, add);
+		}
+
+		protected static <E, EE extends E> boolean doAddExplained(KeyListImpl<E> list, EE add) {
+			return GapListsImpl.addExplained(list, add);
+		}
+	}
+
+	/** Class {@link PrimitiveImpl} makes protected members of {@link GapListsPrimitiveImpl} locally accessible */
+	protected static class PrimitiveImpl extends GapListsPrimitiveImpl {
+
+		protected static byte[] doPrepareAddBuffer(ByteGapList list, int index, int len) {
+			return GapListsPrimitiveImpl.prepareAddBuffer(list, index, len);
+		}
+
+		protected static void doReleaseAddBuffer(ByteGapList list, int index, int len) {
+			GapListsPrimitiveImpl.releaseAddBuffer(list, index, len);
+		}
+
+		protected static char[] doPrepareAddBuffer(CharGapList list, int index, int len) {
+			return GapListsPrimitiveImpl.prepareAddBuffer(list, index, len);
+		}
+
+		protected static void doReleaseAddBuffer(CharGapList list, int index, int len) {
+			GapListsPrimitiveImpl.releaseAddBuffer(list, index, len);
+		}
+	}
+
+	// addAll
+
+	/**
+	 * Implementation of {@link Key1Collection#addAll} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K> boolean addAllExplained(Key1Collection<E, K> list, Collection<EE> adds) {
+		return Impl.doAddAllExplained(list, adds);
+	}
+
+	/**
+	 * Implementation of {@link Key2Collection#addAll} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K1, K2> boolean addAllExplained(Key2Collection<E, K1, K2> list, Collection<EE> adds) {
+		return Impl.doAddAllExplained(list, adds);
+	}
+
+	/**
+	 * Implementation of {@link Key1List#addAll} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K> boolean addAllExplained(Key1List<E, K> list, Collection<EE> adds) {
+		return Impl.doAddAllExplained(list, adds);
+	}
+
+	/**
+	 * Implementation of {@link Key2List#addAll} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K1, K2> boolean addAllExplained(Key2List<E, K1, K2> list, Collection<EE> adds) {
+		return Impl.doAddAllExplained(list, adds);
+	}
+
+	// add
+
+	/**
+	 * Implementation of {@link Key1Collection#add} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K> boolean addExplained(Key1Collection<E, K> list, EE add) {
+		return Impl.doAddExplained(list, add);
+	}
+
+	/**
+	 * Implementation of {@link Key2Collection#add} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K1, K2> boolean addExplained(Key2Collection<E, K1, K2> list, EE add) {
+		return Impl.doAddExplained(list, add);
+	}
+
+	/**
+	 * Implementation of {@link Key1List#add} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K> boolean addExplained(Key1List<E, K> list, EE add) {
+		return Impl.doAddExplained(list, add);
+	}
+
+	/**
+	 * Implementation of {@link Key2List#add} which adds an explanatory exception message
+	 * why adding failed with a {@link DuplicateKeyException}.
+	 */
+	public static <E, EE extends E, K1, K2> boolean addExplained(Key2List<E, K1, K2> list, EE add) {
+		return Impl.doAddExplained(list, add);
+	}
+
+	//
 
 	/**
 	 * Create a GapList wrapping a primitive GapList, e.g. an IntObjGapList wrapping an IntGapList.
@@ -112,6 +234,8 @@ public class GapLists extends GapListPrimitives {
 			throw new IllegalArgumentException("Primitive type expected: " + type);
 		}
 	}
+
+	//
 
 	/**
 	 * Return collector which collects the elements into a {@link GapList}.
@@ -200,6 +324,8 @@ public class GapLists extends GapListPrimitives {
 		}
 	}
 
+	//
+
 	/**
 	 * Read specified number of bytes from InputStream into ByteGapList.
 	 * 
@@ -209,7 +335,29 @@ public class GapLists extends GapListPrimitives {
 	 * @return			number of bytes read into the buffer, -1 if end of stream has been reached
 	 */
 	public static int read(InputStream istream, ByteGapList list, int len) throws IOException {
-		return GapListPrimitives.read(istream, list, len);
+		int index = list.size();
+		byte[] buf = PrimitiveImpl.doPrepareAddBuffer(list, index, len);
+
+		int read = istream.read(buf, index, len);
+		if (read == -1) {
+			read = 0;
+		}
+		PrimitiveImpl.doReleaseAddBuffer(list, index, (read >= -0) ? read : 0);
+		return read;
+	}
+
+	/**
+	 * Write specified number of bytes from ByteGapList into OutputStream.
+	 * 
+	 * @param ostream	output stream (target)
+	 * @param list		list (source)
+	 * @param off		offset of first byte to write
+	 * @param len		number of bytes to write
+	 */
+	public static void write(OutputStream ostream, ByteGapList list, int off, int len) throws IOException {
+		int index = list.size();
+		byte[] buf = PrimitiveImpl.doPrepareAddBuffer(list, index, 0);
+		ostream.write(buf, off, len);
 	}
 
 	/**
@@ -221,7 +369,29 @@ public class GapLists extends GapListPrimitives {
 	 * @return			number of bytes read into the buffer, -1 if end of stream has been reached
 	 */
 	public static int read(Reader reader, CharGapList list, int len) throws IOException {
-		return GapListPrimitives.read(reader, list, len);
+		int index = list.size();
+		char[] buf = PrimitiveImpl.doPrepareAddBuffer(list, index, len);
+
+		int read = reader.read(buf, index, len);
+		if (read == -1) {
+			read = 0;
+		}
+		PrimitiveImpl.doReleaseAddBuffer(list, index, (read >= -0) ? read : 0);
+		return read;
+	}
+
+	/**
+	 * Write specified number of chars from CharGapList into Writer.
+	 * 
+	 * @param writer	writer (target)
+	 * @param list		list (source)
+	 * @param off		offset of first char to write
+	 * @param len		number of chars to write
+	 */
+	public static void write(Writer writer, CharGapList list, int off, int len) throws IOException {
+		int index = list.size();
+		char[] buf = PrimitiveImpl.doPrepareAddBuffer(list, index, 0);
+		writer.write(buf, off, len);
 	}
 
 	/**
@@ -233,7 +403,12 @@ public class GapLists extends GapListPrimitives {
 	 * @param end		end position of characters to add in CharSequence
 	 */
 	public static void add(CharSequence str, CharGapList list, int start, int end) {
-		GapListPrimitives.add(str, list, start, end);
+		int index = list.size();
+		int len = end - start;
+		char[] buf = PrimitiveImpl.doPrepareAddBuffer(list, index, len);
+		for (int i = 0; i < len; i++) {
+			buf[index + i] = str.charAt(start + i);
+		}
 	}
 
 }

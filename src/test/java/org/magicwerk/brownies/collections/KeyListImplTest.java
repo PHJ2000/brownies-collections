@@ -88,7 +88,7 @@ public class KeyListImplTest {
 		KeyList<ComparableName> list4 = new KeyList.Builder<ComparableName>().withOrderByElem(true).withElemNull(false).build();
 		doTestSort(list4, null);
 
-		// If a list is not sorte by element but by a key, sort() will always fail
+		// If a list is not sorted by element but by a key, sort() will always fail
 		Key1List<Name, String> list5 = new Key1List.Builder<Name, String>().withPrimaryKey1Map(Name.Mapper).withKey1Sort(true).withOrderByKey1(true).build();
 		doTestSort(list5, null);
 	}
@@ -395,5 +395,109 @@ public class KeyListImplTest {
 		ThreadTools.sleep(30 * 1000);
 		System.out.println(list.size());
 	}
+
+	//-- Key methods
+	// The key methods can not be defined here.
+	// Due to the generic type parameters, the methods cannot be overridden.
+
+	//-- Invalidate
+
+	//
+	//  public void invalidate(E elem) {
+	//  	int index = indexOf(elem);
+	//  	if (index == -1) {
+	//  		throw new IllegalArgumentException("Element not found: " + elem);
+	//  	}
+	//  	invalidate(index);
+	//  }
+	//
+	//  public void invalidate(int index) {
+	//  	E elem = doGet(index);
+	//      for (int i=0; i<keyMaps.length; i++) {
+	//  		Object key = invalidate(keyMaps[i], elem);
+	//  		if (key != null) {
+	//  			if (i == 0 && keyMaps[i].sortedKeys != null && keyMaps[i].sortedKeys != this) {
+	//  				// First key is sorted
+	//  				int idx = super.indexOf(elem);
+	//  				super.doRemove(idx);
+	//  				idx = doAddKey(keyMaps[i], -1, elem);
+	//  				super.doAdd(idx, elem);
+	//  			} else {
+	//  				// Not first or not sorted key
+	//  				doAddKey(keyMaps[i], -1, elem);
+	//  			}
+	//  		}
+	//      }
+	//      if (DEBUG_CHECK) debugCheck();
+	//  }
+	//
+	//  /**
+	//   * @param keyMap
+	//   * @param elem
+	//   * @return			null if key for keyMap and element is correct, else key which must be added to keymap
+	//   */
+	//  private Object invalidate(KeyMap keyMap, Object elem) {
+	//  	boolean allowDuplicates = (keyMap.duplicateMode == DuplicateMode.ALLOW);
+	//  	Object key = keyMap.mapper.getKey(elem);
+	//
+	//  	if (keyMap.unsortedKeys != null) {
+	//  		Iterator<Map.Entry> iter = keyMap.unsortedKeys.entrySet().iterator();
+	//  		while (iter.hasNext()) {
+	//  		    Map.Entry entry = iter.next();
+	//  		    if (equalsElem(elem, entry.getValue())) {
+	//  		    	if (equalsElem(key, entry.getKey())) {
+	//  		    		return null;
+	//  		    	}
+	//  		        iter.remove();
+	//  		        if (!allowDuplicates) {
+	//  		        	break;
+	//  		        }
+	//  		    }
+	//  		}
+	//  	} else {
+	//  		assert(keyMap.sortedKeys != null);
+	//  		for (int i=0; i<size(); i++) {
+	//  			if (equalsElem(elem, doGet(i))) {
+	//  				if (equalsElem(key, keyMap.sortedKeys.get(i))) {
+	//  					return null;
+	//  				}
+	//  				keyMap.sortedKeys.remove(i);
+	//  		        if (!allowDuplicates) {
+	//  		        	break;
+	//  		        }
+	//  			}
+	//  		}
+	//  	}
+	//  	return key;
+	//  }
+
+	//	// Fast doAddAll() implementation for window size
+	//	protected boolean doAddAll(int index, E[] array) {
+	//        checkIndexAdd(index);
+	//
+	//        int addSize = array.length;
+	//		if (addSize == 0) {
+	//			return false;
+	//		}
+	//		int overlap = size()+addSize - maxSize;
+	//		if (overlap > 0) {
+	//			if (index >= overlap) {
+	//				super.remove(0, overlap);
+	//			} else {
+	//				super.remove(0, index);
+	//			}
+	//			index = index - overlap;
+	//		}
+	//		if (index >= 0) {
+	//			for (int i=0; i<addSize; i++) {
+	//				super.doAdd(index+i, array[i]);
+	//			}
+	//		} else {
+	//			for (int i=0; i<addSize+index; i++) {
+	//				super.doAdd(0, array[i-index]);
+	//			}
+	//		}
+	//		return true;
+	//	}
 
 }

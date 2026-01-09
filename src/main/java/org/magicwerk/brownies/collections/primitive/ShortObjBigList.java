@@ -100,20 +100,24 @@ public class ShortObjBigList extends IList<Short> {
 		init();
 	}
 
+	public ShortObjBigList(int capacity) {
+		list = new ShortBigList(capacity);
+	}
+	
+	public ShortObjBigList(Collection<? extends Short> elems) {
+		init(elems);
+	}
+
+	public ShortObjBigList(ShortBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new ShortBigList();
 	}
 
-	public ShortObjBigList(int capacity) {
-		list = new ShortBigList(capacity);
-	}
-
 	public void init(Short... elems) {
 		list = ShortBigList.create(toPrimitive(elems));
-	}
-
-	public ShortObjBigList(Collection<? extends Short> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Short> elems) {
@@ -132,8 +136,28 @@ public class ShortObjBigList extends IList<Short> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableShortObjBigList;
+	}
+
+	@Override
 	public ShortObjBigList copy() {
-		return (ShortObjBigList) clone();
+		if (this instanceof ImmutableShortObjBigList) {
+			ShortObjBigList list = new ShortObjBigList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (ShortObjBigList) super.clone();
+		}	
+	}
+
+	@Override
+	public ShortObjBigList clone() {
+		if (this instanceof ImmutableShortObjBigList) {
+			return this;
+		} else {
+			return (ShortObjBigList) super.clone();
+		}	
 	}
 
 	@Override
@@ -206,7 +230,6 @@ public class ShortObjBigList extends IList<Short> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

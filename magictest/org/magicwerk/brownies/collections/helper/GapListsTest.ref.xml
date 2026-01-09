@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.helper.GapListsTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
+  <traceTest name="testAddExplained">
+    <runDate>2024-12-22T13:28:30.4621681+01:00</runDate>
+    <runDuration>0.0491924</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.helper.GapLists</traceClass>
+    <traceMethod>addExplained</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ }"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: 1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=1, extId=extId2, text=text2])"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ }"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: 1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=1, extId=extId2, text=text2])"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ }"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: 1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=1, extId=extId2, text=text2])"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=3, extId=extId1, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: extId1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=3, extId=extId1, text=text2])"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ }"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: 1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=1, extId=extId2, text=text2])"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"addExplained"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ \r\n   Ticket [id=1, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#2">"Ticket [id=3, extId=extId1, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.IllegalArgumentException: Constraint violation: duplicate key not allowed: extId1\n (exists: Ticket [id=1, extId=extId1, text=text1], add: Ticket [id=3, extId=extId1, text=text2])"</paramText>
+      </error>
+    </traceStep>
+  </traceTest>
+  <captureTest name="testInputStream">
+    <runDate>2024-12-21T14:52:41.7945464+01:00</runDate>
+    <runDuration>0.0582509</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">"[0, 1, 2, 3]\r\n"</text>
+    </captureStep>
+  </captureTest>
+  <captureTest name="testReader">
+    <runDate>2024-12-21T14:52:41.9214704+01:00</runDate>
+    <runDuration>0.0036636</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">"abde\r\n"</text>
+    </captureStep>
+  </captureTest>
+</testClass>

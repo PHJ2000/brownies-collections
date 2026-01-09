@@ -1,6 +1,6 @@
 package org.magicwerk.brownies.collections.guava;
 
-import static com.google.common.collect.testing.Helpers.*;
+import static com.google.common.collect.testing.Helpers.orderEntriesByKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -147,6 +147,7 @@ public class Key1CollectionTestGuavaMap extends TestCase {
 
 				//			    Map<String,TestEntry> map = new HashMap<String,TestEntry>();
 				for (Object o : entries) {
+					@SuppressWarnings("unchecked")
 					Entry<String, TestEntry> e = (Entry<String, TestEntry>) o;
 					String key = e.getKey();
 					TestEntry val = e.getValue();
@@ -160,6 +161,7 @@ public class Key1CollectionTestGuavaMap extends TestCase {
 				return map;
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public Entry<String, TestEntry>[] createArray(int length) {
 				return new Entry[length];
@@ -196,7 +198,7 @@ public class Key1CollectionTestGuavaMap extends TestCase {
 			}
 
 			// copied from MapTestSuiteBuilder
-			@SuppressWarnings("unchecked") // Class parameters must be raw.
+			@SuppressWarnings("rawtypes")
 			@Override
 			protected List<Class<? extends AbstractTester>> getTesters() {
 				return Arrays.<Class<? extends AbstractTester>>asList(

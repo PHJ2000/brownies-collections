@@ -61,10 +61,268 @@ import org.magicwerk.brownies.collections.helper.SortedLists;
  */
 public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Cloneable {
 
+	protected abstract static class Key2CollectionImplBuilder<E, K1, K2, B extends Key1CollectionImplBuilder<E, K1, B>>
+			extends Key1CollectionImplBuilder<E, K1, B> {
+
+		/**
+		 * Add key map.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withKey2Map(Function<? super E, K2> mapper) {
+			return super.withKeyMap(2, mapper);
+		}
+
+		/**
+		 * Specify this key to be a primary key.
+		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(false), and withKey2Duplicates(false)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withPrimaryKey2Map(Function<? super E, K2> mapper) {
+			return super.withPrimaryKeyMap(2, mapper);
+		}
+
+		/**
+		* Specify this key to be a unique key.
+		* This is identical to calling {@code withKey2Map(mapper), withKey2Null(true), and withKey2Duplicates(false, true)}.
+		*
+		* @param mapper	mapper to use
+		* @return			this (fluent interface)
+		*/
+		public B withUniqueKey2Map(Function<? super E, K2> mapper) {
+			return super.withUniqueKeyMap(2, mapper);
+		}
+
+		/**
+		 * Specify whether null elements are allowed or not.
+		 * A null element will have a null key.
+		 *
+		 * @param allowNull true to allow null elements, false to disallow
+		 * @return          this (fluent interfaces)
+		 */
+		public B withKey2Null(boolean allowNull) {
+			return withKeyNull(2, allowNull);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates   true to allow duplicates
+		 * @return              	this (fluent interfaces)
+		 */
+		public B withKey2Duplicates(boolean allowDuplicates) {
+			return withKeyDuplicates(2, allowDuplicates, allowDuplicates);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates		true to allow duplicates
+		 * @param allowDuplicatesNull	true to allow duplicate null values
+		 * @return						this (fluent interfaces)
+		 */
+		public B withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+			return withKeyDuplicates(2, allowDuplicates, allowDuplicatesNull);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param sort    true to sort key map
+		 * @return        this (fluent interface)
+		 */
+		public B withKey2Sort(boolean sort) {
+			return withKeySort(2, sort);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator    comparator to use for sorting
+		 * @return              this (fluent interface)
+		 */
+		public B withKey2Sort(Comparator<? super K2> comparator) {
+			return super.withKeySort(2, comparator);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator            comparator to use for sorting
+		 * @param sortNullsFirst   		true if null will be sorted first, false for last
+		 * @return                      this (fluent interface)
+		 */
+		public B withKey2Sort(Comparator<? super K2> comparator, boolean sortNullsFirst) {
+			return super.withKeySort(2, comparator, sortNullsFirst);
+		}
+
+		/**
+		 * Specifies that the collection will have the order of the key map.
+		 * The key map must be sorted, if no sort order has been defined,
+		 * the natural comparator will be used. If the map allows null
+		 * values, the used comparator will sort them last.
+		 *
+		 * @param orderBy	if true the collection will have the order of the key map
+		 * 					(default is false, only one key map or the element set can have the order by option set)
+		 * @return			this (fluent interface)
+		 */
+		public B withOrderByKey2(boolean orderBy) {
+			return withOrderByKey(2, orderBy);
+		}
+
+		/**
+		 * Specifies that the list will have the order of the key map.
+		 * The key map will store values of the primitive type specified like <code>int</code>.
+		 * The key map will be sorted using the natural comparator and no null values are allowed.
+		 *
+		 * @param type	primitive type to use for key map
+		 * 				(only one key map or the element set can have the order by option set)
+		 * @return		this (fluent interface)
+		 */
+		protected B withOrderByKey2(Class<?> type) {
+			return withOrderByKey(2, type);
+		}
+	}
+
+	protected abstract static class Key1CollectionImplBuilder<E, K, B extends KeyCollectionImplBuilder<E, B>>
+			extends KeyCollectionImplBuilder<E, B> {
+
+		/**
+		 * Add key map.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withKey1Map(Function<? super E, K> mapper) {
+			return super.withKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specify this key to be a primary key.
+		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withPrimaryKey1Map(Function<? super E, K> mapper) {
+			return super.withPrimaryKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specify this key to be a unique key.
+		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
+		 *
+		 * @param mapper	mapper to use
+		 * @return			this (fluent interface)
+		 */
+		public B withUniqueKey1Map(Function<? super E, K> mapper) {
+			return super.withUniqueKeyMap(1, mapper);
+		}
+
+		/**
+		 * Specifies that the collection will have the order of the key map.
+		 * The key map must be sorted, if no sort order has been defined,
+		 * the natural comparator will be used. If the map allows null
+		 * values, the used comparator will sort them last.
+		 *
+		 * @param orderBy	if true the collection will have the order of the key map
+		 * 					(default is false, only one key map or the element set can have the order by option set)
+		 * @return			this (fluent interface)
+		 */
+		public B withOrderByKey1(boolean orderBy) {
+			return withOrderByKey(1, orderBy);
+		}
+
+		/**
+		 * Specifies that the list will have the order of the key map.
+		 * The key map will store values of the primitive type specified like <code>int</code>.
+		 * The key map will be sorted using the natural comparator and no null values are allowed.
+		 *
+		 * @param type	primitive type to use for key map
+		 * 				(only one key map or the element set can have the order by option set)
+		 * @return		this (fluent interface)
+		 */
+		public B withOrderByKey1(Class<?> type) {
+			return withOrderByKey(1, type);
+		}
+
+		/**
+		 * Specify whether null elements are allowed or not.
+		 * A null element will have a null key.
+		 *
+		 * @param allowNull true to allow null elements, false to disallow
+		 * @return          this (fluent interfaces)
+		 */
+		public B withKey1Null(boolean allowNull) {
+			return withKeyNull(1, allowNull);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates   true to allow duplicates
+		 * @return              	this (fluent interfaces)
+		 */
+		public B withKey1Duplicates(boolean allowDuplicates) {
+			return withKeyDuplicates(1, allowDuplicates, allowDuplicates);
+		}
+
+		/**
+		 * Specify whether duplicates are allowed or not.
+		 *
+		 * @param allowDuplicates		true to allow duplicates
+		 * @param allowDuplicatesNull	true to allow duplicate null values
+		 * @return						this (fluent interfaces)
+		 */
+		public B withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+			return withKeyDuplicates(1, allowDuplicates, allowDuplicatesNull);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param sort	  true to sort key map
+		 * @return        this (fluent interface)
+		 */
+		public B withKey1Sort(boolean sort) {
+			return withKeySort(1, sort);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator    comparator to use for sorting
+		 * @return              this (fluent interface)
+		 */
+		public B withKey1Sort(Comparator<? super K> comparator) {
+			return super.withKeySort(1, comparator);
+		}
+
+		/**
+		 * Set comparator to use for sorting the key map.
+		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
+		 *
+		 * @param comparator            comparator to use for sorting
+		 * @param sortNullsFirst   		true if null will be sorted first, false for last
+		 * @return                      this (fluent interface)
+		 */
+		public B withKey1Sort(Comparator<? super K> comparator, boolean sortNullsFirst) {
+			return super.withKeySort(1, comparator, sortNullsFirst);
+		}
+	}
+
 	/**
 	 * Implementation of builder.
 	 */
-	public static class BuilderImpl<E> {
+	public static class KeyCollectionImplBuilder<E, B extends KeyCollectionImplBuilder<E, B>> {
 
 		public static class KeyMapBuilder<E, K> {
 			/** True to order collection by this key map */
@@ -121,20 +379,20 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		// Interface
 
+		@SuppressWarnings("unchecked")
+		protected B cast() {
+			return (B) this;
+		}
+
 		/**
-		 * Specifies whether null elements are allowed or not.
-		 * A null element will have null keys.
-		 * This method does not implicitly create an element set, where as {@link #withElemNull} does.
+		 * Specify initial capacity.
 		 *
-		 * @param allowNull true to allow null elements (default), false to disallow
-		 * @return          this (fluent interfaces)
+		 * @param capacity	initial capacity
+		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withNull(boolean allowNull) {
-			this.allowNullElem = allowNull;
-			if (hasElemMapBuilder()) {
-				getKeyMapBuilder(0).allowNull = allowNull;
-			}
-			return this;
+		public B withCapacity(int capacity) {
+			this.capacity = capacity;
+			return cast();
 		}
 
 		/**
@@ -143,9 +401,137 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param constraint	constraint element must satisfy, null for none (default)
 		 * @return 				this (fluent interface)
 		 */
-		protected BuilderImpl<E> withConstraint(Predicate<E> constraint) {
+		public B withConstraint(Predicate<E> constraint) {
 			this.constraint = constraint;
-			return this;
+			return cast();
+		}
+
+		/**
+		 * Specify elements added to the collection upon creation.
+		 *
+		 * @param elements	initial elements
+		 * @return			this (fluent interface)
+		 */
+		public B withContent(Collection<? extends E> elements) {
+			this.collection = elements;
+			return cast();
+		}
+
+		/**
+		 * Specify elements added to the collection upon creation.
+		 *
+		 * @param elements	initial elements
+		 * @return			this (fluent interface)
+		 */
+		@SuppressWarnings("unchecked")
+		public B withContent(E... elements) {
+			this.array = elements;
+			return cast();
+		}
+
+		/**
+		 * Specify maximum size of collection.
+		 * If an attempt is made to add more elements, an exception is thrown.
+		 *
+		 * @param maxSize	maximum size
+		 * @return			this (fluent interface)
+		 */
+		public B withMaxSize(int maxSize) {
+			if (movingWindow != null) {
+				throw new IllegalArgumentException("maximum or window size alreay set");
+			}
+			this.maxSize = maxSize;
+			this.movingWindow = false;
+			return cast();
+		}
+
+		/**
+		 * Specifies whether null elements are allowed or not.
+		 * A null element will have null keys.
+		 * This method does not implicitly create an element set, where as {@link #withElemNull} does.
+		 *
+		 * @param allowNull true to allow null elements (default), false to disallow
+		 * @return          this (fluent interfaces)
+		 */
+		public B withNull(boolean allowNull) {
+			this.allowNullElem = allowNull;
+			if (hasElemMapBuilder()) {
+				getKeyMapBuilder(0).allowNull = allowNull;
+			}
+			return cast();
+		}
+
+		/**
+		 * Specifies that the collection behaves like a {@link Set} on adding elements, i.e.
+		 * if an element cannot be added due to duplicate or other constraints, no exception is thrown.
+		 *
+		 * @param setBehavior	true to define set behavior (default is false)
+		 * @return				this (fluent interface)
+		 */
+		public B withSetBehavior(boolean setBehavior) {
+			this.setBehavior = setBehavior;
+			return cast();
+		}
+
+		/**
+		 * Specify maximum window size of collection.
+		 * If an attempt is made to add and additional element, the first element is removed.
+		 *
+		 * @param maxSize	maximum window size
+		 * @return			this (fluent interface)
+		 */
+		// only for KeyList / Key1List / Key2List
+		protected B withWindowSize(int maxSize) {
+			if (movingWindow != null) {
+				throw new IllegalArgumentException("maximum or window size alreay set");
+			}
+			this.maxSize = maxSize;
+			this.movingWindow = true;
+			return cast();
+		}
+
+		/**
+		 * Specify whether list should be stored in an instance of BigList or GapList.
+		 *
+		 * @param big	true to store list content in an instance of BigList, false for GapList
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyList / Key1List / Key2List
+		protected B withListBig(boolean big) {
+			this.useBigList = big;
+			return cast();
+		}
+
+		/**
+		 * Specifies that the list will store its elements as primitive type.
+		 *
+		 * @param type	primitive type to use for list
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyList
+		protected B withListType(Class<?> type) {
+			if (type == null) {
+				throw new IllegalArgumentException("Class type may not be null");
+			}
+			if (!type.isPrimitive()) {
+				throw new IllegalArgumentException("Class type must be primitive");
+			}
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(0);
+			kmb.primitiveListType = type;
+			return cast();
+		}
+
+		/**
+		 * Specifies that the collection only counts the number of occurrences
+		 * of equal elements, but does not store the elements themselves.
+		 *
+		 * @param count	true to count only number of occurrences (default is false)
+		 * @return		this (fluent interface)
+		 */
+		// only for KeyCollection
+		protected B withElemCount(boolean count) {
+			this.count = count;
+			return cast();
 		}
 
 		// -- Triggers
@@ -156,9 +542,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withBeforeInsertTrigger(Consumer<E> trigger) {
+		public B withBeforeInsertTrigger(Consumer<E> trigger) {
 			this.beforeInsertTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -167,9 +553,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	insert trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withAfterInsertTrigger(Consumer<E> trigger) {
+		public B withAfterInsertTrigger(Consumer<E> trigger) {
 			this.afterInsertTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -178,9 +564,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
+		public B withBeforeDeleteTrigger(Consumer<E> trigger) {
 			this.beforeDeleteTrigger = trigger;
-			return this;
+			return cast();
 		}
 
 		/**
@@ -189,112 +575,20 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param trigger	delete trigger method, null for none (default)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withAfterDeleteTrigger(Consumer<E> trigger) {
+		public B withAfterDeleteTrigger(Consumer<E> trigger) {
 			this.afterDeleteTrigger = trigger;
-			return this;
-		}
-
-		//-- Content
-
-		/**
-		 * Specify initial capacity.
-		 *
-		 * @param capacity	initial capacity
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withCapacity(int capacity) {
-			this.capacity = capacity;
-			return this;
-		}
-
-		/**
-		 * Specify elements added to the collection upon creation.
-		 *
-		 * @param elements	initial elements
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withContent(Collection<? extends E> elements) {
-			this.collection = elements;
-			return this;
-		}
-
-		/**
-		 * Specify elements added to the collection upon creation.
-		 *
-		 * @param elements	initial elements
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		protected BuilderImpl<E> withContent(E... elements) {
-			this.array = elements;
-			return this;
-		}
-
-		/**
-		 * Specify maximum size of collection.
-		 * If an attempt is made to add more elements, an exception is thrown.
-		 *
-		 * @param maxSize	maximum size
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withMaxSize(int maxSize) {
-			if (movingWindow != null) {
-				throw new IllegalArgumentException("maximum or window size alreay set");
-			}
-			this.maxSize = maxSize;
-			this.movingWindow = false;
-			return this;
-		}
-
-		/**
-		 * Specify maximum window size of collection.
-		 * If an attempt is made to add and additional element, the first element is removed.
-		 *
-		 * @param maxSize	maximum window size
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withWindowSize(int maxSize) {
-			if (movingWindow != null) {
-				throw new IllegalArgumentException("maximum or window size alreay set");
-			}
-			this.maxSize = maxSize;
-			this.movingWindow = true;
-			return this;
+			return cast();
 		}
 
 		//-- Element key
-
-		/**
-		 * Specifies that the collection behaves like a {@link Set} on adding elements, i.e.
-		 * if an element cannot be added due to duplicate or other constraints, no exception is thrown.
-		 *
-		 * @param setBehavior	true to define set behavior (default is false)
-		 * @return				this (fluent interface)
-		 */
-		protected BuilderImpl<E> withSetBehavior(boolean setBehavior) {
-			this.setBehavior = setBehavior;
-			return this;
-		}
-
-		/**
-		 * Specifies that the collection only counts the number of occurrences
-		 * of equal elements, but does not store the elements themselves.
-		 *
-		 * @param count	true to count only number of occurrences (default is false)
-		 * @return		this (fluent interface)
-		 */
-		protected BuilderImpl<E> withElemCount(boolean count) {
-			this.count = count;
-			return this;
-		}
 
 		/**
 		 * Add element map (with ident mapper).
 		 *
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSet() {
-			return withKeyMap(0, IdentMapper.INSTANCE);
+		public B withElemSet() {
+			return withKeyMap(0, IdentMapper.INSTANCE());
 		}
 
 		/**
@@ -307,7 +601,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 					(default is false, only one key map or the element set can have the order by option set)
 		 * @return			this (fluent interface)
 		 */
-		protected BuilderImpl<E> withOrderByElem(boolean orderBy) {
+		public B withOrderByElem(boolean orderBy) {
 			return withOrderByKey(0, orderBy);
 		}
 
@@ -320,8 +614,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * 				(only one key map or the element set can have the order by option set)
 		 * @return		this (fluent interface)
 		 */
-		// only for KeyList (if the element is a primitive, no keys can be extracted from it so Key1List and Key2List does not make sense)
-		protected BuilderImpl<E> withOrderByElem(Class<?> type) {
+		// only for KeyList
+		protected B withOrderByElem(Class<?> type) {
 			return withOrderByKey(0, type);
 		}
 
@@ -333,7 +627,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowNull true to allow null elements, false to disallow (default is true)
 		 * @return          this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemNull(boolean allowNull) {
+		public B withElemNull(boolean allowNull) {
 			return withKeyNull(0, allowNull);
 		}
 
@@ -344,7 +638,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicates   true to allow duplicates (default is true)
 		 * @return              	this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemDuplicates(boolean allowDuplicates) {
+		public B withElemDuplicates(boolean allowDuplicates) {
 			return withElemDuplicates(allowDuplicates, allowDuplicates);
 		}
 
@@ -356,7 +650,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param allowDuplicatesNull	true to allow duplicate null values (default is true)
 		 * @return						this (fluent interfaces)
 		 */
-		protected BuilderImpl<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
+		public B withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
 			return withKeyDuplicates(0, allowDuplicates, allowDuplicatesNull);
 		}
 
@@ -369,7 +663,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sort    true to sorted, false for unsorted (default is false)
 		 * @return        this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(boolean sort) {
+		public B withElemSort(boolean sort) {
 			return withKeySort(0, sort);
 		}
 
@@ -384,7 +678,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param comparator    comparator to use for sorting (null for natural comparator)
 		 * @return              this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(Comparator<? super E> comparator) {
+		public B withElemSort(Comparator<? super E> comparator) {
 			return withKeySort(0, comparator);
 		}
 
@@ -399,7 +693,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * @param sortNullsFirst	   true to sort null values first, false for last
 		 * @return                     this (fluent interface)
 		 */
-		protected BuilderImpl<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
+		public B withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
 			return withKeySort(0, comparator, sortNullsFirst);
 		}
 
@@ -409,7 +703,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected BuilderImpl<E> withPrimaryElem() {
+		public B withPrimaryElem() {
 			return withPrimaryKeyMap(0, null);
 		}
 
@@ -419,14 +713,14 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 *
 		 * @return	this (fluent interface)
 		 */
-		protected BuilderImpl<E> withUniqueElem() {
+		public B withUniqueElem() {
 			return withUniqueKeyMap(0, null);
 		}
 
-		//
+		// Key Map N
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		protected BuilderImpl<E> withKeyMap(int keyIndex, Function mapper) {
+		public B withKeyMap(int keyIndex, Function mapper) {
 			if (mapper == null) {
 				throw new IllegalArgumentException("Mapper may not be null");
 			}
@@ -435,19 +729,102 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				throw new IllegalArgumentException("Mapper already set");
 			}
 			kmb.mapper = mapper;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withOrderByKey(int keyIndex, boolean orderBy) {
+		@SuppressWarnings("rawtypes")
+		public B withPrimaryKeyMap(int keyIndex, Function mapper) {
+			if (mapper != null) {
+				// mapper may be null if called by withPrimaryElem()
+				withKeyMap(keyIndex, mapper);
+			}
+			withKeyNull(keyIndex, false);
+			withKeyDuplicates(keyIndex, false, false);
+			return cast();
+		}
+
+		@SuppressWarnings("rawtypes")
+		public B withUniqueKeyMap(int keyIndex, Function mapper) {
+			if (mapper != null) {
+				withKeyMap(keyIndex, mapper);
+			}
+			withKeyNull(keyIndex, true);
+			withKeyDuplicates(keyIndex, false, true);
+			return cast();
+		}
+
+		public B withKeyNull(int keyIndex, boolean allowNull) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.allowNull != null) {
+				throw new IllegalArgumentException("AllowNull already set");
+			}
+			kmb.allowNull = allowNull;
+			if (keyIndex == 0) {
+				allowNullElem = allowNull;
+			}
+			return cast();
+		}
+
+		public B withKeyDuplicates(int keyIndex, boolean allowDuplicates) {
+			return withKeyDuplicates(keyIndex, allowDuplicates, allowDuplicates);
+		}
+
+		public B withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.allowDuplicates != null) {
+				throw new IllegalArgumentException("AllowDuplicates already set");
+			}
+			kmb.allowDuplicates = allowDuplicates;
+			kmb.allowDuplicatesNull = allowDuplicatesNull;
+			return cast();
+		}
+
+		public B withKeySort(int keyIndex, boolean sort) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.sort != null) {
+				throw new IllegalArgumentException("Sort already set");
+			}
+			kmb.sort = sort;
+			kmb.comparator = null;
+			kmb.comparatorSortsNull = false;
+			kmb.sortNullsFirst = false;
+			return cast();
+		}
+
+		public B withKeySort(int keyIndex, Comparator<?> comparator) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.sort != null) {
+				throw new IllegalArgumentException("Sort already set");
+			}
+			kmb.sort = true;
+			kmb.comparator = comparator;
+			kmb.comparatorSortsNull = true;
+			kmb.sortNullsFirst = false;
+			return cast();
+		}
+
+		public B withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
+			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
+			if (kmb.sort != null) {
+				throw new IllegalArgumentException("Sort already set");
+			}
+			kmb.sort = true;
+			kmb.comparator = comparator;
+			kmb.comparatorSortsNull = false;
+			kmb.sortNullsFirst = sortNullsFirst;
+			return cast();
+		}
+
+		public B withOrderByKey(int keyIndex, boolean orderBy) {
 			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
 			if (kmb.orderBy != null) {
 				throw new IllegalArgumentException("Order by already set");
 			}
 			kmb.orderBy = orderBy;
-			return this;
+			return cast();
 		}
 
-		protected BuilderImpl<E> withOrderByKey(int keyIndex, Class<?> type) {
+		protected B withOrderByKey(int keyIndex, Class<?> type) {
 			if (type == null) {
 				throw new IllegalArgumentException("Order by type may not be null");
 			}
@@ -460,270 +837,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			}
 			kmb.orderBy = true;
 			kmb.primitiveListType = type;
-			return this;
-		}
-
-		/**
-		 * Specifies that the list will store its elements as primitive type.
-		 *
-		 * @param type	primitive type to use for list
-		 * @return		this (fluent interface)
-		 */
-		// only for KeyList.withListType
-		protected BuilderImpl<E> withListType(Class<?> type) {
-			if (type == null) {
-				throw new IllegalArgumentException("Class type may not be null");
-			}
-			if (!type.isPrimitive()) {
-				throw new IllegalArgumentException("Class type must be primitive");
-			}
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(0);
-			kmb.primitiveListType = type;
-			return this;
-		}
-
-		/**
-		 * Specify whether list should be stored in an instance of BigList or GapList.
-		 *
-		 * @param big	true to store list content in an instance of BigList, false for GapList
-		 * @return		this (fluent interface)
-		 */
-		// only for KeyList / Key1List / Key2List
-		protected BuilderImpl<E> withListBig(boolean big) {
-			this.useBigList = big;
-			return this;
-		}
-
-		protected BuilderImpl<E> withKeyNull(int keyIndex, boolean allowNull) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.allowNull != null) {
-				throw new IllegalArgumentException("AllowNull already set");
-			}
-			kmb.allowNull = allowNull;
-			if (keyIndex == 0) {
-				allowNullElem = allowNull;
-			}
-			return this;
-		}
-
-		protected BuilderImpl<E> withKeyDuplicates(int keyIndex, boolean allowDuplicates, boolean allowDuplicatesNull) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.allowDuplicates != null) {
-				throw new IllegalArgumentException("AllowDuplicates already set");
-			}
-			kmb.allowDuplicates = allowDuplicates;
-			kmb.allowDuplicatesNull = allowDuplicatesNull;
-			return this;
-		}
-
-		protected BuilderImpl<E> withKeySort(int keyIndex, boolean sort) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.sort != null) {
-				throw new IllegalArgumentException("Sort already set");
-			}
-			kmb.sort = sort;
-			kmb.comparator = null;
-			kmb.comparatorSortsNull = false;
-			kmb.sortNullsFirst = false;
-			return this;
-		}
-
-		protected BuilderImpl<E> withKeySort(int keyIndex, Comparator<?> comparator) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.sort != null) {
-				throw new IllegalArgumentException("Sort already set");
-			}
-			kmb.sort = true;
-			kmb.comparator = comparator;
-			kmb.comparatorSortsNull = true;
-			kmb.sortNullsFirst = false;
-			return this;
-		}
-
-		protected BuilderImpl<E> withKeySort(int keyIndex, Comparator<?> comparator, boolean sortNullsFirst) {
-			KeyMapBuilder<?, ?> kmb = getKeyMapBuilder(keyIndex);
-			if (kmb.sort != null) {
-				throw new IllegalArgumentException("Sort already set");
-			}
-			kmb.sort = true;
-			kmb.comparator = comparator;
-			kmb.comparatorSortsNull = false;
-			kmb.sortNullsFirst = sortNullsFirst;
-			return this;
-		}
-
-		@SuppressWarnings("rawtypes")
-		protected BuilderImpl<E> withPrimaryKeyMap(int keyIndex, Function mapper) {
-			if (mapper != null) {
-				// mapper may be null if called by withPrimaryElem()
-				withKeyMap(keyIndex, mapper);
-			}
-			withKeyNull(keyIndex, false);
-			withKeyDuplicates(keyIndex, false, false);
-			return this;
-		}
-
-		@SuppressWarnings("rawtypes")
-		protected BuilderImpl<E> withUniqueKeyMap(int keyIndex, Function mapper) {
-			if (mapper != null) {
-				withKeyMap(keyIndex, mapper);
-			}
-			withKeyNull(keyIndex, true);
-			withKeyDuplicates(keyIndex, false, true);
-			return this;
-		}
-
-		// -- Key1
-		//
-		// Just define methods which can be overridden so Javadoc can be inherited.
-		// All methods with generic type parameters must explicitly be defined in concrete classes.
-
-		/**
-		 * Specifies that the collection will have the order of the key map.
-		 * The key map must be sorted, if no sort order has been defined,
-		 * the natural comparator will be used. If the map allows null
-		 * values, the used comparator will sort them last.
-		 *
-		 * @param orderBy	if true the collection will have the order of the key map
-		 * 					(default is false, only one key map or the element set can have the order by option set)
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withOrderByKey1(boolean orderBy) {
-			return withOrderByKey(1, orderBy);
-		}
-
-		/**
-		 * Specifies that the list will have the order of the key map.
-		 * The key map will store values of the primitive type specified like <code>int</code>.
-		 * The key map will be sorted using the natural comparator and no null values are allowed.
-		 *
-		 * @param type	primitive type to use for key map
-		 * 				(only one key map or the element set can have the order by option set)
-		 * @return		this (fluent interface)
-		 */
-		// only for Key1List / Key2List
-		protected BuilderImpl<E> withOrderByKey1(Class<?> type) {
-			return withOrderByKey(1, type);
-		}
-
-		/**
-		 * Specify whether null elements are allowed or not.
-		 * A null element will have a null key.
-		 *
-		 * @param allowNull true to allow null elements, false to disallow
-		 * @return          this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey1Null(boolean allowNull) {
-			return withKeyNull(1, allowNull);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates   true to allow duplicates
-		 * @return              	this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey1Duplicates(boolean allowDuplicates) {
-			return withKeyDuplicates(1, allowDuplicates, allowDuplicates);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates		true to allow duplicates
-		 * @param allowDuplicatesNull	true to allow duplicate null values
-		 * @return						this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return withKeyDuplicates(1, allowDuplicates, allowDuplicatesNull);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param sort	  true to sort key map
-		 * @return        this (fluent interface)
-		 */
-		// The other overloaded methods also named withKey1Sort must defined directly in the concrete classes due to the generic types
-		protected BuilderImpl<E> withKey1Sort(boolean sort) {
-			return withKeySort(1, sort);
-		}
-
-		// -- Key2
-		//
-		// Just define methods which can be overridden so Javadoc can be inherited.
-		// All methods with generic type parameters must explicitly be defined in concrete classes.
-
-		/**
-		 * Specifies that the collection will have the order of the key map.
-		 * The key map must be sorted, if no sort order has been defined,
-		 * the natural comparator will be used. If the map allows null
-		 * values, the used comparator will sort them last.
-		 *
-		 * @param orderBy	if true the collection will have the order of the key map
-		 * 					(default is false, only one key map or the element set can have the order by option set)
-		 * @return			this (fluent interface)
-		 */
-		protected BuilderImpl<E> withOrderByKey2(boolean orderBy) {
-			return withOrderByKey(2, orderBy);
-		}
-
-		/**
-		 * Specifies that the list will have the order of the key map.
-		 * The key map will store values of the primitive type specified like <code>int</code>.
-		 * The key map will be sorted using the natural comparator and no null values are allowed.
-		 *
-		 * @param type	primitive type to use for key map
-		 * 				(only one key map or the element set can have the order by option set)
-		 * @return		this (fluent interface)
-		 */
-		protected BuilderImpl<E> withOrderByKey2(Class<?> type) {
-			return withOrderByKey(2, type);
-		}
-
-		/**
-		 * Specify whether null elements are allowed or not.
-		 * A null element will have a null key.
-		 *
-		 * @param allowNull true to allow null elements, false to disallow
-		 * @return          this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey2Null(boolean allowNull) {
-			return withKeyNull(2, allowNull);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates   true to allow duplicates
-		 * @return              	this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey2Duplicates(boolean allowDuplicates) {
-			return withKeyDuplicates(2, allowDuplicates, allowDuplicates);
-		}
-
-		/**
-		 * Specify whether duplicates are allowed or not.
-		 *
-		 * @param allowDuplicates		true to allow duplicates
-		 * @param allowDuplicatesNull	true to allow duplicate null values
-		 * @return						this (fluent interfaces)
-		 */
-		protected BuilderImpl<E> withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return withKeyDuplicates(2, allowDuplicates, allowDuplicatesNull);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param sort    true to sort key map
-		 * @return        this (fluent interface)
-		 */
-		// The other overloaded methods also named withKey2Sort must defined directly in the concrete classes due to the generic types
-		protected BuilderImpl<E> withKey2Sort(boolean sort) {
-			return withKeySort(2, sort);
+			return cast();
 		}
 
 		//-- Implementation
@@ -765,7 +879,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		/**
 		 * Initialize KeyMap.
 		 *
-		 * @param keyMapBuild 	key map builder to use for initialization
+		 * @param keyMapBuilder	key map builder to use for initialization
 		 * @param list   		true if a KeyListImpl is built up, false for KeyCollectionImpl
 		 */
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -813,10 +927,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 						keyMap.keysList = (IList<Object>) GapLists.createWrapperList(keyMapBuilder.primitiveListType);
 					}
 				}
-			} else if (keyMap.comparator != null) {
-				keyMap.keysMap = new TreeMap<>(keyMap.comparator);
 			} else {
-				keyMap.keysMap = new HashMap<>();
+				keyMap.keysMap = keyMap.createKeysMap(keyMap.comparator);
 			}
 
 			return keyMap;
@@ -875,7 +987,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 						}
 						if (kmb.mapper == null) {
 							if (i == 0) {
-								kmb.mapper = IdentMapper.INSTANCE;
+								kmb.mapper = (IdentMapper) IdentMapper.INSTANCE();
 							} else {
 								throw new IllegalArgumentException("No mapper for key " + i + " defined");
 							}
@@ -999,6 +1111,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		KeyMap() {
 		}
 
+		boolean isSorted() {
+			return comparator != null;
+		}
+
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		KeyMap<E, K> copy() {
 			KeyMap<E, K> copy = new KeyMap<E, K>();
@@ -1009,11 +1125,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			copy.comparator = comparator;
 			copy.count = count;
 			if (keysMap != null) {
-				if (keysMap instanceof HashMap) {
-					copy.keysMap = (Map) ((HashMap) keysMap).clone();
-				} else {
-					copy.keysMap = (Map) ((TreeMap) keysMap).clone();
-				}
+				copy.keysMap = copyKeysMap(keysMap);
 
 				// The map cannot only contain simple value, but also instances of KeyMapList
 				// for duplicates which must be also be cloned
@@ -1040,16 +1152,48 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			copy.comparator = comparator;
 			copy.count = count;
 			if (keysMap != null) {
-				if (keysMap instanceof HashMap) {
-					copy.keysMap = new HashMap<K, Object>();
-				} else {
-					TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
-					copy.keysMap = new TreeMap<K, Object>(treeMap.comparator());
-				}
+				copy.keysMap = createKeysMap(comparator);
 			} else {
 				copy.keysList = new GapList<K>();
 			}
 			return copy;
+		}
+
+		Map<K, Object> createKeysMap(Comparator<? super K> comparator) {
+			if (comparator == null) {
+				return new HashMap<>();
+			} else {
+				return new TreeMap<>(comparator);
+			}
+		}
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Map<K, Object> copyKeysMap(Map<K, Object> keysMap) {
+			if (keysMap instanceof HashMap) {
+				return (Map) ((HashMap) keysMap).clone();
+			} else {
+				return (Map) ((TreeMap) keysMap).clone();
+			}
+		}
+
+		Set<K> createKeysSet() {
+			if (keysMap instanceof HashMap) {
+				return new HashSet<>();
+			} else {
+				TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
+				return new TreeSet<>(treeMap.comparator());
+			}
+		}
+
+		Set<K> copyKeysSet(Map<K, Object> keysMap) {
+			if (keysMap instanceof HashMap) {
+				return new HashSet<>(keysMap.keySet());
+			} else {
+				TreeMap<K, Object> treeMap = (TreeMap<K, Object>) keysMap;
+				TreeSet<K> treeSet = new TreeSet<>(treeMap.comparator());
+				treeSet.addAll(keysMap.keySet());
+				return treeSet;
+			}
 		}
 
 		boolean isPrimaryMap() {
@@ -1063,6 +1207,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			return mapper.apply(elem);
 		}
 
+		/**
+		 * containsKey() is always fast (either hash lookup or binary search)
+		 */
 		@SuppressWarnings("unchecked")
 		boolean containsKey(Object key) {
 			if (key == null) {
@@ -1073,16 +1220,20 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (keysMap != null) {
 				return keysMap.containsKey(key);
 			} else {
-				return keysList.binarySearch(key, (Comparator<Object>) comparator) >= 0;
+				return SortedLists.binarySearchAny(keysList, key, (Comparator<Object>) comparator) >= 0;
 			}
 		}
 
+		/**
+		 * containsValue() is typically fast (a hash lookup followed by a linear search in the list of duplicate values)
+		 */
 		boolean containsValue(Object key, Object value) {
 			if (keysMap == null) {
 				return keysList.contains(key);
 			}
 
 			assert (count == false);
+
 			Object obj = keysMap.get(key);
 			if (obj == null && value == null) {
 				return keysMap.containsKey(key);
@@ -1100,62 +1251,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			}
 			return false;
-		}
-
-		boolean containsValue(Object value) {
-			if (keysMap == null) {
-				return keysList.contains(value);
-			}
-
-			assert (count == false);
-			for (Object obj : keysMap.values()) {
-				if (obj instanceof KeyMapList) {
-					@SuppressWarnings("unchecked")
-					GapList<E> list = (GapList<E>) obj;
-					if (list.contains(value)) {
-						return true;
-					}
-				} else {
-					if (Objects.equals(obj, value)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Option<E> getContainedKey(Object key) {
-			if (key == null) {
-				if (!allowNull) {
-					return Option.empty();
-				}
-			}
-			if (keysMap != null) {
-				Object val = keysMap.get(key);
-				if (val != null) {
-					return new Option(val);
-				} else if (keysMap.containsKey(key)) {
-					return new Option(val);
-				}
-			} else {
-				int index = keysList.binarySearch(key, (Comparator<Object>) comparator);
-				if (index >= 0) {
-					return new Option(keysList.get(index));
-				}
-			}
-			return Option.empty();
-		}
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		Option<E> getContainedValue(Object value) {
-			assert (count == false);
-			for (Map.Entry<?, ?> entry : keysMap.entrySet()) {
-				if ((entry.getValue() == null && value == null) || (entry.getValue() != null && entry.getValue().equals(value))) {
-					return new Option(entry.getValue());
-				}
-			}
-			return Option.empty();
 		}
 
 		Iterator<E> iteratorValues(KeyCollectionImpl<E> keyColl) {
@@ -1236,6 +1331,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					mapIter.remove();
 				}
 				keyColl.remove(elem, keyMap);
+
+				if (DEBUG_CHECK)
+					keyColl.debugCheck();
 			}
 		}
 
@@ -1296,9 +1394,13 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					mapIter.remove();
 				}
 				keyColl.size--;
+
+				if (DEBUG_CHECK)
+					keyColl.debugCheck();
 			}
 		}
 
+		/** Add element with key to key map. If element cannot be added, an exception is thrown. */
 		void addThrow(K key, E elem) {
 			Object symbol = add(key, elem);
 			if (symbol == SYMBOL_ADDED) {
@@ -1311,7 +1413,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		}
 
 		/**
-		 * Add element to key map.
+		 * Add element with key to key map.
 		 *
 		 * @param key	key of element
 		 * @param elem	element
@@ -1457,12 +1559,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			} else {
 				// Sorted list
-				int index = keysList.binarySearch(key, (Comparator<Object>) comparator);
-				E elem = null;
+				int index = SortedLists.binarySearchGet(keysList, key, (Comparator<Object>) comparator);
 				if (index < 0) {
 					return Option.empty();
 				}
-				elem = (E) keyColl.keyList.doGet(index);
+				E elem = (E) keyColl.keyList.doGet(index);
 				keysList.remove(index);
 				return new Option<>(elem);
 			}
@@ -1472,8 +1573,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		 * Removes element by key.
 		 * If there are duplicates, all elements are removed.
 		 *
-		 * @param keyMap	key map
-		 * @param key   	key of element to remove
+		 * @param key		key
+		 * @param keyColl  	key of element to remove
 		 * @param coll      collection to store all removed elements, null to not store them
 		 */
 		@SuppressWarnings("unchecked")
@@ -1523,14 +1624,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		Set<K> getDistinctKeys() {
 			if (keysMap != null) {
-				Set<K> set = keysMap.keySet();
-				if (comparator != null) {
-					TreeSet<K> treeSet = new TreeSet<>(comparator);
-					treeSet.addAll(set);
-					return treeSet;
-				} else {
-					return new HashSet<>(set);
-				}
+				return copyKeysSet(keysMap);
 			} else {
 				K lastKey = null;
 				TreeSet<K> set = new TreeSet<K>(comparator);
@@ -1553,6 +1647,29 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 				return set;
 			}
+		}
+
+		Iterator<K> iteratorDistinctKeys() {
+			Iterator<K> iterator = null;
+			if (keysMap != null) {
+				if (count || (!allowDuplicates && (!allowNull || !allowDuplicatesNull))) {
+					iterator = keysMap.keySet().iterator();
+				}
+			}
+			if (iterator == null) {
+				iterator = getDistinctKeys().iterator();
+
+			}
+			return new ImmutableIterator<>(iterator);
+		}
+
+		int countDistinctKeys() {
+			if (keysMap != null) {
+				if (count || (!allowDuplicates && (!allowNull || !allowDuplicatesNull))) {
+					return keysMap.size();
+				}
+			}
+			return getDistinctKeys().size();
 		}
 
 		@Override
@@ -1579,7 +1696,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	//-- KeyCollectionImpl --
 
 	static final Object SYMBOL_ADDED = new Object();
-	static final Object SYMBOL_NOT_ADDED = new Object();
+	static final Object SYMBOL_NO_KEYS = new Object();
 	static final Object SYMBOL_ERROR_NULL_KEY = new Object();
 
 	/** If true the invariants are checked for debugging */
@@ -1612,7 +1729,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 */
 	boolean allowNullElem;
 	/**
-	 * true if collections implements {@link Set}, false for @{link Collection} (behavior of {@link #add} changes)
+	 * true if collections implements {@link Set}, false for {@link Collection} (behavior of {@link #add} changes)
 	 */
 	boolean setBehavior;
 	/**
@@ -1747,15 +1864,44 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	}
 
 	/**
-	 * Determines whether this list is sorted or not.
+	 * Determines whether this collection is sorted or not.
 	 *
-	 * @return true if this a sorted list, false if not
+	 * @return true if this a collection list, false if not
 	 */
 	public boolean isSorted() {
+		// This assertion will catch calls from KeyListImpl which has a KeyCollectionImpl as field.
+		// KeyListImpl must use the methods isListOrdered() / isListOrderedByElem()
+		assert keyList == null;
+
+		return keyMaps[orderByKey].isSorted();
+	}
+
+	/**
+	 * Returns index of the key controlling the sorting of the collection (with 0 for the element).
+	 */
+	public int getSortedByKey() {
+		// This assertion will catch calls from KeyListImpl which has a KeyCollectionImpl as field.
+		// KeyListImpl must use the methods isListOrdered() / isListOrderedByElem()
+		assert keyList == null;
+
+		return (isSorted()) ? orderByKey : -1;
+	}
+
+	boolean isListSorted() {
+		assert keyList != null;
+
 		return orderByKey != -1;
 	}
 
-	boolean isSortedByElem() {
+	int getListSortedByKey() {
+		assert keyList != null;
+
+		return orderByKey;
+	}
+
+	boolean isListSortedByElem() {
+		assert keyList != null;
+
 		return orderByKey == 0;
 	}
 
@@ -1785,11 +1931,11 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 			if (cmp == 0) {
 				if (elem != null) {
 					if (!keyMap.allowDuplicates) {
-						cmp = 1;
+						errorDuplicateKey(key);
 					}
 				} else {
 					if (!keyMap.allowDuplicatesNull) {
-						cmp = 1;
+						errorDuplicateKey(key);
 					}
 				}
 			}
@@ -1824,7 +1970,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @param elem	element to add
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	void addSorted(int index, E elem) {
+	void addListSorted(int index, E elem) {
+		assert keyList != null;
+
 		// Check whether index is correct for adding element in a sorted list
 		checkIndex(index - 1, index, elem);
 
@@ -1849,7 +1997,9 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 *
 	 * @param elem	element to add
 	 */
-	void addUnsorted(E elem) {
+	void addListUnsorted(E elem) {
+		assert keyList != null;
+
 		beforeInsert(elem);
 		if (doAddThrow(elem, null)) {
 			size++;
@@ -1883,27 +2033,27 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		afterInsert(elem);
 	}
 
-	int binarySearchSorted(E elem) {
+	int binarySearchAdd(E elem) {
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
-		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
-		if (index >= 0) {
-			index++;
-			while (index < keyMap.keysList.size()) {
-				if (keyMap.comparator.compare(keyMap.keysList.get(index), key) != 0) {
-					break;
-				}
-				index++;
-			}
-		}
-		return index;
+		return SortedLists.binarySearchAdd(keyMap.keysList, key, keyMap.comparator);
 	}
 
 	int indexOfSorted(E elem) {
 		KeyMap<E, Object> keyMap = keyMaps[orderByKey];
 		Object key = keyMap.getKey(elem);
-		int index = keyMap.keysList.binarySearch(key, keyMap.comparator);
-		return (index < 0) ? -1 : index;
+		int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
+		if (index >= 0) {
+			while (index < keyList.size()) {
+				if (Objects.equals(keyList.get(index), elem)) {
+					return index;
+				}
+				index++;
+			}
+			// If element/key data are valid, we will never get here.
+			// As this method is only used to handle the invalidate functionality, we return -1 to be on the safe side.
+		}
+		return -1;
 	}
 
 	//
@@ -2032,11 +2182,12 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		Object symbol = doAdd(elem, null);
 		if (symbol == SYMBOL_ADDED) {
 			size++;
-		} else if (symbol == SYMBOL_NOT_ADDED) {
+		} else if (symbol == SYMBOL_NO_KEYS) {
 			// nothing todo
 		} else if (symbol == SYMBOL_ERROR_NULL_KEY) {
 			errorNullKey();
 		} else {
+			// symbol contains duplicate key
 			if (setBehavior) {
 				return false;
 			}
@@ -2052,7 +2203,10 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 	@Override
 	public boolean remove(Object elem) {
-		return remove(elem, null);
+		boolean removed = remove(elem, null);
+		if (DEBUG_CHECK)
+			debugCheck();
+		return removed;
 	}
 
 	void checkAddElem(E elem) {
@@ -2076,8 +2230,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		if (removed.hasValue() || ignore != null) {
 			size--;
 		}
-		if (DEBUG_CHECK)
-			debugCheck();
 		afterDelete((E) elem);
 		return removed.hasValue();
 	}
@@ -2134,11 +2286,13 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					}
 				} catch (Exception e) {
 					// This can happen if an object of a wrong type is passed where applying the mapper function to extract the key fails 
+					return false;
 				}
 			}
-			// Otherwise use containsValue (slow)
-			return keyMaps[1].containsValue(o);
 		}
+
+		assert false;
+		return false;
 	}
 
 	/**
@@ -2282,22 +2436,21 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	Option<E> doRemove(Object elem, KeyMap ignore) {
 		Option<E> removed = Option.empty();
 		boolean first = true;
-		if (keyMaps != null) {
-			for (int i = 0; i < keyMaps.length; i++) {
-				if (keyMaps[i] != null && keyMaps[i] != ignore) {
-					Object key = keyMaps[i].getKey((E) elem);
-					Option<E> obj = keyMaps[i].remove(key, true, elem, this);
-					if (first) {
-						if (!obj.hasValue()) {
-							return Option.empty();
-						} else {
-							removed = obj;
-						}
-						first = false;
+		int numKeyMaps = getNumKeyMaps();
+		for (int i = 0; i < numKeyMaps; i++) {
+			if (keyMaps[i] != null && keyMaps[i] != ignore) {
+				Object key = keyMaps[i].getKey((E) elem);
+				Option<E> obj = keyMaps[i].remove(key, true, elem, this);
+				if (first) {
+					if (!obj.hasValue()) {
+						return Option.empty();
 					} else {
-						if (!obj.hasValue() || !Objects.equals(obj.getValue(), removed.getValue())) {
-							errorInvalidData();
-						}
+						removed = obj;
+					}
+					first = false;
+				} else {
+					if (!obj.hasValue() || !Objects.equals(obj.getValue(), removed.getValue())) {
+						errorInvalidData();
 					}
 				}
 			}
@@ -2395,7 +2548,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		Object symbol = doAdd(elem, ignore);
 		if (symbol == SYMBOL_ADDED) {
 			return true;
-		} else if (symbol == SYMBOL_NOT_ADDED) {
+		} else if (symbol == SYMBOL_NO_KEYS) {
 			return false;
 		} else if (symbol == SYMBOL_ERROR_NULL_KEY) {
 			errorNullKey();
@@ -2418,7 +2571,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 */
 	Object doAdd(E elem, KeyMap<?, ?> ignore) {
 		if (keyMaps == null) {
-			return SYMBOL_NOT_ADDED;
+			return SYMBOL_NO_KEYS;
 		}
 		Object symbol = SYMBOL_ADDED;
 		RuntimeException error = null;
@@ -2476,6 +2629,26 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	}
 
 	/**
+	 * Returns iterator for all distinct keys.
+	 *
+	 * @param keyIndex	key index
+	 * @return 			iterator for all distinct keys
+	 */
+	protected Iterator<?> iteratorDistinctKeys(int keyIndex) {
+		return getKeyMap(keyIndex).iteratorDistinctKeys();
+	}
+
+	/**
+	 * Returns count of all distinct keys.
+	 *
+	 * @param keyIndex	key index
+	 * @return 			count of all distinct keys
+	 */
+	protected int countDistinctKeys(int keyIndex) {
+		return getKeyMap(keyIndex).countDistinctKeys();
+	}
+
+	/**
 	 * Returns list containing all keys in element order.
 	 *
 	 * @param keyIndex	key index
@@ -2490,14 +2663,19 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		return list;
 	}
 
+	/** Return number of key maps */
+	int getNumKeyMaps() {
+		return (keyMaps != null) ? keyMaps.length : 0;
+	}
+
 	/**
-	 * Check whether there is a KeyMap (can also be the elements set) with specified index.
+	 * Check whether there is a key map (can also be the elements set) with specified index.
 	 *
 	 * @param keyIndex 	key map index
 	 * @throws IllegalArgumentException if there is no such key map
 	 */
 	void checkKeyMap(int keyIndex) {
-		if (keyMaps == null || keyIndex >= keyMaps.length || keyIndex < 0 || keyMaps[keyIndex] == null) {
+		if (keyIndex >= getNumKeyMaps() || keyIndex < 0 || keyMaps[keyIndex] == null) {
 			throw new IllegalArgumentException("Invalid key index: " + keyIndex);
 		}
 	}
@@ -2509,7 +2687,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @throws IllegalArgumentException if the key map cannot be viewed as Map
 	 */
 	void checkAsMap(int keyIndex) {
-		if (keyMaps == null || keyIndex >= keyMaps.length || keyIndex <= 0 || keyMaps[keyIndex] == null) {
+		if (keyIndex >= getNumKeyMaps() || keyIndex <= 0 || keyMaps[keyIndex] == null) {
 			throw new IllegalArgumentException("Invalid key index: " + keyIndex);
 		}
 		if (keyMaps[keyIndex].allowDuplicates || keyMaps[keyIndex].allowDuplicatesNull) {
@@ -2520,7 +2698,6 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	/**
 	 * Check whether the element set can be viewed as Set.
 	 *
-	 * @param keyIndex 	key map index
 	 * @throws IllegalArgumentException if the element set cannot be viewed as Set
 	 */
 	void checkAsSet() {
@@ -2571,22 +2748,57 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		if (keyMap.keysMap != null) {
 			// not sorted
-			Object obj = keyMap.keysMap.get(key);
-			if (obj instanceof KeyMapList) {
-				GapList<E> list = (GapList<E>) obj;
-				return list.getFirst();
+			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
+				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
+				if (val != null && val.intValue() > 0) {
+					return (E) key;
+				} else {
+					return null;
+				}
 			} else {
-				return (E) obj;
+				// normal: keysMap stores single element of list of elements
+				Object obj = keyMap.keysMap.get(key);
+				if (obj instanceof KeyMapList) {
+					GapList<E> list = (GapList<E>) obj;
+					return list.getFirst();
+				} else {
+					return (E) obj;
+				}
 			}
-
 		} else {
-			// sorted
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				return keyList.doGet(index);
 			} else {
 				return null;
 			}
+		}
+	}
+
+	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	protected Collection<E> getAllByKeys(int keyIndex1, Object key1, int keyIndex2, Object key2) {
+		int count1 = getCountByKey(keyIndex1, key1);
+		int count2 = getCountByKey(keyIndex2, key2);
+		if (count1 == 0 || count2 == 0) {
+			return createCollection();
+		}
+
+		if (count1 <= count2) {
+			Collection<E> elems = getAllByKey(keyIndex1, key1);
+			Function<E, Object> map2 = getKeyMapper(keyIndex2);
+			return ICollectionTools.filter(elems, e -> Objects.equals(map2.apply(e), key2), this::createCollection);
+		} else {
+			Collection<E> elems = getAllByKey(keyIndex2, key2);
+			Function<E, Object> map1 = getKeyMapper(keyIndex1);
+			return ICollectionTools.filter(elems, e -> Objects.equals(map1.apply(e), key1), this::createCollection);
 		}
 	}
 
@@ -2598,10 +2810,23 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @return      	list with all elements
 	 */
 	protected Collection<E> getAllByKey(int keyIndex, Object key) {
-		@SuppressWarnings("unchecked")
-		Collection<E> coll = crop();
+		Collection<E> coll = createCollection();
 		getAllByKey(keyIndex, key, coll);
 		return coll;
+	}
+
+	/**
+	 * Create collection used to return elements from methods like getAllByKey().
+	 * The type will either be HashSet for sets or GapList/BigList for lists.
+	 */
+	Collection<E> createCollection() {
+		if (keyList != null) {
+			return keyList.list.crop();
+		} else if (this instanceof Set) {
+			return new HashSet<>();
+		} else {
+			return GapList.create();
+		}
 	}
 
 	/**
@@ -2626,19 +2851,28 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 		if (keyMap.keysMap != null) {
 			// not sorted
-			Object obj = keyMap.keysMap.get(key);
-			if (obj == null) {
-				;
-			} else if (obj instanceof KeyMapList) {
-				coll.addAll((GapList<E>) obj);
+			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
+				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
+				if (val != null) {
+					int num = val.intValue();
+					for (int i = 0; i < num; i++) {
+						coll.add((E) key);
+					}
+				}
 			} else {
-				coll.add((E) obj);
+				// normal: keysMap stores single element of list of elements
+				Object obj = keyMap.keysMap.get(key);
+				if (obj == null) {
+					;
+				} else if (obj instanceof KeyMapList) {
+					coll.addAll((GapList<E>) obj);
+				} else {
+					coll.add((E) obj);
+				}
 			}
-
 		} else {
-			// sorted
-			// - keyMap.keysList: contains sorted keys
-			// - keyList: contains elements, sorted by key
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				while (true) {
@@ -2678,6 +2912,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		if (keyMap.keysMap != null) {
 			// not sorted
 			if (keyMap.count) {
+				// elem count: only possible on for keyMap[0], i.e. parameter key is an element
 				MutableInt val = (MutableInt) keyMap.keysMap.get(key);
 				if (val == null) {
 					return 0;
@@ -2685,6 +2920,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 					return val.intValue();
 				}
 			} else {
+				// normal: keysMap stores single element of list of elements
 				Object obj = keyMap.keysMap.get(key);
 				if (obj == null) {
 					return (keyMap.keysMap.containsKey(key)) ? 1 : 0;
@@ -2696,7 +2932,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 				}
 			}
 		} else {
-			// sorted
+			// sorted: keyMap.keysList contains sorted keys, keyList contains elements, sorted by key
 			int index = SortedLists.binarySearchGet(keyMap.keysList, key, keyMap.comparator);
 			if (index >= 0) {
 				int count = 0;
@@ -2719,23 +2955,21 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 
 	/**
 	 * Invalidate element, i.e. all keys of the element are extracted
-	 * again and stored in the key maps. Old key values are removed
-	 * if needed.
+	 * again and stored in the key maps. Old key values are removed if needed.
 	 * You must call an invalidate method if an element's key value has changed after adding it to the collection.
 	 *
 	 * @param elem element to invalidate
 	 */
 	protected void invalidate(E elem) {
-		if (keyMaps != null) {
-			for (int i = 0; i < keyMaps.length; i++) {
-				if (keyMaps[i] != null) {
-					if (i == 0 && keyMaps[0].count) {
-						errorInvalidateNotSupported();
-					}
-					Option<Object> key = invalidate(keyMaps[i], elem);
-					if (key.hasValue()) {
-						keyMaps[i].addThrow(key.getValue(), elem);
-					}
+		int numKeyMaps = getNumKeyMaps();
+		for (int i = 0; i < numKeyMaps; i++) {
+			if (keyMaps[i] != null) {
+				if (i == 0 && keyMaps[0].count) {
+					errorInvalidateNotSupported();
+				}
+				Option<Object> key = invalidate(keyMaps[i], elem);
+				if (key.hasValue()) {
+					keyMaps[i].addThrow(key.getValue(), elem);
 				}
 			}
 		}
@@ -2863,8 +3097,7 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	 * @return      	true if elements have been removed, false otherwise
 	 */
 	protected Collection<E> removeAllByKey(int keyIndex, Object key) {
-		@SuppressWarnings("unchecked")
-		Collection<E> removeds = crop();
+		Collection<E> removeds = createCollection();
 		removeAllByKey(keyIndex, key, removeds);
 		return removeds;
 	}
@@ -3024,13 +3257,8 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 		return getAllByKey(0, elem);
 	}
 
-	/**
-	 * Returns the number of equal elements.
-	 *
-	 * @param elem	element
-	 * @return		number of equal elements
-	 */
-	public int getCount(E elem) {
+	@Override
+	public int count(E elem) {
 		return getCountByKey(0, elem);
 	}
 
@@ -3052,6 +3280,25 @@ public class KeyCollectionImpl<E> implements ICollection<E>, Serializable, Clone
 	@SuppressWarnings("unchecked")
 	public Set<E> getDistinct() {
 		return (Set<E>) getDistinctKeys(0);
+	}
+
+	/**
+	 * Returns iterator for all distinct elements in the same order as in the collection.
+	 *
+	 * @return		iterator with distinct elements
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<E> iteratorDistinct() {
+		return (Iterator<E>) iteratorDistinctKeys(0);
+	}
+
+	/**
+	 * Returns count for all distinct elements.
+	 *
+	 * @return		count for all distinct elements
+	 */
+	public int countDistinct() {
+		return countDistinctKeys(0);
 	}
 
 	@Override

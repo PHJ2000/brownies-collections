@@ -62,7 +62,7 @@ public class BigList<E> extends IList<E> {
 	private static final float FILL_THRESHOLD = 0.95f;
 
 	/** Set to true for debugging during developing */
-	private static final boolean CHECK = false;
+	private static final boolean DEBUG_CHECK = false;
 
 	// -- EMPTY --
 
@@ -87,7 +87,6 @@ public class BigList<E> extends IList<E> {
 	private int blockSize;
 	/** Number of elements stored in this BigList */
 	private int size;
-
 	/** The root node in the tree */
 	private BlockNode<E> rootNode;
 	/** Current node */
@@ -109,12 +108,7 @@ public class BigList<E> extends IList<E> {
 	 */
 	protected BigList(boolean copy, BigList<E> that) {
 		if (copy) {
-			this.blockSize = that.blockSize;
-			this.currBlockStart = that.currBlockStart;
-			this.currBlockEnd = that.currBlockEnd;
-			this.currNode = that.currNode;
-			this.rootNode = that.rootNode;
-			this.size = that.size;
+			doAssign(that);
 		}
 	}
 
@@ -188,7 +182,6 @@ public class BigList<E> extends IList<E> {
 	@SuppressWarnings("unchecked")
 	public BigList(Collection<? extends E> coll) {
 		if (coll instanceof BigList) {
-			doAssign((BigList<E>) coll);
 			doClone((BigList<E>) coll);
 
 		} else {
@@ -241,66 +234,121 @@ public class BigList<E> extends IList<E> {
 		addBlock(0, block);
 	}
 
-	/**
-	 * Returns a shallow copy of this list.
-	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
-	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be copied.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * This method is identical to clone() except that it returns an object with the exact type.
-	 *
-	 * @return a modifiable copy of this list
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public BigList<E> copy() {
-		return (BigList<E>) clone();
-	}
-
 	@Override
 	public BigList<E> crop() {
 		return (BigList<E>) super.crop();
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return this instanceof ReadOnlyBigList;
+	}
+
 	/**
-	 * Returns a shallow copy of this list.
-	 * The new list will contain the same elements as the source list, i.e. the elements themselves are not copied.
-	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be copied.
-	 * This returned list will be modifiable, i.e. an unmodifiable list will become modifiable again.
-	 * It is advised to use copy() which is identical except that it returns an object with the exact type.
-	 *
-	 * @return a modifiable copy of this list
+	 * {@inheritDoc}
+	 * <p>
+	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be handled.
 	 */
 	@Override
-	public Object clone() {
-		if (this instanceof ImmutableBigList) {
+	public BigList<E> copy() {
+		if (this instanceof ReadOnlyBigList) {
 			BigList<E> list = new BigList<>(false, null);
 			list.doClone(this);
 			return list;
 		} else {
-			return super.clone();
+			return (BigList<E>) super.clone();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * The copy is realized by a copy-on-write approach so also really large lists can efficiently be handled.
+	 */
+	@Override
+	public BigList<E> clone() {
+		if (this instanceof ReadOnlyBigList) {
+			return this;
+		} else {
+			return (BigList<E>) super.clone();
 		}
 	}
 
 	@Override
 	protected void doAssign(IList<E> that) {
 		BigList<E> list = (BigList<E>) that;
+		this.size = list.size;
 		this.blockSize = list.blockSize;
+		this.rootNode = list.rootNode;
+		this.currNode = list.currNode;
 		this.currBlockEnd = list.currBlockEnd;
 		this.currBlockStart = list.currBlockStart;
-		this.currNode = list.currNode;
-		this.rootNode = list.rootNode;
-		this.size = list.size;
+		this.currModify = list.currModify;
 	}
 
 	@Override
 	protected void doClone(IList<E> that) {
 		BigList<E> bigList = (BigList<E>) that;
 		bigList.releaseBlock();
+
+		size = bigList.size;
+		blockSize = bigList.blockSize;
 		rootNode = copy(bigList.rootNode);
 		currNode = null;
+		currBlockStart = 0;
+		currBlockEnd = 0;
 		currModify = 0;
-		if (CHECK)
-			check();
+
+		if (DEBUG_CHECK)
+			debugCheck();
+	}
+
+	@Override
+	protected void doClear() {
+		doRelease();
+
+		rootNode = null;
+		currBlockStart = 0;
+		currBlockEnd = 0;
+		currModify = 0;
+		currNode = null;
+		size = 0;
+
+		doInit(blockSize, 0);
+	}
+
+	@Override
+	protected void finalize() {
+		// This list will be garbage collected, so unref all blocks.
+		// As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
+		if (rootNode != null) {
+			doRelease();
+		}
+	}
+
+	protected void doRelease() {
+		BlockNode<E> node = rootNode.min();
+		while (node != null) {
+			node.block.unref();
+			node = node.next();
+		}
+	}
+
+	/**
+	 * Explicitly release this instance of {@link BigList} by unreferencing all blocks.
+	 * Calling this method manually can improve sharing of blocks as their reference count is updated before the GC is running.
+	 * Note that you must not use the instance after calling release (typically NullPointerException will result).
+	 */
+	public void release() {
+		doRelease();
+
+		rootNode = null;
+		currBlockStart = -1;
+		currBlockEnd = -1;
+		currModify = -1;
+		currNode = null;
+		size = -1;
+		blockSize = -1;
 	}
 
 	/**
@@ -327,17 +375,6 @@ public class BigList<E> extends IList<E> {
 	@Override
 	public E getDefaultElem() {
 		return null;
-	}
-
-	@Override
-	protected void finalize() {
-		// This list will be garbage collected, so unref all referenced blocks.
-		// As it is not reachable by any live objects, if is safe to access it from the GC thread without synchronization
-		BlockNode<E> node = rootNode.min();
-		while (node != null) {
-			node.block.unref();
-			node = node.next();
-		}
 	}
 
 	@Override
@@ -644,8 +681,8 @@ public class BigList<E> extends IList<E> {
 		}
 		size++;
 
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 		return true;
 	}
 
@@ -786,8 +823,8 @@ public class BigList<E> extends IList<E> {
 		if (index == -1) {
 			index = size;
 		}
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 		int oldSize = size;
 
 		if (list.size() == 1) {
@@ -822,8 +859,8 @@ public class BigList<E> extends IList<E> {
 		}
 
 		assert (oldSize + addLen == size);
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 
 		return true;
 	}
@@ -953,8 +990,8 @@ public class BigList<E> extends IList<E> {
 			numElems -= should;
 			numBlocks--;
 		}
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 
 		while (numBlocks > 0) {
 			int add = numElems / numBlocks;
@@ -974,23 +1011,9 @@ public class BigList<E> extends IList<E> {
 			currBlockEnd += add;
 			size += add;
 			numBlocks--;
-			if (CHECK)
-				check();
+			if (DEBUG_CHECK)
+				debugCheck();
 		}
-	}
-
-	@Override
-	protected void doClear() {
-		finalize();
-
-		rootNode = null;
-		currBlockStart = 0;
-		currBlockEnd = 0;
-		currModify = 0;
-		currNode = null;
-		size = 0;
-
-		doInit(blockSize, 0);
 	}
 
 	@Override
@@ -1034,13 +1057,13 @@ public class BigList<E> extends IList<E> {
 			doRemoveAll2(index, len, startPos, startNode, endNode);
 		}
 
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 	}
 
 	private void doRemoveAll2(int index, int len, int startPos, BlockNode<E> startNode, BlockNode<E> endNode) {
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 		int startLen = startNode.block.size() - startPos;
 		getBlockIndex(index, true, -startLen);
 		startNode.block.remove(startPos, startLen);
@@ -1067,8 +1090,8 @@ public class BigList<E> extends IList<E> {
 				}
 				len -= s;
 				size -= s;
-				if (CHECK)
-					check();
+				if (DEBUG_CHECK)
+					debugCheck();
 			} else {
 				modify(currNode, -len);
 				currNode.block.remove(0, len);
@@ -1077,8 +1100,8 @@ public class BigList<E> extends IList<E> {
 			}
 		}
 		releaseBlock();
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 		getBlockIndex(index, false, 0);
 		merge(currNode);
 	}
@@ -1156,26 +1179,26 @@ public class BigList<E> extends IList<E> {
 		}
 		size--;
 
-		if (CHECK)
-			check();
+		if (DEBUG_CHECK)
+			debugCheck();
 		return oldElem;
 	}
 
 	@Override
 	public BigList<E> unmodifiableList() {
-		if (this instanceof ImmutableBigList) {
+		if (this instanceof ReadOnlyBigList) {
 			return this;
 		} else {
-			return new ImmutableBigList<E>(this);
+			return new ReadOnlyBigList<E>(this);
 		}
 	}
 
 	@Override
 	public BigList<E> immutableList() {
-		if (this instanceof ImmutableBigList) {
+		if (this instanceof ReadOnlyBigList) {
 			return this;
 		} else {
-			return new ImmutableBigList<E>(copy());
+			return new ReadOnlyBigList<E>(copy());
 		}
 	}
 
@@ -1314,18 +1337,18 @@ public class BigList<E> extends IList<E> {
 		}
 	}
 
-	private void check() {
+	/**
+	 * Check object invariants and fail with assert if violated.
+	 * This method is only invoked in a debug build if DEBUG_HECK is true.
+	 */
+	private void debugCheck() {
+		assert rootNode != null;
+		checkHeight(rootNode);
+
 		if (currNode != null) {
 			assert (currBlockStart >= 0 && currBlockEnd <= size && currBlockStart <= currBlockEnd);
 			assert (currBlockStart + currNode.block.size() == currBlockEnd);
 		}
-
-		if (rootNode == null) {
-			assert (size == 0);
-			return;
-		}
-
-		checkHeight(rootNode);
 
 		BlockNode<E> oldCurrNode = currNode;
 		int oldCurrModify = currModify;
@@ -1466,7 +1489,7 @@ public class BigList<E> extends IList<E> {
 		 * Constructs a new node.
 		 *
 		 * @param parent			parent node (null for root)
-		 * @param relativePosition  the relative position of the node (absolute position for root)
+		 * @param relPos  			the relative position of the node (absolute position for root)
 		 * @param block				the block to store
 		 * @param rightFollower 	the node following this one
 		 * @param leftFollower 		the node leading this one
@@ -1544,7 +1567,7 @@ public class BigList<E> extends IList<E> {
 		/**
 		 * Inserts new node holding specified block on the node's left side.
 		 *
-		 * @param index 	index of the position relative to the position of the parent node
+		 * @param relIndex 	index of the position relative to the position of the parent node
 		 * @param obj 		object to store in the position
 		 * @return			this node or node replacing this node in the tree (if tree must be rebalanced)
 		 */
@@ -1571,7 +1594,7 @@ public class BigList<E> extends IList<E> {
 		/**
 		 * Inserts new node holding specified block on the node's right side.
 		 *
-		 * @param index 	index of the position relative to the position of the parent node
+		 * @param relIndex 	index of the position relative to the position of the parent node
 		 * @param obj 		object to store in the position
 		 * @return			this node or node replacing this node in the tree (if tree must be rebalanced)
 		 */
@@ -1900,11 +1923,11 @@ public class BigList<E> extends IList<E> {
 	// --- ImmutableBigList ---
 
 	/**
-	 * An immutable version of a BigList.
-	 * Note that the client cannot change the list,
-	 * but the content may change if the underlying list is changed.
+	 * A read-only version of {@link Key1List}.
+	 * It is used to implement both unmodifiable and immutable lists.
+	 * Note that the client cannot change the list, but the content may change if the underlying list is changed.
 	 */
-	protected static class ImmutableBigList<E> extends BigList<E> {
+	protected static class ReadOnlyBigList<E> extends BigList<E> {
 
 		/** UID for serialization */
 		private static final long serialVersionUID = -1352274047348922584L;
@@ -1914,7 +1937,7 @@ public class BigList<E> extends IList<E> {
 		 *
 		 * @param that  list to create an immutable view of
 		 */
-		protected ImmutableBigList(BigList<E> that) {
+		protected ReadOnlyBigList(BigList<E> that) {
 			super(true, that);
 		}
 

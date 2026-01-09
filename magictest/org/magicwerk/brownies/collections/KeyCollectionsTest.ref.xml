@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.KeyCollectionsTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
+  <captureTest name="testKeyCollection3">
+    <runDate>2025-11-09T21:54:36.4576779+01:00</runDate>
+    <runDuration>0.0284621</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">"[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n"</text>
+    </captureStep>
+  </captureTest>
+  <captureTest name="testKeyList3">
+    <runDate>2025-11-09T21:54:36.6020318+01:00</runDate>
+    <runDuration>0.0025071</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">"[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n"</text>
+    </captureStep>
+  </captureTest>
+  <captureTest name="testKeySet3">
+    <runDate>2025-11-09T21:54:36.6345949+01:00</runDate>
+    <runDuration>0.0065499</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">"[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n[[0, 1, 2], [1, 2, 3], [2, 3, 4]]\r\n[0, 1, 2]\r\n[1, 2, 3]\r\n[2, 3, 4]\r\n"</text>
+    </captureStep>
+  </captureTest>
+</testClass>

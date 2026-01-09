@@ -30,19 +30,23 @@ import java.util.function.Function;
 @SuppressWarnings("serial")
 public class IdentMapper<E> implements Function<E, E>, Serializable {
 
+	@SuppressWarnings("rawtypes")
+	private static final IdentMapper INSTANCE = new IdentMapper();
+
 	/** Singleton instance */
-    @SuppressWarnings("rawtypes")
-	public static final IdentMapper INSTANCE = new IdentMapper();
+	@SuppressWarnings("unchecked")
+	public static final <T> IdentMapper<T> INSTANCE() {
+		return INSTANCE;
+	}
 
+	/**
+	 * Prevent construction.
+	 */
+	private IdentMapper() {
+	}
 
-    /**
-     * Prevent construction.
-     */
-    private IdentMapper() {
-    }
-
-    @Override
-    public E apply(E v) {
-        return v;
-    }
+	@Override
+	public E apply(E v) {
+		return v;
+	}
 }

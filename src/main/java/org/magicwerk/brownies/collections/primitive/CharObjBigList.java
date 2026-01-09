@@ -100,20 +100,24 @@ public class CharObjBigList extends IList<Character> {
 		init();
 	}
 
+	public CharObjBigList(int capacity) {
+		list = new CharBigList(capacity);
+	}
+	
+	public CharObjBigList(Collection<? extends Character> elems) {
+		init(elems);
+	}
+
+	public CharObjBigList(CharBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new CharBigList();
 	}
 
-	public CharObjBigList(int capacity) {
-		list = new CharBigList(capacity);
-	}
-
 	public void init(Character... elems) {
 		list = CharBigList.create(toPrimitive(elems));
-	}
-
-	public CharObjBigList(Collection<? extends Character> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Character> elems) {
@@ -132,8 +136,28 @@ public class CharObjBigList extends IList<Character> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableCharObjBigList;
+	}
+
+	@Override
 	public CharObjBigList copy() {
-		return (CharObjBigList) clone();
+		if (this instanceof ImmutableCharObjBigList) {
+			CharObjBigList list = new CharObjBigList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (CharObjBigList) super.clone();
+		}	
+	}
+
+	@Override
+	public CharObjBigList clone() {
+		if (this instanceof ImmutableCharObjBigList) {
+			return this;
+		} else {
+			return (CharObjBigList) super.clone();
+		}	
 	}
 
 	@Override
@@ -206,7 +230,6 @@ public class CharObjBigList extends IList<Character> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

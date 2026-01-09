@@ -235,4 +235,12 @@ public class SortedLists {
 	public static <E> int binarySearchGet(List<? extends E> list, E key, Comparator<? super E> comparator) {
 		return binarySearch(list, key, comparator, KeyPresentBehavior.FIRST_PRESENT, KeyAbsentBehavior.INVERTED_INSERTION_INDEX);
 	}
+
+	/**
+	 * Return the index of an arbitrary list element that compares as equal to the key.
+	 */
+	public static <E> int binarySearchAny(List<? extends E> list, E key, Comparator<? super E> comparator) {
+		return binarySearch(list, key, comparator, KeyPresentBehavior.ANY_PRESENT, KeyAbsentBehavior.INVERTED_INSERTION_INDEX);
+	}
+
 }

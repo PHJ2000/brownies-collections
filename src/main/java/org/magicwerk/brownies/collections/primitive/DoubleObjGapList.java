@@ -100,20 +100,24 @@ public class DoubleObjGapList extends IList<Double> {
 		init();
 	}
 
+	public DoubleObjGapList(int capacity) {
+		list = new DoubleGapList(capacity);
+	}
+	
+	public DoubleObjGapList(Collection<? extends Double> elems) {
+		init(elems);
+	}
+
+	public DoubleObjGapList(DoubleGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new DoubleGapList();
 	}
 
-	public DoubleObjGapList(int capacity) {
-		list = new DoubleGapList(capacity);
-	}
-
 	public void init(Double... elems) {
 		list = DoubleGapList.create(toPrimitive(elems));
-	}
-
-	public DoubleObjGapList(Collection<? extends Double> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Double> elems) {
@@ -132,8 +136,28 @@ public class DoubleObjGapList extends IList<Double> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableDoubleObjGapList;
+	}
+
+	@Override
 	public DoubleObjGapList copy() {
-		return (DoubleObjGapList) clone();
+		if (this instanceof ImmutableDoubleObjGapList) {
+			DoubleObjGapList list = new DoubleObjGapList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (DoubleObjGapList) super.clone();
+		}	
+	}
+
+	@Override
+	public DoubleObjGapList clone() {
+		if (this instanceof ImmutableDoubleObjGapList) {
+			return this;
+		} else {
+			return (DoubleObjGapList) super.clone();
+		}	
 	}
 
 	@Override
@@ -209,7 +233,6 @@ public class DoubleObjGapList extends IList<Double> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

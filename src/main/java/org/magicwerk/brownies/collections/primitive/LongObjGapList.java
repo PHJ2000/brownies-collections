@@ -100,20 +100,24 @@ public class LongObjGapList extends IList<Long> {
 		init();
 	}
 
+	public LongObjGapList(int capacity) {
+		list = new LongGapList(capacity);
+	}
+	
+	public LongObjGapList(Collection<? extends Long> elems) {
+		init(elems);
+	}
+
+	public LongObjGapList(LongGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new LongGapList();
 	}
 
-	public LongObjGapList(int capacity) {
-		list = new LongGapList(capacity);
-	}
-
 	public void init(Long... elems) {
 		list = LongGapList.create(toPrimitive(elems));
-	}
-
-	public LongObjGapList(Collection<? extends Long> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Long> elems) {
@@ -132,8 +136,28 @@ public class LongObjGapList extends IList<Long> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableLongObjGapList;
+	}
+
+	@Override
 	public LongObjGapList copy() {
-		return (LongObjGapList) clone();
+		if (this instanceof ImmutableLongObjGapList) {
+			LongObjGapList list = new LongObjGapList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (LongObjGapList) super.clone();
+		}	
+	}
+
+	@Override
+	public LongObjGapList clone() {
+		if (this instanceof ImmutableLongObjGapList) {
+			return this;
+		} else {
+			return (LongObjGapList) super.clone();
+		}	
 	}
 
 	@Override
@@ -209,7 +233,6 @@ public class LongObjGapList extends IList<Long> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

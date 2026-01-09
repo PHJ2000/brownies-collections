@@ -100,20 +100,24 @@ public class CharObjGapList extends IList<Character> {
 		init();
 	}
 
+	public CharObjGapList(int capacity) {
+		list = new CharGapList(capacity);
+	}
+	
+	public CharObjGapList(Collection<? extends Character> elems) {
+		init(elems);
+	}
+
+	public CharObjGapList(CharGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new CharGapList();
 	}
 
-	public CharObjGapList(int capacity) {
-		list = new CharGapList(capacity);
-	}
-
 	public void init(Character... elems) {
 		list = CharGapList.create(toPrimitive(elems));
-	}
-
-	public CharObjGapList(Collection<? extends Character> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Character> elems) {
@@ -132,8 +136,28 @@ public class CharObjGapList extends IList<Character> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableCharObjGapList;
+	}
+
+	@Override
 	public CharObjGapList copy() {
-		return (CharObjGapList) clone();
+		if (this instanceof ImmutableCharObjGapList) {
+			CharObjGapList list = new CharObjGapList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (CharObjGapList) super.clone();
+		}	
+	}
+
+	@Override
+	public CharObjGapList clone() {
+		if (this instanceof ImmutableCharObjGapList) {
+			return this;
+		} else {
+			return (CharObjGapList) super.clone();
+		}	
 	}
 
 	@Override
@@ -209,7 +233,6 @@ public class CharObjGapList extends IList<Character> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

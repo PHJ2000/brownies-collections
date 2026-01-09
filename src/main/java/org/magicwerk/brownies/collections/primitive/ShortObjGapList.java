@@ -100,20 +100,24 @@ public class ShortObjGapList extends IList<Short> {
 		init();
 	}
 
+	public ShortObjGapList(int capacity) {
+		list = new ShortGapList(capacity);
+	}
+	
+	public ShortObjGapList(Collection<? extends Short> elems) {
+		init(elems);
+	}
+
+	public ShortObjGapList(ShortGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new ShortGapList();
 	}
 
-	public ShortObjGapList(int capacity) {
-		list = new ShortGapList(capacity);
-	}
-
 	public void init(Short... elems) {
 		list = ShortGapList.create(toPrimitive(elems));
-	}
-
-	public ShortObjGapList(Collection<? extends Short> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Short> elems) {
@@ -132,8 +136,28 @@ public class ShortObjGapList extends IList<Short> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableShortObjGapList;
+	}
+
+	@Override
 	public ShortObjGapList copy() {
-		return (ShortObjGapList) clone();
+		if (this instanceof ImmutableShortObjGapList) {
+			ShortObjGapList list = new ShortObjGapList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (ShortObjGapList) super.clone();
+		}	
+	}
+
+	@Override
+	public ShortObjGapList clone() {
+		if (this instanceof ImmutableShortObjGapList) {
+			return this;
+		} else {
+			return (ShortObjGapList) super.clone();
+		}	
 	}
 
 	@Override
@@ -209,7 +233,6 @@ public class ShortObjGapList extends IList<Short> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

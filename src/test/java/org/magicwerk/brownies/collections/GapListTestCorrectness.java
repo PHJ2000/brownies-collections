@@ -1,6 +1,6 @@
 package org.magicwerk.brownies.collections;
 
-import static org.magicwerk.brownies.collections.TestHelper.*;
+import static org.magicwerk.brownies.collections.TestHelper.checkEquals;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.magicwerk.brownies.core.CheckTools;
+import org.magicwerk.brownies.core.StringTools;
 import org.magicwerk.brownies.core.logback.LogbackTools;
 import org.magicwerk.brownies.core.reflect.ReflectTools;
 
@@ -311,7 +311,7 @@ public class GapListTestCorrectness {
 		String str = list.toString();
 		GapList<String> fields = GapList.create(printField(list, "size"), printField(list, "start"), printField(list, "end"), printField(list, "gapStart"),
 				printField(list, "gapSize"), printField(list, "gapIndex"));
-		System.out.println("- " + StringUtils.join(fields, ", "));
+		System.out.println("- " + StringTools.join(fields, ", "));
 	}
 
 	static String printField(GapList<Object> list, String state) {
@@ -694,7 +694,7 @@ public class GapListTestCorrectness {
 			return;
 		}
 		for (int i = 0; i <= c.size(); i++) {
-			GapList<Object> c2 = (GapList<Object>) c.clone();
+			GapList<Object> c2 = c.clone();
 			double d;
 			if (i == 0) {
 				if (c.size() == 0) {
@@ -715,7 +715,7 @@ public class GapListTestCorrectness {
 
 	static void testRemove(GapList<Object> c) {
 		for (int i = 0; i < c.size(); i++) {
-			GapList<Object> c2 = (GapList<Object>) c.clone();
+			GapList<Object> c2 = c.clone();
 			c2.remove(i);
 			check(c);
 			testRemove(c2);

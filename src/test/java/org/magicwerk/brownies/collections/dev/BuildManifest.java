@@ -1,12 +1,13 @@
 package org.magicwerk.brownies.collections.dev;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.jar.Attributes;
 import java.util.regex.Pattern;
 
 import org.magicwerk.brownies.collections.GapList;
 import org.magicwerk.brownies.collections.IList;
-import org.magicwerk.brownies.core.collections.MapTree;
-import org.magicwerk.brownies.core.collections.TreeTools;
 import org.magicwerk.brownies.core.exec.Exec;
 import org.magicwerk.brownies.core.exec.Exec.ExecStatus;
 import org.magicwerk.brownies.core.files.FileInfo;
@@ -125,21 +126,20 @@ public class BuildManifest {
 	}
 
 	IList<String> getNonEmptyPackages(FilePath dir) {
-		MapTree<String, FileInfo> tree = FileTools.listFiles().setDir(dir).setRecursive(true).setEnterFilter(fi -> !fi.getName().equals(META_INF)).listTree();
+		IList<FileInfo> files = FileTools.listFiles().setDir(dir).setRecursive(true).setEnterFilter(fi -> !fi.getName().equals(META_INF)).list();
+		Map<FilePath, IList<FileInfo>> tree = new HashMap<>();
+		files.forEach(f -> tree.computeIfAbsent(f.getPath().getParent(), p -> GapList.create()).add(f));
 		IList<String> pkgs = GapList.create();
-		TreeTools.traverse(tree, n -> {
-			FileInfo fi = n.getValue();
-			if (fi.getType() != FileType.DIRECTORY) {
-				return;
-			}
-
-			if (n.getChildValues().containsIf(f -> f.getType() == FileType.FILE)) {
-				FilePath fp = fi.getPath();
+		for (Entry<FilePath, IList<FileInfo>> entry : tree.entrySet()) {
+			IList<FileInfo> entries = entry.getValue();
+			if (entries.containsIf(f -> f.getType() == FileType.FILE)) {
+				FilePath fp = entry.getKey();
 				fp = dir.relativize(fp);
 				String pkg = ClassTools.getClassFromPath(fp.getPath());
 				pkgs.add(pkg);
 			}
-		});
+		}
+		pkgs.sort(null);
 		return pkgs;
 	}
 

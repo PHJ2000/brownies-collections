@@ -45,10 +45,30 @@ public class Key2ListTest {
 	}
 
 	static void test() {
-		testRemoveAllByKey1();
+		//testRemoveAllByKey1();
 		//testAsMap();
-		//testInvalidate();
+		testInvalidate();
 		//testKey2List();
+	}
+
+	@Trace
+	public void testGetAllByKeys() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+		Pair<Integer> p12b = Pair.of(1, 2);
+
+		Key2List<Pair<Integer>, Integer, Integer> list = new Key2List.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		list.add(p01);
+		list.add(p02);
+		list.add(p12);
+		list.add(p12b);
+
+		list.getAllByKeys(0, 1);
+		list.getAllByKeys(0, 2);
+		list.getAllByKeys(1, 2);
+		list.getAllByKeys(0, 0);
 	}
 
 	static class TicketList extends Key2List<Ticket, Integer, String> {
@@ -101,6 +121,7 @@ public class Key2ListTest {
 	@Trace(traceMethod = "/.*/", parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
 	public static void testInvalidate() {
 		{
+			// Not ordered
 			Key2List<Ticket, Integer, String> list = new Key2List.Builder<Ticket, Integer, String>().withKey1Map(Ticket.IdMapper).withKey1Duplicates(false)
 					.withKey1Sort(true).withKey2Map(Ticket.ExtIdMapper).withKey2Duplicates(true).withKey2Sort(true).build();
 			Ticket t1 = new Ticket(1, "extId1", "text1");
@@ -128,6 +149,7 @@ public class Key2ListTest {
 			list.getByKey2("extId3a");
 		}
 		{
+			// Ordered by key 1
 			Key2List<Ticket, Integer, String> list = new Key2List.Builder<Ticket, Integer, String>().withKey1Map(Ticket.IdMapper).withKey1Duplicates(false)
 					.withKey1Sort(true).withOrderByKey1(true).withKey2Map(Ticket.ExtIdMapper).withKey2Duplicates(true).withKey2Sort(true).build();
 			Ticket t = null;
@@ -156,7 +178,6 @@ public class Key2ListTest {
 			list.invalidateKey2("extId3x", "extId3a", t3);
 			list.getByKey2("extId3a");
 		}
-
 	}
 
 	@Trace(traceMethod = "/.+/", parameters = Trace.THIS | Trace.ALL_PARAMS)
@@ -217,7 +238,7 @@ public class Key2ListTest {
 		System.out.println("Orig: " + format(tickets));
 
 		//-- Clone
-		Key2List<Ticket, String, String> tickets2 = (Key2List<Ticket, String, String>) tickets.clone();
+		Key2List<Ticket, Integer, String> tickets2 = tickets.clone();
 		System.out.println("-\nClone: " + format(tickets2));
 
 		// Change original

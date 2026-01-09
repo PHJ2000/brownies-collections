@@ -28,6 +28,7 @@ import org.magictest.client.Assert;
 import org.magictest.client.Test;
 import org.magictest.client.Trace;
 import org.magicwerk.brownies.core.logback.LogbackTools;
+import org.magicwerk.brownies.core.objects.Pair;
 import org.magicwerk.brownies.tools.dev.jvm.JmhRunner;
 import org.magicwerk.brownies.tools.dev.jvm.JmhRunner.Options;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -47,13 +48,58 @@ public class KeySetTest {
 	static final Logger LOG = LogbackTools.getConsoleLogger();
 
 	public static void main(String[] args) {
-		test();
+		new KeySetTest().run();
 	}
 
-	static void test() {
+	void run() {
 		//testEquals();
-		testAddPerformanceJmh();
+		//testGetAllByKey();
+		testGetAllByKeys();
+
+		//AddPerformanceJmhTest.test();
 	}
+
+	// Key2Set
+
+	@Trace(traceClass = "Key2Set", traceMethod = "/getAll.*/")
+	public void testGetAllByKey() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+
+		Key2Set<Pair<Integer>, Integer, Integer> set = new Key2Set.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		set.add(p01);
+		set.add(p02);
+		set.add(p12);
+
+		set.getAllByKey1(1);
+		set.getAllByKey(1, 1);
+		set.getAllByKey2(2);
+		set.getAllByKey(2, 2);
+
+		set.getAll(p01);
+	}
+
+	@Trace(traceClass = "Key2Set")
+	public void testGetAllByKeys() {
+		Pair<Integer> p01 = Pair.of(0, 1);
+		Pair<Integer> p02 = Pair.of(0, 2);
+		Pair<Integer> p12 = Pair.of(1, 2);
+
+		Key2Set<Pair<Integer>, Integer, Integer> set = new Key2Set.Builder<Pair<Integer>, Integer, Integer>().withKey1Map(Pair::getFirst)
+				.withKey2Map(Pair::getLast).build();
+		set.add(p01);
+		set.add(p02);
+		set.add(p12);
+
+		set.getAllByKeys(0, 1);
+		set.getAllByKeys(0, 2);
+		set.getAllByKeys(1, 2);
+		set.getAllByKeys(0, 0);
+	}
+
+	// ICollection
 
 	KeySet<Integer> getKeySet(int num) {
 		KeySet<Integer> set = new KeySet.Builder<Integer>().build();
@@ -62,8 +108,6 @@ public class KeySetTest {
 		}
 		return set;
 	}
-
-	// ICollection
 
 	@Trace
 	public void testGetFirst() {
@@ -156,16 +200,16 @@ public class KeySetTest {
 		}
 	}
 
-	static void testAddPerformanceJmh() {
-		//		Options opts = new Options().includeClass(PerformanceJmhTest.class);
-		Options opts = new Options().includeClass(AddPerformanceJmhTest.class);
-		opts.setWarmupIterations(3).setMeasurementIterations(2);
-		opts.setRunTimeMillis(500);
-		JmhRunner runner = new JmhRunner();
-		runner.runJmh(opts);
-	}
-
 	public static class AddPerformanceJmhTest {
+
+		static void test() {
+			//		Options opts = new Options().includeClass(PerformanceJmhTest.class);
+			Options opts = new Options().includeClass(AddPerformanceJmhTest.class);
+			opts.setWarmupIterations(3).setMeasurementIterations(2);
+			opts.setRunTimeMillis(500);
+			JmhRunner runner = new JmhRunner();
+			runner.runJmh(opts);
+		}
 
 		@State(Scope.Benchmark)
 		public static class BenchmarkState {

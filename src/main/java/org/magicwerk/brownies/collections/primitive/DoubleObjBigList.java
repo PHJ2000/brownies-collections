@@ -100,20 +100,24 @@ public class DoubleObjBigList extends IList<Double> {
 		init();
 	}
 
+	public DoubleObjBigList(int capacity) {
+		list = new DoubleBigList(capacity);
+	}
+	
+	public DoubleObjBigList(Collection<? extends Double> elems) {
+		init(elems);
+	}
+
+	public DoubleObjBigList(DoubleBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new DoubleBigList();
 	}
 
-	public DoubleObjBigList(int capacity) {
-		list = new DoubleBigList(capacity);
-	}
-
 	public void init(Double... elems) {
 		list = DoubleBigList.create(toPrimitive(elems));
-	}
-
-	public DoubleObjBigList(Collection<? extends Double> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Double> elems) {
@@ -132,8 +136,28 @@ public class DoubleObjBigList extends IList<Double> {
 	}
 
 	@Override
+	public boolean isReadOnly() {
+		return this instanceof ImmutableDoubleObjBigList;
+	}
+
+	@Override
 	public DoubleObjBigList copy() {
-		return (DoubleObjBigList) clone();
+		if (this instanceof ImmutableDoubleObjBigList) {
+			DoubleObjBigList list = new DoubleObjBigList();
+			list.doClone(this);
+			return list;
+		} else {
+			return (DoubleObjBigList) super.clone();
+		}	
+	}
+
+	@Override
+	public DoubleObjBigList clone() {
+		if (this instanceof ImmutableDoubleObjBigList) {
+			return this;
+		} else {
+			return (DoubleObjBigList) super.clone();
+		}	
 	}
 
 	@Override
@@ -206,7 +230,6 @@ public class DoubleObjBigList extends IList<Double> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

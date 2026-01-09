@@ -28,11 +28,11 @@ import org.slf4j.Logger;
  * <p>
  * - All MagicTests in org.magicwerk.brownies.collections <br>
  * - All Guava JUnit tests in org.magicwerk.brownies.collections.guava <br>
- * - Test done by GapListTestCorrectness.testRelease
+ * - Test done by GapListTestCorrectness.testRelease <br>
  * <br>
- * Depending on the execution environment, the number of tests differ:
- * - If run as main application, all tests are executed, including the tests typically run by MagicTest
- * - If run as MagicTest, only the tests not executed by MagicTest are executed
+ * Depending on the execution environment, the number of tests differ: <br>
+ * - If run as main application, all tests are executed, including the tests typically run by MagicTest <br>
+ * - If run as MagicTest, only the tests not executed by MagicTest are executed <br>
  *
  * @author Thomas Mauch
  */
@@ -47,6 +47,13 @@ public class RunAllTest {
 	}
 
 	void run() {
+		// Prevent error on shutdown
+		// java.util.ServiceConfigurationError: org.magictest.ext.de.schlichtherle.truezip.key.spi.KeyManagerService: 
+		//   Provider org.magictest.ext.de.schlichtherle.truezip.fs.archive.zip.PromptingKeyManagerService could not be instantiated
+		// at org.magictest.ext.de.schlichtherle.truezip.fs.FsSyncShutdownHook$Hook.run(FsSyncShutdownHook.java:93)
+		// Caused by: java.lang.NoClassDefFoundError: org/magictest/ext/de/schlichtherle/truezip/swing/EnhancedPanel
+		System.setProperty("java.awt.headless", "true");
+
 		// Typically you will use RunDebugTest to run tests with assertions enabled in a separate source tree.
 		// For debugging, it can however be handy to work with the actual sources.
 		// In this case, you can uncomment the line below which will change the actual sources.
@@ -131,7 +138,7 @@ public class RunAllTest {
 	}
 
 	boolean runJUnitTests() {
-		Class<?> guavaTests[] = new Class<?>[] {
+		IList<Class<?>> guavaTests = GapList.create(
 				BigListTestGuava.class,
 				CollectionAsSetTestGuava.class,
 				GapListTestGuava.class,
@@ -141,19 +148,23 @@ public class RunAllTest {
 				KeyCollectionTestGuava.class,
 				KeyCollectionTestGuavaSet.class,
 				KeyListTestGuava.class,
-				KeySetTestGuava.class
-		};
+				KeySetTestGuava.class);
 
+		return runJUnitTests(guavaTests);
+	}
+
+	boolean runJUnitTests(IList<Class<?>> testClasses) {
 		boolean success = true;
 		Computer computer = new Computer();
 		JUnitCore jUnitCore = new JUnitCore();
-		for (Class<?> test : guavaTests) {
-			Result result = jUnitCore.run(computer, test);
-			LOG.info("Tests {}: run {}, failures {}\n", test.getSimpleName(), result.getRunCount(), result.getFailureCount());
+		for (Class<?> testClass : testClasses) {
+			Result result = jUnitCore.run(computer, testClass);
+			LOG.info("Tests {}: run {}, failures {}\n", testClass.getSimpleName(), result.getRunCount(), result.getFailureCount());
 			if (result.getFailureCount() > 0) {
 				success = false;
 			}
 		}
 		return success;
 	}
+
 }

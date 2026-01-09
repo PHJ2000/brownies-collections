@@ -18,12 +18,12 @@
 package org.magicwerk.brownies.collections;
 
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Key2Collection implements a collection with 2 keys.
@@ -40,10 +40,15 @@ import java.util.function.Predicate;
  */
 public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 
+	/** Build {@link Key2Collection} with specified builder function */
+	public static <E, K1, K2> Key2Collection<E, K1, K2> buildCollection(UnaryOperator<Key2Collection.Builder<E, K1, K2>> builder) {
+		return builder.apply(new Key2Collection.Builder<>()).build();
+	}
+
 	/**
 	 * Builder to construct Key2Collection instances.
 	 */
-	public static class Builder<E, K1, K2> extends BuilderImpl<E> {
+	public static class Builder<E, K1, K2> extends Key2CollectionImplBuilder<E, K1, K2, Builder<E, K1, K2>> {
 		/**
 		 * Default constructor.
 		 */
@@ -52,11 +57,11 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending Key2Collection.
+		 * Protected constructor used if extending Key2Collection.
 		 *
 		 * @param keyColl	key collection
 		 */
-		Builder(Key2Collection<E, K1, K2> keyColl) {
+		protected Builder(Key2Collection<E, K1, K2> keyColl) {
 			this.keyColl = keyColl;
 			initKeyMapBuilder(2);
 		}
@@ -73,325 +78,6 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 			init(keyColl);
 			return (Key2Collection<E, K1, K2>) keyColl;
 		}
-
-		// -- Constraint
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withNull(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withConstraint(Predicate<E> constraint) {
-			return (Builder<E, K1, K2>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K1, K2>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withCapacity(int capacity) {
-			return (Builder<E, K1, K2>) super.withCapacity(capacity);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withContent(Collection<? extends E> elements) {
-			return (Builder<E, K1, K2>) super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withContent(E... elements) {
-			return (Builder<E, K1, K2>) super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withMaxSize(int maxSize) {
-			return (Builder<E, K1, K2>) super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withSetBehavior(boolean setBehavior) {
-			return (Builder<E, K1, K2>) super.withSetBehavior(setBehavior);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemSet() {
-			return (Builder<E, K1, K2>) super.withElemSet();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withOrderByElem(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByElem(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemNull(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withElemNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemDuplicates(boolean allowDuplicates) {
-			return (Builder<E, K1, K2>) super.withElemDuplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E, K1, K2>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemSort(boolean sort) {
-			return (Builder<E, K1, K2>) super.withElemSort(sort);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemSort(Comparator<? super E> comparator) {
-			return (Builder<E, K1, K2>) super.withElemSort(comparator);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return (Builder<E, K1, K2>) super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withPrimaryElem() {
-			return (Builder<E, K1, K2>) super.withPrimaryElem();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withUniqueElem() {
-			return (Builder<E, K1, K2>) super.withUniqueElem();
-		}
-
-		// -- Key1
-
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey1Map(Function<? super E, K1> mapper) {
-			return (Builder<E, K1, K2>) super.withKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withPrimaryKey1Map(Function<? super E, K1> mapper) {
-			return (Builder<E, K1, K2>) super.withPrimaryKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withUniqueKey1Map(Function<? super E, K1> mapper) {
-			return (Builder<E, K1, K2>) super.withUniqueKeyMap(1, mapper);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withOrderByKey1(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByKey1(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey1Null(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withKey1Null(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey1Duplicates(boolean allowDuplicates) {
-			return (Builder<E, K1, K2>) super.withKey1Duplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E, K1, K2>) super.withKey1Duplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey1Sort(boolean sort) {
-			return (Builder<E, K1, K2>) super.withKey1Sort(sort);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list collection, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey1Sort(Comparator<? super K1> comparator) {
-			return (Builder<E, K1, K2>) super.withKeySort(1, comparator);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list collection, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey1Sort(Comparator<? super K1> comparator, boolean sortNullsFirst) {
-			return (Builder<E, K1, K2>) super.withKeySort(1, comparator, sortNullsFirst);
-		}
-
-		// -- Key2
-
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey2Map(Function<? super E, K2> mapper) {
-			return (Builder<E, K1, K2>) super.withKeyMap(2, mapper);
-		}
-
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(false), and withKey2Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withPrimaryKey2Map(Function<? super E, K2> mapper) {
-			return (Builder<E, K1, K2>) super.withPrimaryKeyMap(2, mapper);
-		}
-
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey2Map(mapper), withKey2Null(true), and withKey2Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withUniqueKey2Map(Function<? super E, K2> mapper) {
-			return (Builder<E, K1, K2>) super.withUniqueKeyMap(2, mapper);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withOrderByKey2(boolean orderBy) {
-			return (Builder<E, K1, K2>) super.withOrderByKey2(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey2Null(boolean allowNull) {
-			return (Builder<E, K1, K2>) super.withKey2Null(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey2Duplicates(boolean allowDuplicates) {
-			return (Builder<E, K1, K2>) super.withKey2Duplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey2Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E, K1, K2>) super.withKey2Duplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K1, K2> withKey2Sort(boolean sort) {
-			return (Builder<E, K1, K2>) super.withKey2Sort(sort);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey2Sort(Comparator<? super K2> comparator) {
-			return (Builder<E, K1, K2>) super.withKeySort(2, comparator);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the collection itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K1, K2> withKey2Sort(Comparator<? super K2> comparator, boolean sortNullsFirst) {
-			return (Builder<E, K1, K2>) super.withKeySort(2, comparator, sortNullsFirst);
-		}
-
 	}
 
 	/**
@@ -420,18 +106,6 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	}
 
 	//-- Element methods
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key2Collection<E, K1, K2> getAll(E elem) {
-		return (Key2Collection<E, K1, K2>) super.getAll(elem);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Key2Collection<E, K1, K2> removeAll(E elem) {
-		return (Key2Collection<E, K1, K2>) super.removeAll(elem);
-	}
 
 	@Override
 	public E put(E elem) {
@@ -494,9 +168,8 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> getAllByKey1(K1 key) {
-		return (Key2Collection<E, K1, K2>) super.getAllByKey(1, key);
+	public Collection<E> getAllByKey1(K1 key) {
+		return super.getAllByKey(1, key);
 	}
 
 	/**
@@ -526,15 +199,14 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> removeAllByKey1(K1 key) {
-		return (Key2Collection<E, K1, K2>) super.removeAllByKey(1, key);
+	public Collection<E> removeAllByKey1(K1 key) {
+		return super.removeAllByKey(1, key);
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K1> getAllKeys1() {
@@ -542,13 +214,32 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K1> getDistinctKeys1() {
 		return (Set<K1>) super.getDistinctKeys(1);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K1> iteratorDistinctKeys1() {
+		return (Iterator<K1>) super.iteratorDistinctKeys(1);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys1() {
+		return super.countDistinctKeys(1);
 	}
 
 	/**
@@ -634,9 +325,19 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		all elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> getAllByKey2(K2 key) {
-		return (Key2Collection<E, K1, K2>) super.getAllByKey(2, key);
+	public Collection<E> getAllByKey2(K2 key) {
+		return super.getAllByKey(2, key);
+	}
+
+	/**
+	 * Returns all elements with specified keys.
+	 *
+	 * @param key1	key 1
+	 * @param key2	key 2
+	 * @return		all elements with specified keys (never null)
+	 */
+	public Collection<E> getAllByKeys(K1 key1, K2 key2) {
+		return getAllByKeys(1, key1, 2, key2);
 	}
 
 	/**
@@ -666,15 +367,14 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	 * @param key	key
 	 * @return		removed elements with specified key (never null)
 	 */
-	@SuppressWarnings("unchecked")
-	public Key2Collection<E, K1, K2> removeAllByKey2(K2 key) {
-		return (Key2Collection<E, K1, K2>) super.removeAllByKey(2, key);
+	public Collection<E> removeAllByKey2(K2 key) {
+		return super.removeAllByKey(2, key);
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K2> getAllKeys2() {
@@ -682,13 +382,32 @@ public class Key2Collection<E, K1, K2> extends KeyCollectionImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K2> getDistinctKeys2() {
 		return (Set<K2>) super.getDistinctKeys(2);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K2> iteratorDistinctKeys2() {
+		return (Iterator<K2>) super.getDistinctKeys(2);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys2() {
+		return super.countDistinctKeys(2);
 	}
 
 	/**
