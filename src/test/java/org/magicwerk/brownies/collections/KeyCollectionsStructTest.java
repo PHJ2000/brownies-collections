@@ -43,30 +43,9 @@ public class KeyCollectionsStructTest {
 	}
 
 	static void test() {
-
 		testKeyCollection();
-		testKeyListImpl();
+		testKeyList();
 		testKeySet();
-
-		//		{
-		//			Key1List<Ticket, Integer> l = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
-		//			l.contains(null);
-		//		}
-		//
-		//		{
-		//			// Test
-		//			KeyList<Ticket> list = new KeyList.Builder<Ticket>().withPrimaryElem().withOrderByElem(true).build();
-		//			list.add(t1);
-		//			// TODO Trying to add duplicate throws:
-		//			//Exception in thread "main" java.lang.IllegalStateException: Invalid index for sorted list
-		//			//at org.magicwerk.brownies.collections.KeyCollectionImpl.errorInvalidIndex(KeyCollectionImpl.java:1894)
-		//			// It should throw a DuplicateKeyException
-		//			// TODO it should be configurable in Builder to have Set behavior, i.e. silently ignoring duplicates
-		//			list.add(t1);
-		//			printKeyList(list);
-		//			LOG.info("{}", list);
-		//		}
-
 	}
 
 	// Show that automatic deduction of static parameters does not work with builders
@@ -108,45 +87,61 @@ public class KeyCollectionsStructTest {
 		// -- KeyCollection
 		// HashMap
 		{
-			System.out.println("-- not sorted");
+			LOG.info("-- not sorted");
 			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().build();
-			coll.add(t1);
+			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
 		}
 		// TreeMap
 		{
-			System.out.println("-- sorted");
+			LOG.info("-- sorted");
 			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().withElemSort(true).build();
-			coll.add(t1);
+			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
 		}
 		// HashMap
 		{
 			System.out.println("-- with duplicates ");
 			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().build();
-			coll.add(t1);
-			coll.add(t1);
+			coll.addAll(ts);
+			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
-
-			Assert.assertTrue(coll.size() == 2);
 		}
 		// TreeMap
 		{
 			System.out.println("-- sorted with duplicates");
 			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().withElemSort(true).build();
-			coll.add(t1);
-			coll.add(t1);
+			coll.addAll(ts);
+			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
 		}
 		// ElemCount
 		{
 			System.out.println("-- with elem count");
 			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().withElemCount(true).build();
-			coll.add(t1);
+			coll.addAll(ts);
+			printKeyCollectionImpl(coll);
+		}
+		// ElemCount
+		{
+			System.out.println("-- sorted with elem count");
+			KeyCollection<Ticket> coll = new KeyCollection.Builder<Ticket>().withElemSort(true).withElemCount(true).build();
+			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
 		}
 
 		// -- Key1Collection
+		// Element: null, Key: TreeMap (order)
+		{
+			Key1Collection<Ticket, Integer> coll = new Key1Collection.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).build();
+			coll.addAll(ts);
+			printKeyCollectionImpl(coll);
+
+			// As there is no element set, all methods work over the keys TreeMap.
+			// So contains() becomes TreeMap.containsValue()
+			Assert.assertTrue(coll.contains(t1));
+			Assert.assertTrue(!coll.contains(null));
+		}
 		// Element: null, Key: TreeMap (order)
 		{
 			Key1Collection<Ticket, Integer> coll = new Key1Collection.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withKey1Sort(true).build();
@@ -174,6 +169,14 @@ public class KeyCollectionsStructTest {
 			coll.addAll(ts);
 			printKeyCollectionImpl(coll);
 			//System.out.println(coll);
+		}
+
+		// -- Key2Collection
+		{
+			Key2Collection<Ticket, Integer, String> coll = new Key2Collection.Builder<Ticket, Integer, String>().withKey1Map(Ticket.IdMapper)
+					.withKey2Map(Ticket.ExtIdMapper).build();
+			coll.addAll(ts);
+			printKeyCollectionImpl(coll);
 		}
 	}
 
@@ -272,7 +275,7 @@ public class KeyCollectionsStructTest {
 					withKey2Sort(true).build());
 
 	@Capture
-	public static void testKeyListImpl() {
+	public static void testKeyList() {
 
 		System.out.println("-- KeyList: list only");
 		{
@@ -403,6 +406,7 @@ public class KeyCollectionsStructTest {
 			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
 			list.addAll(ts);
 			printKeyList(list);
+			list.contains(t2);
 		}
 		// List with key
 		{
@@ -432,6 +436,7 @@ public class KeyCollectionsStructTest {
 			//useItAll.add(t5);
 
 			printKeyList(useItAll);
+			useItAll.contains(t2);
 		}
 
 	}
@@ -445,10 +450,12 @@ public class KeyCollectionsStructTest {
 		IList<?> ilist = kli.list;
 		KeyMap<?, ?>[] keyMaps = kli.keyColl.keyMaps;
 
-		System.out.println(formatClassName(kli));
-		System.out.println("- IList: " + formatClassName(ilist) + ": " + formatClassName(ilist.getFirst()));
-		System.out.println(formatKeyMaps(keyMaps));
-		System.out.println();
+		LOG.info(formatClassName(kli));
+		LOG.info("- IList: " + formatClassName(ilist) + ": " + formatClassName(ilist.getFirst()));
+		LOG.info(formatKeyMaps(keyMaps));
+		LOG.info("sorted {}, sortedByKey {}", kli.isSorted(), kli.getSortedByKey());
+		LOG.info("{}", kli);
+		LOG.info("");
 	}
 
 	/**
@@ -459,9 +466,11 @@ public class KeyCollectionsStructTest {
 	static void printKeyCollectionImpl(KeyCollectionImpl<?> kci) {
 		KeyMap<?, ?>[] keyMaps = kci.keyMaps;
 
-		System.out.println(formatClassName(kci));
-		System.out.println(formatKeyMaps(keyMaps));
-		System.out.println();
+		LOG.info(formatClassName(kci));
+		LOG.info(formatKeyMaps(keyMaps));
+		LOG.info("sorted {}, sortedByKey {}", kci.isSorted(), kci.getSortedByKey());
+		LOG.info("{}", kci);
+		LOG.info("");
 	}
 
 	/**

@@ -17,13 +17,11 @@
  */
 package org.magicwerk.brownies.collections;
 
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-import org.magicwerk.brownies.collections.KeyCollectionImpl.BuilderImpl;
+import org.magicwerk.brownies.collections.KeyCollectionImpl.KeyCollectionImplBuilder;
 
 /**
  * KeyList implements a list.
@@ -37,10 +35,16 @@ import org.magicwerk.brownies.collections.KeyCollectionImpl.BuilderImpl;
 @SuppressWarnings("serial")
 public class KeyList<E> extends KeyListImpl<E> {
 
+	/** Build {@link KeyList} with specified builder function */
+	public static <E> KeyList<E> buildList(UnaryOperator<KeyList.Builder<E>> builder) {
+		return builder.apply(new KeyList.Builder<>()).build();
+	}
+
 	/**
 	 * Builder to construct KeyList instances.
 	 */
-	public static class Builder<E> extends BuilderImpl<E> {
+	public static class Builder<E> extends KeyCollectionImplBuilder<E, Builder<E>> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -49,142 +53,13 @@ public class KeyList<E> extends KeyListImpl<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeyList.
+		 * Protected constructor used if extending KeyList.
 		 *
 		 * @param keyList	key list
 		 */
-		Builder(KeyList<E> keyList) {
+		protected Builder(KeyList<E> keyList) {
 			this.keyList = keyList;
 			initKeyMapBuilder(0);
-		}
-
-		// -- Constraint
-
-		@Override
-		public Builder<E> withNull(boolean allowNull) {
-			return (Builder<E>) super.withNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withConstraint(Predicate<E> constraint) {
-			return (Builder<E>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@Override
-		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@Override
-		public Builder<E> withCapacity(int capacity) {
-			return (Builder<E>) super.withCapacity(capacity);
-		}
-
-		@Override
-		public Builder<E> withContent(Collection<? extends E> elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E> withContent(E... elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		public Builder<E> withMaxSize(int maxSize) {
-			return (Builder<E>) super.withMaxSize(maxSize);
-		}
-
-		@Override
-		public Builder<E> withWindowSize(int maxSize) {
-			return (Builder<E>) super.withWindowSize(maxSize);
-		}
-
-		@Override
-		public Builder<E> withListBig(boolean bigList) {
-			return (Builder<E>) super.withListBig(bigList);
-		}
-
-		//-- Element key
-
-		@Override
-		public Builder<E> withListType(Class<?> type) {
-			return (Builder<E>) super.withListType(type);
-		}
-
-		@Override
-		public Builder<E> withElemSet() {
-			return (Builder<E>) super.withElemSet();
-		}
-
-		@Override
-		public Builder<E> withOrderByElem(boolean orderBy) {
-			return (Builder<E>) super.withOrderByElem(orderBy);
-		}
-
-		@Override
-		public Builder<E> withOrderByElem(Class<?> type) {
-			return (Builder<E>) super.withOrderByElem(type);
-		}
-
-		@Override
-		public Builder<E> withElemNull(boolean allowNull) {
-			return (Builder<E>) super.withElemNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates);
-		}
-
-		@Override
-		public Builder<E> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@Override
-		public Builder<E> withElemSort(boolean sort) {
-			return (Builder<E>) super.withElemSort(sort);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator) {
-			return (Builder<E>) super.withElemSort(comparator);
-		}
-
-		@Override
-		public Builder<E> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@Override
-		public Builder<E> withPrimaryElem() {
-			return (Builder<E>) super.withPrimaryElem();
-		}
-
-		@Override
-		public Builder<E> withUniqueElem() {
-			return (Builder<E>) super.withUniqueElem();
 		}
 
 		/**
@@ -203,6 +78,37 @@ public class KeyList<E> extends KeyListImpl<E> {
 			init(keyColl, keyList);
 			return (KeyList<E>) keyList;
 		}
+
+		/**
+		 * @return created immutable list
+		 */
+		public KeyList<E> immutable() {
+			return build().unmodifiableList();
+		}
+
+		// -- Builder
+
+		@Override
+		public Builder<E> withWindowSize(int maxSize) {
+			return super.withWindowSize(maxSize);
+		}
+
+		@Override
+		public Builder<E> withListBig(boolean bigList) {
+			return super.withListBig(bigList);
+		}
+
+		@Override
+		public Builder<E> withListType(Class<?> type) {
+			return super.withListType(type);
+		}
+
+		// -- Elem Map
+
+		@Override
+		public Builder<E> withOrderByElem(Class<?> type) {
+			return super.withOrderByElem(type);
+		}
 	}
 
 	/**
@@ -220,32 +126,32 @@ public class KeyList<E> extends KeyListImpl<E> {
 
 	@Override
 	public KeyList<E> copy() {
-		if (this instanceof ImmutableKeyList) {
-			KeyList<E> list = new KeyList<>(false, null);
+		if (isReadOnly()) {
+			KeyList<E> list = new KeyList<>(null);
 			list.initCopy(this);
 			return list;
 		} else {
-			return (KeyList<E>) super.clone();
+			return (KeyList<E>) doCopy();
 		}
 	}
 
 	@Override
 	public KeyList<E> clone() {
-		if (this instanceof ImmutableKeyList) {
+		if (isReadOnly()) {
 			return this;
 		} else {
-			return (KeyList<E>) super.clone();
+			return (KeyList<E>) doCopy();
 		}
 	}
 
 	@Override
 	public KeyList<E> crop() {
-		if (this instanceof ImmutableKeyList) {
-			KeyList<E> list = new KeyList<>(false, null);
+		if (isReadOnly()) {
+			KeyList<E> list = new KeyList<>(null);
 			list.initCrop(this);
 			return list;
 		} else {
-			return (KeyList<E>) super.crop();
+			return (KeyList<E>) doCrop();
 		}
 	}
 
@@ -272,37 +178,47 @@ public class KeyList<E> extends KeyListImpl<E> {
 	}
 
 	@Override
+	public Iterator<E> iteratorDistinct() {
+		return super.iteratorDistinct();
+	}
+
+	@Override
+	public int countDistinct() {
+		return super.countDistinct();
+	}
+
+	@Override
 	public E put(E elem) {
 		return super.put(elem);
 	}
 
-	// --- ImmutableKey1List ---
+	// --- ReadOnlyKeyList ---
 
 	@Override
 	public boolean isReadOnly() {
-		return this instanceof ImmutableKeyList;
+		return this instanceof ReadOnlyKeyList;
 	}
 
 	@Override
 	public KeyList<E> unmodifiableList() {
-		if (this instanceof ImmutableKeyList) {
+		if (isReadOnly()) {
 			return this;
 		} else {
-			return new ImmutableKeyList<E>(this);
+			return new ReadOnlyKeyList<E>(this);
 		}
 	}
 
 	@Override
 	public KeyList<E> immutableList() {
-		if (this instanceof ImmutableKeyList) {
+		if (isReadOnly()) {
 			return this;
 		} else {
-			return new ImmutableKeyList<E>(copy());
+			return new ReadOnlyKeyList<E>(copy());
 		}
 	}
 
-	protected KeyList(boolean copy, KeyList<E> that) {
-		if (copy) {
+	protected KeyList(KeyList<E> that) {
+		if (that != null) {
 			doAssign(that);
 		}
 	}
@@ -312,7 +228,7 @@ public class KeyList<E> extends KeyListImpl<E> {
 	 * It is used to implement both unmodifiable and immutable lists.
 	 * Note that the client cannot change the list, but the content may change if the underlying list is changed.
 	 */
-	protected static class ImmutableKeyList<E> extends KeyList<E> {
+	protected static class ReadOnlyKeyList<E> extends KeyList<E> {
 
 		/** UID for serialization */
 		private static final long serialVersionUID = -1352274047348922584L;
@@ -322,8 +238,8 @@ public class KeyList<E> extends KeyListImpl<E> {
 		 *
 		 * @param that  list to create an immutable view of
 		 */
-		protected ImmutableKeyList(KeyList<E> that) {
-			super(true, that);
+		protected ReadOnlyKeyList(KeyList<E> that) {
+			super(that);
 		}
 
 		@Override

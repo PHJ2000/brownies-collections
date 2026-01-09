@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * KeySet implements a set.
@@ -35,10 +36,22 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 
+	/** Build {@link KeySet} with specified builder function */
+	public static <E> KeySet<E> buildSet(UnaryOperator<KeySet.Builder<E>> builder) {
+		return builder.apply(new KeySet.Builder<>()).build();
+	}
+
+	/** Use {@link #buildSet} instead (method will throw exception) */
+	public static <E> KeyCollection<E> buildCollection(UnaryOperator<KeyCollection.Builder<E>> builder) {
+		// Method cannot be hidden, throw UnsupportedOperationException instead
+		throw new UnsupportedOperationException();
+	}
+
 	/**
 	 * Builder to construct KeySet instances.
 	 */
 	public static class Builder<E> extends KeyCollection.Builder<E> {
+
 		/**
 		 * Default constructor.
 		 */
@@ -47,11 +60,11 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 		}
 
 		/**
-		 * Private constructor used if extending KeySet.
+		 * Protected constructor used if extending KeySet.
 		 *
 		 * @param keySet	key set
 		 */
-		Builder(KeySet<E> keySet) {
+		protected Builder(KeySet<E> keySet) {
 			this.keyColl = keySet;
 			initKeyMapBuilder(0);
 		}
@@ -72,7 +85,38 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 			return (KeySet<E>) keyColl;
 		}
 
-		// Builder: Overriden
+		// -- Builder
+
+		@Override
+		public Builder<E> withCapacity(int capacity) {
+			return (Builder<E>) super.withCapacity(capacity);
+		}
+
+		@Override
+		public Builder<E> withConstraint(Predicate<E> constraint) {
+			return (Builder<E>) super.withConstraint(constraint);
+		}
+
+		@Override
+		public Builder<E> withContent(Collection<? extends E> elements) {
+			return (Builder<E>) super.withContent(elements);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Builder<E> withContent(E... elements) {
+			return (Builder<E>) super.withContent(elements);
+		}
+
+		@Override
+		public Builder<E> withMaxSize(int maxSize) {
+			return (Builder<E>) super.withMaxSize(maxSize);
+		}
+
+		@Override
+		public Builder<E> withNull(boolean allowNull) {
+			return (Builder<E>) super.withNull(allowNull);
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -85,6 +129,61 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 				KeyCollectionImpl.errorInvalidSetBehavior();
 			}
 			return (Builder<E>) super.withSetBehavior(setBehavior);
+		}
+
+		// -- Triggers
+
+		@Override
+		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withAfterInsertTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
+		}
+
+		@Override
+		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
+			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
+		}
+
+		// -- Elem Map
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link KeySet} always has an element set, so this call is not necessary.
+		 */
+		@Override
+		public Builder<E> withElemSet() {
+			return (Builder<E>) super.withElemSet();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link KeySet} always has an element set, so this call is not necessary.
+		 */
+		@Override
+		public Builder<E> withPrimaryElem() {
+			return this;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * <p>
+		 * Note that a {@link KeySet} always has an element set, so an exception is thrown.
+		 */
+		@Override
+		public Builder<E> withUniqueElem() {
+			KeyCollectionImpl.errorInvalidSetBehavior();
+			return this;
 		}
 
 		/**
@@ -113,95 +212,6 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 			return (Builder<E>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
 		}
 
-		// Builder: Verbatim copy of KeyCollection
-
-		// -- Constraint
-
-		@Override
-		public Builder<E> withNull(boolean allowNull) {
-			return (Builder<E>) super.withNull(allowNull);
-		}
-
-		@Override
-		public Builder<E> withConstraint(Predicate<E> constraint) {
-			return (Builder<E>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@Override
-		public Builder<E> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@Override
-		public Builder<E> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@Override
-		public Builder<E> withCapacity(int capacity) {
-			return (Builder<E>) super.withCapacity(capacity);
-		}
-
-		@Override
-		public Builder<E> withContent(Collection<? extends E> elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public Builder<E> withContent(E... elements) {
-			return (Builder<E>) super.withContent(elements);
-		}
-
-		@Override
-		public Builder<E> withMaxSize(int maxSize) {
-			return (Builder<E>) super.withMaxSize(maxSize);
-		}
-
-		//-- Element key
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that {@link KeySet} does not support duplicates, so an exception is thrown if the argument is true.
-		 */
-		@Override
-		public Builder<E> withElemCount(boolean count) {
-			if (count) {
-				KeyCollectionImpl.errorInvaliDuplicates();
-			}
-			return (Builder<E>) super.withElemCount(count);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link KeySet} always has an element set, so this call is not necessary.
-		 */
-		@Override
-		public Builder<E> withElemSet() {
-			return (Builder<E>) super.withElemSet();
-		}
-
-		@Override
-		public Builder<E> withOrderByElem(boolean orderBy) {
-			return (Builder<E>) super.withOrderByElem(orderBy);
-		}
-
 		@Override
 		public Builder<E> withElemNull(boolean allowNull) {
 			return (Builder<E>) super.withElemNull(allowNull);
@@ -222,25 +232,9 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 			return (Builder<E>) super.withElemSort(comparator, sortNullsFirst);
 		}
 
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link Key2Set} always has an element set, so this call is not necessary.
-		 */
 		@Override
-		public Builder<E> withPrimaryElem() {
-			return this;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * <p>
-		 * Note that a {@link KeySet} always has an element set, so an exception is thrown.
-		 */
-		@Override
-		public Builder<E> withUniqueElem() {
-			KeyCollectionImpl.errorInvalidSetBehavior();
-			return this;
+		public Builder<E> withOrderByElem(boolean orderBy) {
+			return (Builder<E>) super.withOrderByElem(orderBy);
 		}
 	}
 
@@ -269,8 +263,13 @@ public class KeySet<E> extends KeyCollection<E> implements Set<E> {
 	}
 
 	@Override
-	public KeySet<E> getAll(E elem) {
-		return (KeySet<E>) super.getAll(elem);
+	public Set<E> getAll(E elem) {
+		return (Set<E>) super.getAll(elem);
+	}
+
+	@Override
+	public Set<E> removeAll(E elem) {
+		return (Set<E>) super.removeAll(elem);
 	}
 
 	@Override

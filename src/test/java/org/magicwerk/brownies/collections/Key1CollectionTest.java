@@ -17,6 +17,7 @@
  */
 package org.magicwerk.brownies.collections;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.magictest.client.Assert;
 import org.magictest.client.Capture;
 import org.magictest.client.Report;
 import org.magictest.client.Trace;
+import org.magictest.ext.org.magicwerk.brownies.core.CollectionTools;
 import org.magicwerk.brownies.collections.TestHelper.ComparableName;
 import org.magicwerk.brownies.collections.TestHelper.Name;
 import org.magicwerk.brownies.collections.TestHelper.Ticket;
@@ -47,7 +49,8 @@ public class Key1CollectionTest {
 	}
 
 	static void test() {
-		testKey1Collection();
+		testNullKey();
+		//testKey1Collection();
 		//testPutByKey1();
 		//testAsMap();
 		//testDuplicates();
@@ -83,6 +86,18 @@ public class Key1CollectionTest {
 		Ticket[] arr1 = coll.toArray(new Ticket[] {});
 		CheckTools.check(list.equals(GapList.create(arr0)));
 		CheckTools.check(list.equals(GapList.create(arr1)));
+	}
+
+	@Capture
+	public static void testNullKey() {
+		Key1Collection<Ticket, Integer> coll = new Key1Collection.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).build();
+		Integer id = null;
+		Ticket t1 = new Ticket(id, "", "text1");
+		coll.add(t1);
+		Ticket t2 = coll.getByKey1(id);
+		CheckTools.check(t1.equals(t2));
+		Collection<Ticket> ts = coll.getAllByKey1(id);
+		CheckTools.check(ts.size() == 1 && t1.equals(CollectionTools.getFirst(coll)));
 	}
 
 	static Ticket t1 = new Ticket(1, "extId1", "text1");
@@ -195,7 +210,7 @@ public class Key1CollectionTest {
 	@Trace(traceMethod = "/.*/", parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
 	public static void testDuplicates() {
 		// Check that duplicates are added at the end and removed from the head
-		Key1Collection<ComparableName, ComparableName> coll = new Key1Collection.Builder<ComparableName, ComparableName>().withKey1Map(IdentMapper.INSTANCE)
+		Key1Collection<ComparableName, ComparableName> coll = new Key1Collection.Builder<ComparableName, ComparableName>().withKey1Map(IdentMapper.INSTANCE())
 				.withKey1Sort(true).withKey1Duplicates(true).build();
 		coll.add(new ComparableName("d", 4));
 		coll.add(new ComparableName("c", 2));

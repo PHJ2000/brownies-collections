@@ -424,6 +424,14 @@
       <error></error>
     </traceStep>
   </traceTest>
+  <captureTest name="testNullKey">
+    <runDate>2024-11-01T23:24:53.9810927+01:00</runDate>
+    <runDuration>3.513E-4</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">""</text>
+    </captureStep>
+  </captureTest>
   <traceTest name="testPut">
     <runDate>2015-01-10T12:18:05.116+01:00</runDate>
     <runDuration>0.042485725</runDuration>

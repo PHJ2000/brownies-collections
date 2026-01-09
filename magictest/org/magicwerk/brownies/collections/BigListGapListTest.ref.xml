@@ -274,11 +274,11 @@
     </traceStep>
   </traceTest>
   <captureTest name="testBinarySearch">
-    <runDate>2014-02-17T22:36:20.978+01:00</runDate>
-    <runDuration>0.003492381</runDuration>
+    <runDate>2024-11-01T22:33:12.1306698+01:00</runDate>
+    <runDuration>0.0028126</runDuration>
     <exception></exception>
     <captureStep>
-      <text outputType="TEXT">"[a, b, c]\r\nb\r\nnull\r\n"</text>
+      <text outputType="TEXT">"[a, b, c]\r\nb\r\nnull\r\n[a, b, b, b, b, c]\r\nb -&gt; 2\r\n"</text>
     </captureStep>
   </captureTest>
   <traceTest name="testClear">
@@ -2675,8 +2675,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testRemoveIf">
-    <runDate>2022-12-05T00:32:51.396+01:00</runDate>
-    <runDuration>0.0026654</runDuration>
+    <runDate>2024-11-01T22:40:14.8426969+01:00</runDate>
+    <runDuration>0.0034194</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.BigList</traceClass>
     <traceMethod>removeIf</traceMethod>
@@ -2735,6 +2735,32 @@
         <paramText outputType="VALUE" param="Result">"false"</paramText>
       </result>
       <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeIf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ null }"</paramText>
+        <paramText outputType="VALUE" param="#1">"{ \r\n}"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.NullPointerException"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeIf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ null }"</paramText>
+        <paramText outputType="VALUE" param="#1">"{ \r\n}"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"java.lang.NullPointerException"</paramText>
+      </error>
     </traceStep>
   </traceTest>
   <traceTest name="testRemoveRange">
@@ -3784,6 +3810,47 @@
       </parameters>
       <result>
         <paramText outputType="VALUE" param="Result">"[ 0, 1, 2, 3, 4, 5, 6 ]"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
+  <traceTest name="testTransferAdd">
+    <runDate>2025-04-06T20:41:00.6275925+02:00</runDate>
+    <runDuration>6.666E-4</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.BigList</traceClass>
+    <traceMethod>transferAdd</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"transferAdd"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#2">"0"</paramText>
+        <paramText outputType="VALUE" param="#3">"3"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 10, 11, 12, 13, 14, 15, 16 }"</paramText>
+        <paramText outputType="VALUE" param="#5">"0"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 10, 11, 12, 13, 14, 15, 16 }"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"transferAdd"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#2">"0"</paramText>
+        <paramText outputType="VALUE" param="#3">"3"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#5">"3"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 0, 1, 2, 3, 4, 5, 6 }"</paramText>
+        <paramText outputType="VALUE" param="#4">"{ 0, 1, 2, 0, 1, 2, 3, 4, 5, 6 }"</paramText>
       </result>
       <error></error>
     </traceStep>

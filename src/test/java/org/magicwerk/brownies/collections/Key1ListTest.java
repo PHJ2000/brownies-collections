@@ -47,16 +47,18 @@ import org.slf4j.Logger;
  * @author Thomas Mauch
  */
 public class Key1ListTest {
-	/** Logger */
-	private static Logger LOG = LogbackTools.getConsoleLogger();
+
+	static final Logger LOG = LogbackTools.getConsoleLogger();
 
 	public static void main(String[] args) {
 		test();
 	}
 
 	static void test() {
-		testPutPerformance();
+		//testAdd();
+		testAddDuplicate();
 		//testContains();
+		//testIndexOf();
 		//testImmutableList();
 		//testInitAll();
 		//testRemoveAllByKey1();
@@ -64,9 +66,9 @@ public class Key1ListTest {
 		//testPut();
 		//testAsMap();
 		//testKeys();
-		//testKeys();
-		//testKeys();
 		//testMove();
+
+		//testPutPerformance();
 	}
 
 	@Trace(traceMethod = "/.*/", parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
@@ -146,6 +148,35 @@ public class Key1ListTest {
 				.withKey1Duplicates(true).build();
 		list.add(elem);
 		list.contains(elem);
+		list.contains("WRONG_TYPE");
+	}
+
+	@Trace(parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
+	public static void testIndexOf() {
+		Ticket t1 = new Ticket(1, "extId1", "text1");
+		Ticket t2 = new Ticket(2, "extId1", "text1");
+		Key1List<Ticket, String> list = new Key1List.Builder<Ticket, String>().withKey1Map(Ticket.ExtIdMapper).withKey1Sort(true).withOrderByKey1(true)
+				.withKey1Duplicates(true).build();
+		list.add(t1);
+		list.add(t2);
+		list.indexOf(t1);
+		list.indexOf(t2);
+	}
+
+	@Trace(parameters = Trace.ALL_PARAMS | Trace.THIS, result = Trace.THIS | Trace.RESULT)
+	public static void testRemoveByKey1() {
+		int key = 0;
+		Ticket t1 = new Ticket(key, "extId1", "text1");
+		Ticket t2 = new Ticket(key, "extId2", "text2");
+		Ticket t3 = new Ticket(key, "extId3", "text3");
+		Ticket t4 = new Ticket(key, "extId4", "text4");
+		Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).withKey1Sort(true).withOrderByKey1(true)
+				.withKey1Duplicates(true).build();
+		list.add(t1);
+		list.add(t2);
+		list.add(t3);
+		list.add(t4);
+		list.removeByKey1(key);
 	}
 
 	public static void testPutPerformance() {
@@ -323,6 +354,39 @@ public class Key1ListTest {
 		//		}
 	}
 
+	@Trace
+	public static void testAdd() {
+		Ticket t1 = new Ticket(1, "extId1", "text1");
+		Ticket t2 = new Ticket(1, "extId2", "text2");
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).build();
+			list.add(t1);
+			list.add(t2);
+		}
+		{
+			Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).withOrderByKey1(true).build();
+			list.add(t1);
+			list.add(t2);
+		}
+	}
+
+	@Capture
+	public static void testAddDuplicate() {
+		int ID = 1;
+		Ticket t1 = new Ticket(ID, "extId1", "text1");
+		Ticket t2 = new Ticket(ID, "extId2", "text2");
+		Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withKey1Map(Ticket.IdMapper).build();
+		list.add(t1);
+		list.add(t2);
+
+		// After adding the elements, the identical key ID now references [ t1, t2 ] in this order
+		CheckTools.check(list.getAllByKey1(ID).equals(GapList.create(t1, t2)));
+		// Get returns first element
+		CheckTools.check(list.getByKey1(ID) == t1);
+		// Remove returns first element
+		CheckTools.check(list.removeByKey1(ID) == t1);
+	}
+
 	@Capture
 	public static void testAsMap() {
 		Key1List<Ticket, Integer> list = new Key1List.Builder<Ticket, Integer>().withPrimaryKey1Map(Ticket.IdMapper).build();
@@ -469,7 +533,7 @@ public class Key1ListTest {
 		list.add(new ComparableName("a", 0));
 		list.add(new ComparableName("b", 1));
 
-		Key1List<Name, String> clone = (Key1List<Name, String>) list.clone();
+		Key1List<Name, String> clone = list.clone();
 	}
 
 	@Trace(parameters = Trace.THIS | Trace.ALL_PARAMS, result = Trace.THIS | Trace.RESULT)
@@ -521,12 +585,21 @@ public class Key1ListTest {
 
 	@Capture
 	public static void testImmutableList() {
-		Key1List<Name, String> list = new Key1List.Builder<Name, String>().withKey1Map(Name.Mapper).build();
-		list.add(new Name("a"));
-		list.add(new Name("b"));
-		list.add(new Name("c"));
-		Key1List<Name, String> list2 = list.unmodifiableList();
+		{
+			Key1List<Name, String> list = new Key1List.Builder<Name, String>().withKey1Map(Name.Mapper).build();
+			list.add(new Name("a"));
+			list.add(new Name("b"));
+			list.add(new Name("c"));
+			checkImmutable(list.unmodifiableList());
+		}
+		{
+			IList<Name> content = GapList.create(new Name("a"), new Name("b"), new Name("c"));
+			Key1List<Name, String> list = new Key1List.Builder<Name, String>().withKey1Map(Name.Mapper).withContent(content).immutable();
+			checkImmutable(list.unmodifiableList());
+		}
+	}
 
+	static void checkImmutable(Key1List<Name, String> list2) {
 		checkThrow(() -> list2.remove(0));
 		checkThrow(() -> list2.removeByKey1("b"));
 		checkThrow(() -> list2.removeAllByKey1("b"));

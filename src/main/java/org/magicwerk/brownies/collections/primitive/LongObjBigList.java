@@ -100,20 +100,24 @@ public class LongObjBigList extends IList<Long> {
 		init();
 	}
 
+	public LongObjBigList(int capacity) {
+		list = new LongBigList(capacity);
+	}
+	
+	public LongObjBigList(Collection<? extends Long> elems) {
+		init(elems);
+	}
+
+	public LongObjBigList(LongBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new LongBigList();
 	}
 
-	public LongObjBigList(int capacity) {
-		list = new LongBigList(capacity);
-	}
-
 	public void init(Long... elems) {
 		list = LongBigList.create(toPrimitive(elems));
-	}
-
-	public LongObjBigList(Collection<? extends Long> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Long> elems) {
@@ -226,7 +230,6 @@ public class LongObjBigList extends IList<Long> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

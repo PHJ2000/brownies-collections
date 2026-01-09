@@ -36,6 +36,7 @@ public class KeySetTestGuava extends TestCase {
 		TestSuite suite = new TestSuite("KeySet");
 		suite.addTest(testKeySet());
 		suite.addTest(testKey1Set());
+		suite.addTest(testKey2Set());
 		return suite;
 	}
 
@@ -62,7 +63,7 @@ public class KeySetTestGuava extends TestCase {
 						CollectionFeature.GENERAL_PURPOSE,
 						CollectionFeature.ALLOWS_NULL_VALUES,
 						CollectionFeature.SERIALIZABLE,
-						//CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
+						CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
 						CollectionSize.ANY)
 				.createTestSuite();
 	}
@@ -73,6 +74,7 @@ public class KeySetTestGuava extends TestCase {
 					@Override
 					protected Set<String> create(String[] elements) {
 						// Note that you should not add elements with withElements(elements) as duplicated could be added
+						@SuppressWarnings("unchecked")
 						Key1Set<String, Integer> set = new Key1Set.Builder<String, Integer>()
 								.withKey1Map((Function<String, Integer> & Serializable) (s) -> s.length())
 								.build();
@@ -85,7 +87,7 @@ public class KeySetTestGuava extends TestCase {
 						CollectionFeature.GENERAL_PURPOSE,
 						CollectionFeature.ALLOWS_NULL_VALUES,
 						CollectionFeature.SERIALIZABLE,
-						//CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
+						CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
 						CollectionSize.ANY)
 				.createTestSuite();
 	}
@@ -96,9 +98,10 @@ public class KeySetTestGuava extends TestCase {
 					@Override
 					protected Set<String> create(String[] elements) {
 						// Note that you should not add elements with withElements(elements) as duplicated could be added
+						@SuppressWarnings("unchecked")
 						Key2Set<String, Integer, Integer> set = new Key2Set.Builder<String, Integer, Integer>()
 								.withKey1Map((Function<String, Integer> & Serializable) (s) -> s.length())
-								.withKey1Map((Function<String, Integer> & Serializable) (s) -> s.length())
+								.withKey2Map((Function<String, Integer> & Serializable) (s) -> s.length())
 								.build();
 						set.addAll(Arrays.asList(elements));
 						return set;
@@ -109,7 +112,7 @@ public class KeySetTestGuava extends TestCase {
 						CollectionFeature.GENERAL_PURPOSE,
 						CollectionFeature.ALLOWS_NULL_VALUES,
 						CollectionFeature.SERIALIZABLE,
-						//CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
+						CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
 						CollectionSize.ANY)
 				.createTestSuite();
 	}

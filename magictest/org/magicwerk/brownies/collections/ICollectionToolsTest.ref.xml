@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.ICollectionToolsTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
+  <traceTest name="testGetIf">
+    <runDate>2024-11-18T10:56:50.8215195+01:00</runDate>
+    <runDuration>0.036832</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.ICollectionTools</traceClass>
+    <traceMethod>getIf</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"getIf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"{ 0, 1, 2, 3, 4 }"</paramText>
+        <paramText outputType="VALUE" param="#2">"{ \r\n}"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"4"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
+</testClass>

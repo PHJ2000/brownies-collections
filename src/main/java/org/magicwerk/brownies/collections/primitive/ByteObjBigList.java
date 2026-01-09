@@ -100,20 +100,24 @@ public class ByteObjBigList extends IList<Byte> {
 		init();
 	}
 
+	public ByteObjBigList(int capacity) {
+		list = new ByteBigList(capacity);
+	}
+	
+	public ByteObjBigList(Collection<? extends Byte> elems) {
+		init(elems);
+	}
+
+	public ByteObjBigList(ByteBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new ByteBigList();
 	}
 
-	public ByteObjBigList(int capacity) {
-		list = new ByteBigList(capacity);
-	}
-
 	public void init(Byte... elems) {
 		list = ByteBigList.create(toPrimitive(elems));
-	}
-
-	public ByteObjBigList(Collection<? extends Byte> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Byte> elems) {
@@ -226,7 +230,6 @@ public class ByteObjBigList extends IList<Byte> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

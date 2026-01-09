@@ -100,20 +100,24 @@ public class IntObjBigList extends IList<Integer> {
 		init();
 	}
 
+	public IntObjBigList(int capacity) {
+		list = new IntBigList(capacity);
+	}
+	
+	public IntObjBigList(Collection<? extends Integer> elems) {
+		init(elems);
+	}
+
+	public IntObjBigList(IntBigList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new IntBigList();
 	}
 
-	public IntObjBigList(int capacity) {
-		list = new IntBigList(capacity);
-	}
-
 	public void init(Integer... elems) {
 		list = IntBigList.create(toPrimitive(elems));
-	}
-
-	public IntObjBigList(Collection<? extends Integer> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Integer> elems) {
@@ -226,7 +230,6 @@ public class IntObjBigList extends IList<Integer> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

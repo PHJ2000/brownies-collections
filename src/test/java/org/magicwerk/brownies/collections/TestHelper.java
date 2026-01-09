@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
 import org.magicwerk.brownies.core.ObjectTools;
+import org.magicwerk.brownies.core.strings.StringPadder;
+import org.magicwerk.brownies.core.strings.StringPadder.Pad;
 
 /**
  * Helper classes for tests.
@@ -122,25 +123,25 @@ public class TestHelper {
 	}
 
 	public static class Ticket implements Comparable<Ticket> {
-		static Function<Ticket, Integer> IdMapper = new Function<Ticket, Integer>() {
+		public static Function<Ticket, Integer> IdMapper = new Function<Ticket, Integer>() {
 			@Override
 			public Integer apply(Ticket ticket) {
 				return ticket.id;
 			}
 		};
-		static Function<Ticket, String> ExtIdMapper = new Function<Ticket, String>() {
+		public static Function<Ticket, String> ExtIdMapper = new Function<Ticket, String>() {
 			@Override
 			public String apply(Ticket ticket) {
 				return ticket.extId;
 			}
 		};
-		static Predicate<Ticket> Constraint = new Predicate<Ticket>() {
+		public static Predicate<Ticket> Constraint = new Predicate<Ticket>() {
 			@Override
 			public boolean test(Ticket ticket) {
 				return ticket.extId == null || ticket.extId.startsWith("Ext");
 			}
 		};
-		static Comparator<Ticket> Comparator = new Comparator<Ticket>() {
+		public static Comparator<Ticket> Comparator = new Comparator<Ticket>() {
 			@Override
 			public int compare(Ticket t1, Ticket t2) {
 				return ObjectTools.compareFields(t1.id, t2.id, t1.extId, t2.extId);
@@ -215,8 +216,9 @@ public class TestHelper {
 		String s1 = l1.getClass().getSimpleName();
 		String s2 = l2.getClass().getSimpleName();
 		int len = Math.max(s1.length(), s2.length());
-		s1 = StringUtils.rightPad(s1, len);
-		s2 = StringUtils.rightPad(s2, len);
+		StringPadder padder = new StringPadder().setPad(Pad.RIGHT).setLength(len);
+		s1 = padder.pad(s1);
+		s2 = padder.pad(s2);
 		System.out.println(s1 + ": " + l1);
 		System.out.println(s2 + ": " + l2);
 	}

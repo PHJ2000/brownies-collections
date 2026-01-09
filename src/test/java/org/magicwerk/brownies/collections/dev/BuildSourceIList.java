@@ -10,9 +10,12 @@ import org.magicwerk.brownies.core.reflect.ClassTools;
 import org.magicwerk.brownies.core.regex.RegexBuilder;
 import org.magicwerk.brownies.core.regex.RegexReplacer;
 import org.magicwerk.brownies.core.strings.StringFormatter;
+import org.magicwerk.brownies.javassist.sources.JavaParserTools;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 /**
  * Create source files IIntList, etc. out of file IList
@@ -33,13 +36,14 @@ public class BuildSourceIList extends FileBuilder {
 	public void build() {
 		String srcClass = "org.magicwerk.brownies.collections.IList";
 		String src = readJavaFile(srcClass);
-		CompilationUnit cu = parseJavaSource(src);
+		CompilationUnit cu = readSource(src);
 
 		visitor = new RefactorVisitor();
 		visitor.addRemoveTypes("Iter", "ListIter");
 		visitor.addRemoveMethods("iterator", "listIterator", "descendingIterator", "asDeque");
 		addRefactor("void move", "(fill\\(.*,) null\\)", "{1} {DEFAULT})");
 		addRefactor("toArray", "array\\[size\\] = null", "array[size] = {DEFAULT}");
+
 		visitor.addRefactorMethods(new RefactorMethod() {
 			@Override
 			public boolean match(MethodSource method) {
@@ -59,6 +63,7 @@ public class BuildSourceIList extends FileBuilder {
 				return false;
 			}
 		});
+
 		visitor.addRefactorMethods(new RefactorMethod() {
 			@Override
 			public boolean match(MethodSource method) {
@@ -85,6 +90,7 @@ public class BuildSourceIList extends FileBuilder {
 				return false;
 			}
 		});
+
 		visitor.addRefactorMethods(new RefactorMethod() {
 			@Override
 			public boolean match(MethodSource method) {
@@ -104,6 +110,7 @@ public class BuildSourceIList extends FileBuilder {
 				return false;
 			}
 		});
+
 		visitor.addRefactorMethods(new RefactorMethod() {
 			// TODO use same hashcode as wrappers
 			@Override
@@ -122,6 +129,7 @@ public class BuildSourceIList extends FileBuilder {
 				return false;
 			}
 		});
+
 		// Remove second remove() method
 		visitor.addRefactorMethods(new RefactorMethod() {
 			final int[] removeCount = new int[1];
@@ -145,6 +153,7 @@ public class BuildSourceIList extends FileBuilder {
 				return false;
 			}
 		});
+
 		visitor.addRefactorMethods(new RefactorMethod() {
 			@Override
 			public boolean match(MethodSource method) {
@@ -158,29 +167,40 @@ public class BuildSourceIList extends FileBuilder {
 			}
 		});
 
-		// Support for:
-		// - remove method
-		// - rename method
-		// - change comment
-		// - change code
-		// - change comment + code
+		src = writeSource(cu, visitor);
 
-		cu.accept(visitor, null);
-		src = visitor.toString();
 		src = processClass(src);
 		src = applyTemplate(src);
-		String javaFile = applyTemplate("I{NAME}List.java");
+
+		String typeName = applyTemplate("I{NAME}List");
+		String javaFile = typeName + ".java";
+
+		cu = readSource(src);
+		TypeDeclaration<?> type = JavaParserTools.getDeclaredType(cu, typeName);
+		handleIListPrimitive(type);
+		src = writeSource(cu);
 
 		String dstFile = PathTools.getPath(srcDir, ClassTools.getPathFromClass(ClassTools.getParentPackage(srcClass)), "primitive", javaFile);
-
 		setFile(dstFile);
 		setFileContent(src);
+	}
+
+	void handleIListPrimitive(TypeDeclaration<?> type) {
+		String src = ""
+				+ "	// Implementation of IPrimitiveList \r\n"
+				+ "\r\n"
+				+ "	@Override \r\n"
+				+ "	public Class<?> getPrimitiveClass() { \r\n"
+				+ "		return {WRAPPER}.class; \r\n"
+				+ "	} \r\n";
+		MethodDeclaration md = createMethod(src);
+		type.getMembers().add(md);
 	}
 
 	/** processClass is executed after processMethod */
 	String processClass(String src) {
 		src = substitute(" extends AbstractList\\<E\\>", src, "");
-		src = substitute("(?s)implements.*?Serializable.*?\\{", src, "implements I{NAME}Listable, Cloneable, Serializable '{'");
+		src = substitute("(?s)implements.*?Serializable.*?\\{", src, "implements I{NAME}Listable, IPrimitiveList '{'");
 		src = substitute("(?s)Begin Deque", src, "XXX");
 		//		src = substitute("(?s)Begin Deque.*?End Deque", src, "XXX");
 		src = substitute("class IList\\<E\\>", src, "class I{NAME}List");
@@ -195,30 +215,98 @@ public class BuildSourceIList extends FileBuilder {
 		src = substitute("checkNonNull\\({PRIMITIVE} obj\\)", src, "checkNonNull(Object obj)");
 		src = substitute("\\(obj == (false|0|\\().*\\)", src, "(obj == null)");
 
+		// CharSequence
 		if ("char".equals(BuildSourceIList.this.builder.getPrimitiveType())) {
-			src = src.replace("implements ICharListable, Cloneable, Serializable", "implements ICharListable, Cloneable, Serializable, CharSequence");
+			src = src.replace("implements ICharListable, IPrimitiveList", "implements ICharListable, IPrimitiveList, CharSequence");
 
 			Pattern p = Pattern.compile("(public String toString\\(\\) \\{)(.*)(public boolean isEmpty\\(\\))", Pattern.DOTALL);
 			src = new RegexReplacer().setPattern(p).setFormat("{1}\nreturn new String(toArray());\n}\n\n{3}").replace(src);
 
 			//@formatter:off
 			String add = ""
-					+ "	// Implementation of CharSequence \r\n" + "\r\n" 
-							+ "	@Override\r\n" + "	public int length() {\r\n" 
+					+ "	// Implementation of CharSequence \r\n" 
+							+ "\r\n" 
+							+ "	@Override\r\n" 
+							+ "	public int length() {\r\n" 
 							+ "		return size();\r\n"
-							+ "	}\r\n" + "\r\n" + "	@Override\r\n" 
+							+ "	}\r\n" 
+							+ "\r\n" 
+							+ "	@Override\r\n" 
 							+ "	public char charAt(int index) {\r\n" 
-							+ "		return get(index);\r\n" + "	}\r\n" + "\r\n"
+							+ "		return get(index);\r\n" 
+							+ "	}\r\n" 
+							+ "\r\n"
 							+ "	@Override\r\n" 
 							+ "	public CharSequence subSequence(int start, int end) {\r\n" 
 							+ "		return getAll(start, end-start);\r\n"
-							+ "	}\r\n";
+							+ "	}\r\n"
+							+ "\r\n"
+							+ "	public abstract void init(String str); \r\n" 
+							+ "\r\n"
+							+ "	public abstract void init(CharSequence str); \r\n"
+							+ ""
+							+ "    /**\r\n"
+							+ "     * Wrapper to treat a {@link CharSequence} as {@link ICharListable}.\r\n"
+							+ "     */\r\n"
+							+ "    protected static class ICharListableFromCharSequence implements ICharListable {\r\n"
+							+ "\r\n"
+							+ "        CharSequence str;\r\n"
+							+ "        int off;\r\n"
+							+ "        int len;\r\n"
+							+ "\r\n"
+							+ "        ICharListableFromCharSequence(CharSequence str) {\r\n"
+							+ "            this.str = str;\r\n"
+							+ "            this.off = 0;\r\n"
+							+ "            this.len = str.length();\r\n"
+							+ "        }\r\n"
+							+ "\r\n"
+							+ "        ICharListableFromCharSequence(CharSequence str, int off, int len) {\r\n"
+							+ "            this.str = str;\r\n"
+							+ "            this.off = off;\r\n"
+							+ "            this.len = len;\r\n"
+							+ "        }\r\n"
+							+ "\r\n"
+							+ "        public int size() {\r\n"
+							+ "            return len;\r\n"
+							+ "        }\r\n"
+							+ "\r\n"
+							+ "        public char get(int index) {\r\n"
+							+ "            return str.charAt(off+index);\r\n"
+							+ "        }\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public boolean addString(CharSequence str) {\r\n"
+							+ "        return doAddAll(-1, new ICharListableFromCharSequence(str));\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public boolean addString(CharSequence str, int off, int len) {\r\n"
+							+ "        return doAddAll(-1, new ICharListableFromCharSequence(str, off, len));\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public boolean addString(int index, CharSequence str) {\r\n"
+							+ "        checkIndexAdd(index);\r\n"
+							+ "        return doAddAll(index, new ICharListableFromCharSequence(str));\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public boolean addString(int index, CharSequence str, int off, int len) {\r\n"
+							+ "        checkIndexAdd(index);\r\n"
+							+ "        return doAddAll(index, new ICharListableFromCharSequence(str, off, len));\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public void putString(int index, CharSequence str) {\r\n"
+							+ "        doPutAll(index, new ICharListableFromCharSequence(str));\r\n"
+							+ "    }\r\n"
+							+ "\r\n"
+							+ "    public void putString(int index, CharSequence str, int off, int len) {\r\n"
+							+ "        doPutAll(index, new ICharListableFromCharSequence(str, off, len));\r\n"
+							+ "    }\r\n"
+							+ ""; 
 			//@formatter:on
 			int pos = src.lastIndexOf('}');
 			src = src.substring(0, pos) + add + src.substring(pos);
 		}
 
-		// for IListable
+		// IListable
 		String base = StringFormatter.format("I{}Listable", builder.getTypeName());
 		String type = StringFormatter.format("<{}>", builder.getWrapperType());
 		src = substitute(base + type, src, base);

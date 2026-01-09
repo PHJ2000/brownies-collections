@@ -17,15 +17,13 @@
  */
 package org.magicwerk.brownies.collections;
 
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-import org.magicwerk.brownies.collections.KeyCollectionImpl.BuilderImpl;
+import org.magicwerk.brownies.collections.KeyCollectionImpl.Key1CollectionImplBuilder;
 
 /**
  * Key1List implements a key list with 1 key.
@@ -40,10 +38,15 @@ import org.magicwerk.brownies.collections.KeyCollectionImpl.BuilderImpl;
  */
 public class Key1List<E, K> extends KeyListImpl<E> {
 
+	/** Build {@link Key1List} with specified builder function */
+	public static <E, K> Key1List<E, K> buildList(UnaryOperator<Key1List.Builder<E, K>> builder) {
+		return builder.apply(new Key1List.Builder<>()).build();
+	}
+
 	/**
-	 * Builder to construct Key1List instances.
+	 * Builder to construct {@link Key1List} instances.
 	 */
-	public static class Builder<E, K> extends BuilderImpl<E> {
+	public static class Builder<E, K> extends Key1CollectionImplBuilder<E, K, Builder<E, K>> {
 		/**
 		 * Default constructor.
 		 */
@@ -61,244 +64,6 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 			initKeyMapBuilder(1);
 		}
 
-		// -- Constraint
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withNull(boolean allowNull) {
-			return (Builder<E, K>) super.withNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withConstraint(Predicate<E> constraint) {
-			return (Builder<E, K>) super.withConstraint(constraint);
-		}
-
-		// -- Triggers
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withBeforeInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K>) super.withBeforeInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withAfterInsertTrigger(Consumer<E> trigger) {
-			return (Builder<E, K>) super.withAfterInsertTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withBeforeDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K>) super.withBeforeDeleteTrigger(trigger);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withAfterDeleteTrigger(Consumer<E> trigger) {
-			return (Builder<E, K>) super.withAfterDeleteTrigger(trigger);
-		}
-
-		//-- Content
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withCapacity(int capacity) {
-			return (Builder<E, K>) super.withCapacity(capacity);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withContent(Collection<? extends E> elements) {
-			return (Builder<E, K>) super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withContent(E... elements) {
-			return (Builder<E, K>) super.withContent(elements);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withMaxSize(int maxSize) {
-			return (Builder<E, K>) super.withMaxSize(maxSize);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withWindowSize(int maxSize) {
-			return (Builder<E, K>) super.withWindowSize(maxSize);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withListBig(boolean bigList) {
-			return (Builder<E, K>) super.withListBig(bigList);
-		}
-
-		//-- Element key
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSet() {
-			return (Builder<E, K>) super.withElemSet();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withOrderByElem(boolean orderBy) {
-			return (Builder<E, K>) super.withOrderByElem(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemNull(boolean allowNull) {
-			return (Builder<E, K>) super.withElemNull(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemDuplicates(boolean allowDuplicates) {
-			return (Builder<E, K>) super.withElemDuplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemDuplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E, K>) super.withElemDuplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(boolean sort) {
-			return (Builder<E, K>) super.withElemSort(sort);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(Comparator<? super E> comparator) {
-			return (Builder<E, K>) super.withElemSort(comparator);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withElemSort(Comparator<? super E> comparator, boolean sortNullsFirst) {
-			return (Builder<E, K>) super.withElemSort(comparator, sortNullsFirst);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withPrimaryElem() {
-			return (Builder<E, K>) super.withPrimaryElem();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withUniqueElem() {
-			return (Builder<E, K>) super.withUniqueElem();
-		}
-
-		// -- Key1
-
-		/**
-		 * Add key map.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withKey1Map(Function<? super E, K> mapper) {
-			return (Builder<E, K>) super.withKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a primary key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(false), and withKey1Duplicates(false)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withPrimaryKey1Map(Function<? super E, K> mapper) {
-			return (Builder<E, K>) super.withPrimaryKeyMap(1, mapper);
-		}
-
-		/**
-		 * Specify this key to be a unique key.
-		 * This is identical to calling {@code withKey1Map(mapper), withKey1Null(true), and withKey1Duplicates(false, true)}.
-		 *
-		 * @param mapper	mapper to use
-		 * @return			this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withUniqueKey1Map(Function<? super E, K> mapper) {
-			return (Builder<E, K>) super.withUniqueKeyMap(1, mapper);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withOrderByKey1(boolean orderBy) {
-			return (Builder<E, K>) super.withOrderByKey1(orderBy);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withOrderByKey1(Class<?> type) {
-			return (Builder<E, K>) super.withOrderByKey1(type);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Null(boolean allowNull) {
-			return (Builder<E, K>) super.withKey1Null(allowNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Duplicates(boolean allowDuplicates) {
-			return (Builder<E, K>) super.withKey1Duplicates(allowDuplicates);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Duplicates(boolean allowDuplicates, boolean allowDuplicatesNull) {
-			return (Builder<E, K>) super.withKey1Duplicates(allowDuplicates, allowDuplicatesNull);
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public Builder<E, K> withKey1Sort(boolean sort) {
-			return (Builder<E, K>) super.withKey1Sort(sort);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator    comparator to use for sorting
-		 * @return              this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator) {
-			return (Builder<E, K>) super.withKeySort(1, comparator);
-		}
-
-		/**
-		 * Set comparator to use for sorting the key map.
-		 * Note that this does not automatically sort the list itself, call a withOrderBy method for this.
-		 *
-		 * @param comparator            comparator to use for sorting
-		 * @param sortNullsFirst   		true if null will be sorted first, false for last
-		 * @return                      this (fluent interface)
-		 */
-		@SuppressWarnings("unchecked")
-		public Builder<E, K> withKey1Sort(Comparator<? super K> comparator, boolean sortNullsFirst) {
-			return (Builder<E, K>) super.withKeySort(1, comparator, sortNullsFirst);
-		}
-
 		/**
 		 * @return created list
 		 */
@@ -313,6 +78,39 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 			}
 			init(keyColl, keyList);
 			return (Key1List<E, K>) keyList;
+		}
+
+		/**
+		 * @return created immutable list
+		 */
+		public Key1List<E, K> immutable() {
+			return build().unmodifiableList();
+		}
+
+		// -- Builder
+
+		@Override
+		public Builder<E, K> withWindowSize(int maxSize) {
+			return super.withWindowSize(maxSize);
+		}
+
+		@Override
+		public Builder<E, K> withListBig(boolean bigList) {
+			return super.withListBig(bigList);
+		}
+
+		// -- Elem Map
+
+		@Override
+		public Builder<E, K> withOrderByElem(Class<?> type) {
+			return super.withOrderByElem(type);
+		}
+
+		// -- Key Map 1
+
+		@Override
+		public Builder<E, K> withOrderByKey1(Class<?> type) {
+			return super.withOrderByKey1(type);
 		}
 	}
 
@@ -332,34 +130,34 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Key1List<E, K> copy() {
-		if (this instanceof ReadOnlyKey1List) {
-			Key1List<E, K> list = new Key1List<>(false, null);
+		if (isReadOnly()) {
+			Key1List<E, K> list = new Key1List<>(null);
 			list.initCopy(this);
 			return list;
 		} else {
-			return (Key1List<E, K>) super.clone();
+			return (Key1List<E, K>) doCopy();
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public Key1List<E, K> clone() {
-		if (this instanceof ReadOnlyKey1List) {
+		if (isReadOnly()) {
 			return this;
 		} else {
-			return (Key1List<E, K>) super.clone();
+			return (Key1List<E, K>) doCopy();
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public Key1List<E, K> crop() {
-		if (this instanceof ReadOnlyKey1List) {
-			Key1List<E, K> list = new Key1List<>(false, null);
+		if (isReadOnly()) {
+			Key1List<E, K> list = new Key1List<>(null);
 			list.initCrop(this);
 			return list;
 		} else {
-			return (Key1List<E, K>) super.crop();
+			return (Key1List<E, K>) doCrop();
 		}
 	}
 
@@ -488,9 +286,9 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns list containing all keys in element order.
+	 * Returns list with all keys in element order.
 	 *
-	 * @return 			list containing all keys
+	 * @return 			list with all keys
 	 */
 	@SuppressWarnings("unchecked")
 	public IList<K> getAllKeys1() {
@@ -498,13 +296,32 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 	}
 
 	/**
-	 * Returns all distinct keys in the same order as in the key map.
+	 * Returns set with all distinct keys in the same order as in the key map.
 	 *
-	 * @return		distinct keys
+	 * @return		set with all distinct keys
 	 */
 	@SuppressWarnings("unchecked")
 	public Set<K> getDistinctKeys1() {
 		return (Set<K>) getDistinctKeys(1);
+	}
+
+	/**
+	 * Returns iterator for all distinct keys in the same order as in the key map.
+	 *
+	 * @return		iterator for all distinct keys
+	 */
+	@SuppressWarnings("unchecked")
+	public Iterator<K> iteratorDistinctKeys1() {
+		return (Iterator<K>) iteratorDistinctKeys(1);
+	}
+
+	/**
+	 * Returns count for all distinct keys.
+	 *
+	 * @return		count for all distinct keys
+	 */
+	public int countDistinctKeys1() {
+		return countDistinctKeys(1);
 	}
 
 	/**
@@ -560,7 +377,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 		invalidateKey(1, oldKey, newKey, elem);
 	}
 
-	// --- ImmutableKey1List ---
+	// --- ReadOnlyKey1List ---
 
 	@Override
 	public boolean isReadOnly() {
@@ -569,7 +386,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 
 	@Override
 	public Key1List<E, K> unmodifiableList() {
-		if (this instanceof ReadOnlyKey1List) {
+		if (isReadOnly()) {
 			return this;
 		} else {
 			return new ReadOnlyKey1List<E, K>(this);
@@ -578,15 +395,15 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 
 	@Override
 	public Key1List<E, K> immutableList() {
-		if (this instanceof ReadOnlyKey1List) {
+		if (isReadOnly()) {
 			return this;
 		} else {
 			return new ReadOnlyKey1List<E, K>(copy());
 		}
 	}
 
-	protected Key1List(boolean copy, Key1List<E, K> that) {
-		if (copy) {
+	protected Key1List(Key1List<E, K> that) {
+		if (that != null) {
 			doAssign(that);
 		}
 	}
@@ -607,7 +424,7 @@ public class Key1List<E, K> extends KeyListImpl<E> {
 		 * @param that  list to create an immutable view of
 		 */
 		protected ReadOnlyKey1List(Key1List<E, K> that) {
-			super(true, that);
+			super(that);
 		}
 
 		@Override

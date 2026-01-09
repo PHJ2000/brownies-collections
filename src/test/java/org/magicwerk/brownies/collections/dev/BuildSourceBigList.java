@@ -1,16 +1,19 @@
 package org.magicwerk.brownies.collections.dev;
 
-import org.apache.commons.lang3.StringUtils;
 import org.magicwerk.brownies.collections.dev.BuildSource.Builder;
 import org.magicwerk.brownies.collections.dev.BuildSource.FileBuilder;
 import org.magicwerk.brownies.collections.dev.RefactorVisitor.RefactorMethod;
+import org.magicwerk.brownies.core.StringTools;
 import org.magicwerk.brownies.core.files.FileTools;
 import org.magicwerk.brownies.core.files.PathTools;
 import org.magicwerk.brownies.core.reflect.ClassTools;
 import org.magicwerk.brownies.core.regex.RegexBuilder;
 import org.magicwerk.brownies.core.strings.StringFormatter;
+import org.magicwerk.brownies.javassist.sources.JavaParserTools;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 /**
  * Create source files IntBigList, etc. out of file BigList
@@ -29,7 +32,7 @@ public class BuildSourceBigList extends FileBuilder {
 		String srcClass = "org.magicwerk.brownies.collections.BigList";
 
 		String src = readJavaFile(srcClass);
-		CompilationUnit cu = parseJavaSource(src);
+		CompilationUnit cu = readSource(src);
 
 		visitor = new RefactorVisitor();
 		addRefactor("int binarySearch", ", Comparator\\<\\? super K\\> comparator", "");
@@ -80,28 +83,60 @@ public class BuildSourceBigList extends FileBuilder {
 		});
 		visitor.addRemoveMethods("spliterator");
 
-		cu.accept(visitor, null);
-		src = visitor.toString();
+		src = writeSource(cu, visitor);
+
 		src = processClass(src);
-		src = insertTemplate(src);
 		src = applyTemplate(src);
-		String javaFile = applyTemplate("{NAME}BigList.java");
+
+		String typeName = applyTemplate("{NAME}BigList");
+		String javaFile = typeName + ".java";
+
+		cu = readSource(src);
+
+		TypeDeclaration<?> type = JavaParserTools.getDeclaredType(cu, typeName);
+		handleIListPrimitive(type);
+		src = writeSource(cu);
 
 		String dstFile = PathTools.getPath(
 				srcDir,
 				ClassTools.getPathFromClass(ClassTools.getParentPackage(srcClass)),
 				"primitive",
 				javaFile);
-
 		setFile(dstFile);
 		setFileContent(src);
+	}
+
+	void handleIListPrimitive(TypeDeclaration<?> type) {
+		javaParserRefactor.addImport(type, "org.magicwerk.brownies.collections.IList");
+		javaParserRefactor.addImport(type, "org.magicwerk.brownies.collections.BigList");
+
+		String srcGapList = ""
+				+ "	@Override\r\n"
+				+ "	public IList<{WRAPPER}> toIList() { \r\n"
+				+ "		int size = size(); \r\n"
+				+ "		IList<{WRAPPER}> list = new BigList<>(); \r\n"
+				+ "		for (int i=0; i<size; i++) {\r\n"
+				+ "			list.add(get(i)); \r\n"
+				+ "		} \r\n"
+				+ "		return list; \r\n"
+				+ "	}\r\n";
+		MethodDeclaration md = createMethod(srcGapList);
+		type.getMembers().add(md);
+
+		String srcObjGapList = ""
+				+ "	@Override\r\n"
+				+ "	public {NAME}ObjBigList asObjIList() { \r\n"
+				+ "		return new {NAME}ObjBigList(this); \r\n"
+				+ "	}\r\n";
+		md = createMethod(srcObjGapList);
+		type.getMembers().add(md);
 	}
 
 	String insertTemplate(String src) {
 		String tplPath = PathTools.getPath(testDir, "org/magicwerk/brownies/collections/dev/PrimitiveList.java.tpl");
 		String tplFile = FileTools.readFile().setFile(tplPath).readText();
-		tplFile = StringUtils.replace(tplFile, "{", "'{'");
-		tplFile = StringUtils.replace(tplFile, "}", "'}'");
+		tplFile = StringTools.replace(tplFile, "{", "'{'");
+		tplFile = StringTools.replace(tplFile, "}", "'}'");
 
 		src = substitute("(?s)(extends I{NAME}List \\{\n)", src, "{1}" + tplFile);
 		return src;
@@ -163,7 +198,15 @@ public class BuildSourceBigList extends FileBuilder {
 					"	public CharBigList(String str) {\r\n" +
 					"		init(str);\r\n" +
 					"	}\r\n" +
-					"\r\n" +
+					"\r\n"
+					+ "	public void init(CharSequence str) {\r\n"
+					+ "		int len = str.length();\r\n"
+					+ "		char[] array = new char[len];\r\n"
+					+ "		for (int i=0; i<len; i++) {\r\n"
+					+ "			array[i] = str.charAt(i);\r\n"
+					+ "		}\r\n"
+					+ "		initArray(array);\r\n" // TODO array is copied twice
+					+ "	}\r\n" +
 					"	public void init(String str) {\r\n" +
 					"		char[] array = str.toCharArray();\r\n" +
 					"		initArray(array);\r\n" + // TODO array is copied twice

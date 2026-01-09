@@ -44,14 +44,14 @@ public class MethodSource {
 		return method.get();
 	}
 
-	final BodyDeclaration bodyDecl;
+	final BodyDeclaration<?> bodyDecl;
 	boolean delete;
 	String name;
 	String doc;
 	String header;
 	String body;
 
-	public MethodSource(BodyDeclaration decl, String name, String doc, String header, String body) {
+	public MethodSource(BodyDeclaration<?> decl, String name, String doc, String header, String body) {
 		this.bodyDecl = decl;
 		this.name = name;
 		this.doc = doc;

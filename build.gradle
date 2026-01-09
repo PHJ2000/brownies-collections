@@ -7,14 +7,14 @@ repositories {
 	mavenCentral()
 }
 
+sourceCompatibility = 8
+
 dependencies {
-    testImplementation("org.magicwerk.brownies:brownies-tools:0.9.15") {
-		exclude group: 'org.magicwerk.ext.org.w3c', module: 'dom'
-	}
+    testImplementation("org.magicwerk.brownies:brownies-tools:0.9.17")
     testImplementation "org.magicwerk.magictest:magictest-ng:0.9.11"
  
 	testImplementation "com.github.javaparser:javaparser-core:3.25.8"
-	testImplementation "junit:junit:4.8.2"
+	testImplementation "junit:junit:4.13.2"
 	testImplementation "com.google.guava:guava-testlib:32.1.2-jre"
 }
 

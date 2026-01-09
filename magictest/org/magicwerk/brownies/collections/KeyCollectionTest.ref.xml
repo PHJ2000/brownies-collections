@@ -897,8 +897,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testKey">
-    <runDate>2023-05-28T23:44:47.337+02:00</runDate>
-    <runDuration>0.059449499</runDuration>
+    <runDate>2024-11-01T23:51:39.8123863+01:00</runDate>
+    <runDuration>0.0232709</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.KeyCollection</traceClass>
     <traceMethod>/.+/</traceMethod>
@@ -918,7 +918,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -959,7 +959,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1015,7 +1015,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1155,7 +1155,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   null, \r\n   b (0) \r\n}"</paramText>
@@ -1183,7 +1183,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   null, \r\n   null, \r\n   b (0) \r\n}"</paramText>
@@ -1219,7 +1219,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1260,7 +1260,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1316,7 +1316,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1436,7 +1436,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   null, \r\n   null, \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (1) \r\n}"</paramText>
@@ -1500,7 +1500,7 @@
     </traceStep>
     <traceStep>
       <description>
-        <paramText outputType="TEXT" param="Description">"getCount"</paramText>
+        <paramText outputType="TEXT" param="Description">"count"</paramText>
       </description>
       <parameters>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0), \r\n   b (0), \r\n   d (0), \r\n   d (0), \r\n   null, \r\n   null \r\n}"</paramText>

@@ -100,20 +100,24 @@ public class IntObjGapList extends IList<Integer> {
 		init();
 	}
 
+	public IntObjGapList(int capacity) {
+		list = new IntGapList(capacity);
+	}
+	
+	public IntObjGapList(Collection<? extends Integer> elems) {
+		init(elems);
+	}
+
+	public IntObjGapList(IntGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new IntGapList();
 	}
 
-	public IntObjGapList(int capacity) {
-		list = new IntGapList(capacity);
-	}
-
 	public void init(Integer... elems) {
 		list = IntGapList.create(toPrimitive(elems));
-	}
-
-	public IntObjGapList(Collection<? extends Integer> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Integer> elems) {
@@ -229,7 +233,6 @@ public class IntObjGapList extends IList<Integer> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

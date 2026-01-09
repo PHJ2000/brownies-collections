@@ -100,20 +100,24 @@ public class ByteObjGapList extends IList<Byte> {
 		init();
 	}
 
+	public ByteObjGapList(int capacity) {
+		list = new ByteGapList(capacity);
+	}
+	
+	public ByteObjGapList(Collection<? extends Byte> elems) {
+		init(elems);
+	}
+
+	public ByteObjGapList(ByteGapList list) {
+		this.list = list;
+	}
+	
 	public void init() {
 		list = new ByteGapList();
 	}
 
-	public ByteObjGapList(int capacity) {
-		list = new ByteGapList(capacity);
-	}
-
 	public void init(Byte... elems) {
 		list = ByteGapList.create(toPrimitive(elems));
-	}
-
-	public ByteObjGapList(Collection<? extends Byte> elems) {
-		init(elems);
 	}
 
 	public void init(Collection<? extends Byte> elems) {
@@ -229,7 +233,6 @@ public class ByteObjGapList extends IList<Byte> {
 
 	@Override
     public void move(int srcIndex, int dstIndex, int len) {
-    	// Use correct default value
     	list.move(srcIndex, dstIndex, len);
     }
 

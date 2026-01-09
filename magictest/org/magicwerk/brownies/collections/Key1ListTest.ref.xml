@@ -1,5 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="org.magicwerk.brownies.collections.Key1ListTest" xsi:noNamespaceSchemaLocation="testclass-v10.xsd">
+  <traceTest name="testAdd">
+    <runDate>2024-12-21T14:02:22.9505205+01:00</runDate>
+    <runDuration>0.0258153</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
+    <traceMethod>add</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: 1"</paramText>
+      </error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"add"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId2, text=text2]"</paramText>
+      </parameters>
+      <result></result>
+      <error>
+        <paramText outputType="VALUE" param="Error">"org.magicwerk.brownies.collections.exceptions.DuplicateKeyException: Constraint violation: duplicate key not allowed: 1"</paramText>
+      </error>
+    </traceStep>
+  </traceTest>
+  <captureTest name="testAddDuplicate">
+    <runDate>2025-01-17T14:11:39.3762408+01:00</runDate>
+    <runDuration>0.009149401</runDuration>
+    <exception></exception>
+    <captureStep>
+      <text outputType="TEXT">""</text>
+    </captureStep>
+  </captureTest>
   <captureTest name="testAsMap">
     <runDate>2015-09-16T01:00:08.166+02:00</runDate>
     <runDuration>0.018973849</runDuration>
@@ -56,8 +119,8 @@
     </traceStep>
   </traceTest>
   <traceTest name="testContains">
-    <runDate>2020-03-23T12:22:14.938+01:00</runDate>
-    <runDuration>0.0401304</runDuration>
+    <runDate>2024-10-24T17:41:02.3955195+02:00</runDate>
+    <runDuration>0.002306</runDuration>
     <exception></exception>
     <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
     <traceMethod>contains</traceMethod>
@@ -72,6 +135,20 @@
       <result>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (0) \r\n}"</paramText>
         <paramText outputType="VALUE" param="Result">"true"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"contains"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ \r\n   a (0) \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#1">"\"WRONG_TYPE\""</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="This">"{ \r\n   a (0) \r\n}"</paramText>
+        <paramText outputType="VALUE" param="Result">"false"</paramText>
       </result>
       <error></error>
     </traceStep>
@@ -154,6 +231,41 @@
       <text outputType="TEXT">""</text>
     </captureStep>
   </captureTest>
+  <traceTest name="testIndexOf">
+    <runDate>2024-10-24T17:41:02.5645451+02:00</runDate>
+    <runDuration>0.00177</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
+    <traceMethod>indexOf</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"indexOf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=1, extId=extId1, text=text1], \r\n   Ticket [id=2, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=1, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=1, extId=extId1, text=text1], \r\n   Ticket [id=2, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="Result">"0"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"indexOf"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=1, extId=extId1, text=text1], \r\n   Ticket [id=2, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#1">"Ticket [id=2, extId=extId1, text=text1]"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=1, extId=extId1, text=text1], \r\n   Ticket [id=2, extId=extId1, text=text1] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="Result">"1"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
   <traceTest name="testInitAll">
     <runDate>2021-04-08T15:25:20.726+02:00</runDate>
     <runDuration>0.1035489</runDuration>
@@ -1005,6 +1117,27 @@
       <result>
         <paramText outputType="VALUE" param="This">"{ \r\n   a (1), \r\n   c (3) \r\n}"</paramText>
         <paramText outputType="VALUE" param="Result">"{ \r\n   b (2), \r\n   b (4) \r\n}"</paramText>
+      </result>
+      <error></error>
+    </traceStep>
+  </traceTest>
+  <traceTest name="testRemoveByKey1">
+    <runDate>2024-10-24T22:47:26.4419434+02:00</runDate>
+    <runDuration>6.648E-4</runDuration>
+    <exception></exception>
+    <traceClass>org.magicwerk.brownies.collections.Key1List</traceClass>
+    <traceMethod>removeByKey1</traceMethod>
+    <traceStep>
+      <description>
+        <paramText outputType="TEXT" param="Description">"removeByKey1"</paramText>
+      </description>
+      <parameters>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=0, extId=extId1, text=text1], \r\n   Ticket [id=0, extId=extId2, text=text2], \r\n   Ticket [id=0, extId=extId3, text=text3], \r\n   Ticket [id=0, extId=extId4, text=text4] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="#1">"0"</paramText>
+      </parameters>
+      <result>
+        <paramText outputType="VALUE" param="This">"{ \r\n   Ticket [id=0, extId=extId2, text=text2], \r\n   Ticket [id=0, extId=extId3, text=text3], \r\n   Ticket [id=0, extId=extId4, text=text4] \r\n}"</paramText>
+        <paramText outputType="VALUE" param="Result">"Ticket [id=0, extId=extId1, text=text1]"</paramText>
       </result>
       <error></error>
     </traceStep>
